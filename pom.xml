@@ -46,8 +46,8 @@
             </dependency>
             <dependency>
                 <groupId>com.github.rosauromatib</groupId>
-                <artifactId>timeline-addon</artifactId>
-                <version>v1.0.1-alpha</version>
+                <artifactId>toast-ui-grid-addon</artifactId>
+                <version>v1.0.0-alpha</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
