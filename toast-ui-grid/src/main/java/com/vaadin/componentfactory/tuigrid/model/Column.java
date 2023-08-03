@@ -19,41 +19,41 @@ package com.vaadin.componentfactory.tuigrid.model;
  * #L%
  */
 
-import com.vaadin.flow.component.notification.Notification;
 import elemental.json.Json;
 import elemental.json.JsonObject;
-import jakarta.persistence.GeneratedValue;
 
 import java.util.Objects;
 import java.util.Optional;
 
 public class Column {
-    public enum Type {
-        input,
-        datePicker
-    };
-
-    public enum Options{
-        maxLength,
-        format
-    };
-    private long Id;
+    private int id;
     private String headerName;
     private String name;
-    private String width;
+    private int width;
     private String align;
     private String className;
     private String sortingType;
     private boolean sortable;
-    private Type type;
-    private Options options;
+    private String type;
+    private int maxLength;
+    private String format;
+    private boolean editable = false;
+    private boolean timepicker = false;
 
-    public long getId() {
-        return Id;
+    public boolean isEditable() {
+        return editable;
     }
 
-    public void setId(long id) {
-        Id = id;
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getHeaderName() {
@@ -72,11 +72,11 @@ public class Column {
         this.name = name;
     }
 
-    public String getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public void setWidth(String width) {
+    public void setWidth(int width) {
         this.width = width;
     }
 
@@ -112,25 +112,41 @@ public class Column {
         this.sortable = sortable;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public int getMaxLength() {
+        return maxLength;
+    }
+
+    public void setMaxLength(int maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public void setType(String type) {
         this.type = type;
     }
 
-    public Options getOptions() {
-        return options;
+    public boolean isTimepicker() {
+        return timepicker;
     }
 
-    public void setOptions(Options options) {
-        this.options = options;
+    public void setTimepicker(boolean timepicker) {
+        this.timepicker = timepicker;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Id);
+        return Objects.hash(id);
     }
 
     @Override
@@ -139,24 +155,78 @@ public class Column {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         Column other = (Column) obj;
-        return Objects.equals(Id, other.Id);
+        return Objects.equals(id, other.id);
     }
+
     public String toJSON() {
         JsonObject js = Json.createObject();
         Optional.ofNullable(getId()).ifPresent(v -> js.put("id", v));
         Optional.ofNullable(getName()).ifPresent(v -> js.put("name", v));
-        Optional.ofNullable(getHeaderName()).ifPresent(v -> js.put("headerName", v.toString()));
-        Optional.ofNullable(getWidth()).ifPresent(v -> js.put("width", v.toString()));
+        Optional.ofNullable(getHeaderName()).ifPresent(v -> js.put("headerName", v));
+        Optional.ofNullable(getWidth()).ifPresent(v -> js.put("width", v));
         Optional.ofNullable(getAlign()).ifPresent(v -> js.put("align", v));
         Optional.ofNullable(getClassName()).ifPresent(v -> js.put("className", v));
         Optional.ofNullable(getSortingType()).ifPresent(v -> js.put("sortingType", v));
         Optional.ofNullable(isSortable()).ifPresent(v -> js.put("sortable", v));
-        Optional.ofNullable(getType()).ifPresent(v -> js.put("type", String.valueOf(v)));
-        Optional.ofNullable(getOptions()).ifPresent(v -> js.put("options", String.valueOf(v)));
+        if (this.editable) {
+            JsonObject editableJs = Json.createObject();
+            Optional.ofNullable(getType()).ifPresent(v -> editableJs.put("type", String.valueOf(v)));
+            JsonObject optionsJs = Json.createObject();
+            if (getType() == "input")
+                Optional.ofNullable(getMaxLength()).ifPresent(v -> optionsJs.put("maxLength", v));
+            else {
+                Optional.ofNullable(getFormat()).ifPresent(v -> optionsJs.put("format", v));
+                Optional.ofNullable(isTimepicker()).ifPresent(v -> optionsJs.put("timepicker", v));
+            }
+            editableJs.put("options", optionsJs);
+            js.put("editor", editableJs);
+        }
 
         return js.toJson();
     }
-    public Column() {
 
+
+    public Column(int id, String headerName, String name, int width, String align) {
+        this.id = id;
+        this.headerName = headerName;
+        this.name = name;
+        this.width = width;
+        this.align = align;
+    }
+
+    public Column(int id, String headerName, String name, int width, String align, String className, boolean editable, String type, int maxLength) {
+        this.id = id;
+        this.headerName = headerName;
+        this.name = name;
+        this.width = width;
+        this.align = align;
+        this.className = className;
+        this.type = type;
+        this.maxLength = maxLength;
+        this.editable = editable;
+    }
+
+    public Column(int id, String headerName, String name, int width, String align, String className, boolean editable, String type, String format, boolean timepicker) {
+        this.id = id;
+        this.headerName = headerName;
+        this.name = name;
+        this.width = width;
+        this.align = align;
+        this.className = className;
+        this.type = type;
+        this.format = format;
+        this.editable = editable;
+        this.timepicker = timepicker;
+    }
+
+    public Column(int id, String headerName, String name, int width, String align, String className, String sortingType, boolean sortable) {
+        this.id = id;
+        this.headerName = headerName;
+        this.name = name;
+        this.width = width;
+        this.align = align;
+        this.className = className;
+        this.sortingType = sortingType;
+        this.sortable = sortable;
     }
 }
