@@ -13,11 +13,11 @@ public class GridExample extends Div {
 
     public GridExample() {
         // create items
-        TuiGrid grid = new TuiGrid(this.getGroupItems(), this.getColumns());
+        TuiGrid grid = new TuiGrid(this.getTableData(), this.getColumns());
         add(grid);
     }
 
-    private List<Music> getGroupItems() {
+    private List<Music> getTableData() {
 
         List<Music> TableData = List.of(
                 new Music("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"),
