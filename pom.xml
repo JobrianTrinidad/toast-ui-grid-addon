@@ -9,8 +9,8 @@
         <module>toast-ui-grid</module>
         <module>toast-ui-grid-demo</module>
     </modules>
-    <name>timeline</name>
-    <description>timeline component based on vis-timeline library</description>
+    <name>toast-ui-grid</name>
+    <description>toast-ui-grid component based on toast-ui-grid library</description>
 
     <properties>
         <java.version>17</java.version>
