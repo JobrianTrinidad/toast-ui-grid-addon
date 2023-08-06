@@ -1,8 +1,11 @@
 package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.model.Column;
+import com.vaadin.componentfactory.tuigrid.model.ComplexColumn;
 import com.vaadin.componentfactory.tuigrid.model.Music;
+import com.vaadin.componentfactory.tuigrid.model.Summary;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.Route;
 
 import java.util.Arrays;
@@ -12,8 +15,12 @@ import java.util.List;
 public class GridExample extends Div {
 
     public GridExample() {
+        Span sp = new Span("Clicked table!");
         // create items
-        TuiGrid grid = new TuiGrid(this.getTableData(), this.getColumns());
+        TuiGrid grid = new TuiGrid(this.getCustomHeader(), this.getTableData(),
+                this.getColumns(), this.getSummaries());
+        grid.setHeaderHeight(100);
+        grid.setSummaryHeight(40);
         add(grid);
     }
 
@@ -210,10 +217,26 @@ public class GridExample extends Div {
                 new Column(1, "Artist", "artist", 250, "center", "", true, "input", 10),
                 new Column(2, "Type", "type", 150, "center", "", true, "input", 10),
                 new Column(3, "Genre", "genre", 150, "center", "tui-grid-cell-required", true, "input", 10),
-                new Column(4, "Release", "release", 150, "center", "tui-grid-cell-required", true, "datePicker", "yyyy-MM-dd",  false),
+                new Column(4, "Release", "release", 150, "center", "tui-grid-cell-required", true, "datePicker", "yyyy-MM-dd", false),
                 new Column(5, "Price", "price", 150, "center", "", "asc", true),
                 new Column(6, "Download", "download", 150, "center"),
                 new Column(7, "Listen", "listen", 150, "center"));
         return columns;
+    }
+
+    private List<Summary> getSummaries() {
+        List<Summary> summaries = List.of(
+                new Summary("price", Summary.OperationType.sum),
+                new Summary("download", Summary.OperationType.avg),
+                new Summary("listen", Summary.OperationType.max));
+        return summaries;
+    }
+
+    private List<ComplexColumn> getCustomHeader() {
+        List<ComplexColumn> customHeaders = List.of(
+                new ComplexColumn("Details Info", "Details Info", List.of("type", "genre", "release")),
+                new ComplexColumn("Count", "Count", List.of("download", "listen")),
+                new ComplexColumn("Extra Info", "Extra Info", List.of("price", "Count")));
+        return customHeaders;
     }
 }

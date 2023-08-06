@@ -30,18 +30,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class ComplexColumn {
-
-    private long Id;
     private String headerName;
     private String name;
     private List<String> childNames;
-    public long getId() {
-        return Id;
-    }
-
-    public void setId(long id) {
-        Id = id;
-    }
 
     public String getHeaderName() {
         return headerName;
@@ -67,28 +58,21 @@ public class ComplexColumn {
         this.childNames = childNames;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(Id);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        ComplexColumn other = (ComplexColumn) obj;
-        return Objects.equals(Id, other.Id);
-    }
     public String toJSON() {
         JsonObject js = Json.createObject();
-        Optional.ofNullable(getId()).ifPresent(v -> js.put("id", v));
         Optional.ofNullable(getName()).ifPresent(v -> js.put("name", v));
-        Optional.ofNullable(getHeaderName()).ifPresent(v -> js.put("headerName", v));
+        Optional.ofNullable(getHeaderName()).ifPresent(v -> js.put("header", v));
         Optional.ofNullable(getChildNames()).ifPresent(v -> js.put("childNames", String.valueOf(v)));
 
         return js.toJson();
     }
+
+    public ComplexColumn(String headerName, String name, List<String> childNames) {
+        this.headerName = headerName;
+        this.name = name;
+        this.childNames = childNames;
+    }
+
     public ComplexColumn() {
 
     }
