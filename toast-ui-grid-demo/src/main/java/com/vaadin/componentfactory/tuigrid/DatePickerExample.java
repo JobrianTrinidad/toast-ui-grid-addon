@@ -8,13 +8,12 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.Route;
 
-import java.util.Arrays;
 import java.util.List;
 
-@Route(value = "grid", layout = MainLayout.class)
-public class GridExample extends Div {
+@Route(value = "datepicker", layout = MainLayout.class)
+public class DatePickerExample extends Div {
 
-    public GridExample() {
+    public DatePickerExample() {
         Span sp = new Span("Clicked table!");
         // create items
         TuiGrid grid = new TuiGrid(this.getCustomHeader(), this.getTableData(),

@@ -10,10 +10,17 @@ public class MainLayout extends AppLayout {
     public MainLayout() {
         final DrawerToggle drawerToggle = new DrawerToggle();
 
-        final RouterLink gridExample =
-                new RouterLink("Tui-Grid Example", GridExample.class);
+        final RouterLink basicExample =
+                new RouterLink("1. Basic", BasicExample.class);
+        final RouterLink relationBetweenColumnsExample =
+                new RouterLink("2. Relation between columns", RelationBetweenColumnsExample.class);
+        final RouterLink datePickerExample =
+                new RouterLink("3. DatePicker", DatePickerExample.class);
+        final RouterLink treeExample =
+                new RouterLink("4. Tree", TreeExample.class);
 
-        final VerticalLayout menuLayout = new VerticalLayout(gridExample);
+        final VerticalLayout menuLayout = new VerticalLayout(basicExample, relationBetweenColumnsExample,
+                datePickerExample, treeExample);
         addToDrawer(menuLayout);
         addToNavbar(drawerToggle);
     }
