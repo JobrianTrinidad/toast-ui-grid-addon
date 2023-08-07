@@ -155,13 +155,17 @@ window["toastuigrid"] = {
         }
     },
     getHeader(parsedHeader) {
-        let header = parsedHeader.height != 0 ? {
-            height: parsedHeader.height,
-            complexColumns: this.getComplexColumns(parsedHeader.columnContent)
-        } : {
-            complexColumns: this.getComplexColumns(parsedHeader.columnContent)
-        };
-        return header;
+        if (!parsedHeader.hasOwnProperty('complexColumns'))
+            return null;
+        else {
+            let header = parsedHeader.height != 0 ? {
+                height: parsedHeader.height,
+                complexColumns: this.getComplexColumns(parsedHeader.columnContent)
+            } : {
+                complexColumns: this.getComplexColumns(parsedHeader.columnContent)
+            };
+            return header;
+        }
     },
     getComplexColumns(parsedColumnContent) {
         let complexColumns = JSON.parse(parsedColumnContent);

@@ -16,7 +16,7 @@ public class BasicExample extends Div {
     public BasicExample() {
         Span sp = new Span("Clicked table!");
         // create items
-        TuiGrid grid = new TuiGrid(this.getCustomHeader(), this.getTableData(),
+        TuiGrid grid = new TuiGrid(null, this.getTableData(),
                 this.getColumns(), this.getSummaries());
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);

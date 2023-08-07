@@ -77,6 +77,15 @@ export class FeatureTable extends React.Component<any, any> {
             <Grid
                 data={this.TableData}
                 columns={this.columns}
+                className="table-center"
+                width={1200}
+                bodyHeight={500}
+                scrollX={true}
+                scrollY={true}
+                rowHeaders={["rowNum", "checkbox"]}
+                {...(this.summary && { summary: this.summary })}
+                {...(this.header && { header: this.header })}
+                columnOptions={this.columnOptions}
                 onClick={this.onClick}
                 onDblclick={this.onDblclick}
                 onMousedown={this.onMousedown}
@@ -99,15 +108,6 @@ export class FeatureTable extends React.Component<any, any> {
                 onSuccessResponse={this.onSuccessResponse}
                 onFailResponse={this.onFailResponse}
                 onErrorResponse={this.onErrorResponse}
-                className="table-center"
-                width={1200}
-                bodyHeight={500}
-                scrollX={true}
-                scrollY={true}
-                rowHeaders={["rowNum", "checkbox"]}
-                summary={this.summary}
-                header={this.header}
-                columnOptions={this.columnOptions}
             />
         );
     }
