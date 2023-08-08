@@ -12,10 +12,8 @@ window["toastuigrid"] = {
     _createGrid: function (container: HTMLElement, itemsJson: any, optionsJson: any, _: any) {
         let parsedItems = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
-        console.log("AAA: ", parsedItems);
-        console.log("BBB: ", this.getColumns(JSON.parse(parsedOptions.columns)));
         const onClick = (e: any) => {
-            // console.log(e);
+            // container.$server.onClick(e.columnName, 1);
         }
         const onDblclick = (e: any) => {
             console.log(e);
@@ -48,7 +46,8 @@ window["toastuigrid"] = {
             console.log(e);
         }
         const onSelection = (e: any) => {
-            console.log(e);
+            console.log("AAA: ", e);
+            container.$server.onClick(e.toString(), 1);
         }
         const onEditingStart = (e: any) => {
             console.log(e);
@@ -224,5 +223,8 @@ window["toastuigrid"] = {
     },
     setOptions: function (container, optionsJson) {
         container.grid.setOption(optionsJson);
+    },
+    setTest: function (container, content) {
+        console.log("ABC: ", content);
     },
 }

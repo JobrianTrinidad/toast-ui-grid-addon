@@ -20,11 +20,14 @@
 
 package com.vaadin.componentfactory.tuigrid;
 
+import com.vaadin.componentfactory.tuigrid.event.SelectionEvent;
 import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +42,7 @@ public class TuiGrid extends Div {
     private List<Item> items = new ArrayList<>();
     //    private List<Column> columns = new ArrayList<>();
     protected TuiGridOption tuiGridOption = new TuiGridOption();
+
     public TuiGrid() {
         setId("visualization" + this.hashCode());
         setWidthFull();
@@ -92,6 +96,7 @@ public class TuiGrid extends Div {
         tuiGridOption.vScroll = vScroll;
         this.updateTuiGridOptions();
     }
+
     public void sethScroll(boolean hScroll) {
         tuiGridOption.hScroll = hScroll;
         this.updateTuiGridOptions();
@@ -138,5 +143,30 @@ public class TuiGrid extends Div {
         return this.items != null
                 ? this.items.stream().map(music -> music.toJSON()).collect(Collectors.joining(","))
                 : "";
+    }
+
+    public void setSelectItem(String colName) {
+        fireItemSelectEvent(colName, true);
+    }
+
+    protected void fireItemSelectEvent(
+            String colName, boolean fromClient) {
+        SelectionEvent event = new SelectionEvent(this, colName, 1, fromClient);
+        RuntimeException exception = null;
+
+        try {
+            fireEvent(event);
+        } catch (RuntimeException e) {
+            exception = e;
+            event.setCancelled(true);
+        }
+    }//
+
+    @ClientCallable
+    public void onClick(String colName, int row) {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setTest($0, $1);",
+                        this, colName);
     }
 }
