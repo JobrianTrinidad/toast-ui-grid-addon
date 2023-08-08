@@ -5,8 +5,6 @@
   "dependencies": {
     "@polymer/polymer": "3.5.1",
     "@toast-ui/react-grid": "^4.21.15",
-    "@types/react": "^18.2.17",
-    "@types/react-dom": "^18.2.7",
     "@vaadin/a11y-base": "24.1.0",
     "@vaadin/accordion": "24.1.0",
     "@vaadin/app-layout": "24.1.0",
@@ -75,8 +73,7 @@
     "lit": "2.7.4",
     "mobile-drag-drop": "2.3.0-rc.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "tui-grid": "^4.21.15"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "5.0.2",
@@ -183,7 +180,7 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "797c656c0487c9071ec9616f11e7b18a0f71943773e36c2cb7281149982de00c"
+    "hash": "cb2ae1fa037695b8e27f6580f4f3aed7dfefb608fe19b5714135f4c4d9e87c8e"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -254,11 +251,8 @@
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
     "date-fns": "$date-fns",
     "mobile-drag-drop": "$mobile-drag-drop",
+    "@toast-ui/react-grid": "$@toast-ui/react-grid",
     "react": "$react",
-    "react-dom": "$react-dom",
-    "tui-grid": "$tui-grid",
-    "@types/react": "$@types/react",
-    "@types/react-dom": "$@types/react-dom",
-    "@toast-ui/react-grid": "$@toast-ui/react-grid"
+    "react-dom": "$react-dom"
   }
 }

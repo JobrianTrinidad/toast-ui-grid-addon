@@ -27,7 +27,7 @@ import elemental.json.JsonObject;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Music {
+public class MusicItem implements Item{
     private long Id;
     private String name;
     private String artist;
@@ -38,10 +38,10 @@ public class Music {
     private String download;
     private String listen;
 
-    public Music(String name, String artist,
-                 String type, String genre,
-                 String release, String price,
-                 String download, String listen) {
+    public MusicItem(String name, String artist,
+                     String type, String genre,
+                     String release, String price,
+                     String download, String listen) {
         this.name = name;
         this.artist = artist;
         this.type = type;
@@ -124,7 +124,7 @@ public class Music {
         this.listen = listen;
     }
 
-    public Music(String name) {
+    public MusicItem(String name) {
         this.name = name;
     }
 
@@ -138,7 +138,7 @@ public class Music {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        Music other = (Music) obj;
+        MusicItem other = (MusicItem) obj;
         return Objects.equals(Id, other.Id);
     }
     public String toJSON() {
@@ -153,25 +153,10 @@ public class Music {
         Optional.ofNullable(getDownload()).ifPresent(v -> js.put("download", v));
         Optional.ofNullable(getListen()).ifPresent(v -> js.put("listen", v));
 
-//        Optional.ofNullable(getEditable())
-//                .ifPresent(
-//                        v -> {
-//                            if (v && (getUpdateTime() != null || getRemove() != null)) {
-//                                JsonObject optionsJs = Json.createObject();
-//                                Optional.ofNullable(getUpdateTime()).ifPresent(u -> optionsJs.put("updateTime", u));
-//                                Optional.ofNullable(getRemove()).ifPresent(r -> optionsJs.put("remove", r));
-//                                js.put("editable", optionsJs);
-//                            } else {
-//                                js.put("editable", v);
-//                            }
-//                        });
-
-//        Optional.ofNullable(getTitle()).ifPresent(v -> js.put("title", v));
-//        Optional.ofNullable(getClassName()).ifPresent(v -> js.put("className", v));
         return js.toJson();
     }
 
-    public Music() {
+    public MusicItem() {
 
     }
 }

@@ -1,9 +1,6 @@
 package com.vaadin.componentfactory.tuigrid;
 
-import com.vaadin.componentfactory.tuigrid.model.Column;
-import com.vaadin.componentfactory.tuigrid.model.ComplexColumn;
-import com.vaadin.componentfactory.tuigrid.model.Music;
-import com.vaadin.componentfactory.tuigrid.model.Summary;
+import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.Route;
@@ -23,11 +20,11 @@ public class RelationBetweenColumnsExample extends Div {
         add(grid);
     }
 
-    private List<Music> getTableData() {
+    private List<Item> getTableData() {
 
-        List<Music> TableData = List.of(
-                new Music("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"),
-                new Music(
+        List<Item> TableData = List.of(
+                new MusicItem("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"),
+                new MusicItem(
                         "X",
                         "Ed Sheeran",
                         "Deluxe;",
@@ -36,7 +33,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "20000",
                         "1900",
                         "2005"),
-                new Music(
+                new MusicItem(
                         "Moves Like Jagger",
                         "Maroon5",
                         "Single;",
@@ -46,7 +43,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "11000",
                         "3100"
                 ),
-                new Music(
+                new MusicItem(
                         "A Head Full Of Dreams",
                         "Coldplay",
                         "Deluxe;",
@@ -56,7 +53,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "2230",
                         "4030"
                 ),
-                new Music(
+                new MusicItem(
                         "21",
                         "Adele",
                         "Deluxe;",
@@ -66,7 +63,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "1007",
                         "12000"
                 ),
-                new Music(
+                new MusicItem(
                         "Warm On A Cold Night",
                         "HONNE",
                         "EP;",
@@ -76,7 +73,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "1502",
                         "5000"
                 ),
-                new Music(
+                new MusicItem(
                         "Take Me To The Alley",
                         "Gregory Porter",
                         "Deluxe;",
@@ -86,7 +83,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "1200",
                         "5003"
                 ),
-                new Music(
+                new MusicItem(
                         "Make Out",
                         "LANY",
                         "EP;",
@@ -96,7 +93,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "8005",
                         "9000"
                 ),
-                new Music(
+                new MusicItem(
                         "Get Lucky",
                         "Daft Punk",
                         "Single",
@@ -106,7 +103,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "11000",
                         "1500"
                 ),
-                new Music(
+                new MusicItem(
                         "Valtari",
                         "Sigur Rós",
                         "EP;",
@@ -116,7 +113,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "9000",
                         "8010"
                 ),
-                new Music(
+                new MusicItem(
                         "Bush",
                         "Snoop Dogg",
                         "EP",
@@ -126,7 +123,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "3000",
                         "2005"
                 ),
-                new Music(
+                new MusicItem(
                         "Chaos And The Calm",
                         "James Bay",
                         "EP",
@@ -136,7 +133,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "8007",
                         "9000"
                 ),
-                new Music(
+                new MusicItem(
                         "4",
                         "Beyoncé",
                         "Deluxe",
@@ -146,7 +143,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "7000",
                         "11002"
                 ),
-                new Music(
+                new MusicItem(
                         "I Won't Give Up",
                         "Jason Mraz",
                         "Single",
@@ -156,7 +153,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "8000",
                         "2000"
                 ),
-                new Music(
+                new MusicItem(
                         "Following My Intuition",
                         "Craig David",
                         "Deluxe",
@@ -166,7 +163,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "9001",
                         "8100"
                 ),
-                new Music(
+                new MusicItem(
                         "Blue Skies",
                         "Lenka",
                         "Single",
@@ -176,7 +173,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "11000",
                         "9000"
                 ),
-                new Music(
+                new MusicItem(
                         "This Is Acting",
                         "Sia",
                         "EP",
@@ -186,7 +183,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "11400",
                         "5800"
                 ),
-                new Music(
+                new MusicItem(
                         "Blurryface",
                         "Twenty One Pilots",
                         "EP",
@@ -196,7 +193,7 @@ public class RelationBetweenColumnsExample extends Div {
                         "6010",
                         "3020"
                 ),
-                new Music(
+                new MusicItem(
                         "I am Not The Only One",
                         "Sam Smith",
                         "Single",

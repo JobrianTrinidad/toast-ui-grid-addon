@@ -9,15 +9,15 @@ This component is part of Vaadin Component Factory.
 Toast-ui-grid component provides support to the following features:
 
 - Create a timeline with a defined visible range.
-- Make items readonly.
-- Update items content.
-- Give items a style by defining a class name.
+- Make musicItems readonly.
+- Update musicItems content.
+- Give musicItems a style by defining a class name.
 - Edit an item by resizing it.
 - Edit an item by drag and drop.
-- Multiple items selection.
+- Multiple musicItems selection.
 - Possiblity to define zoom options (e.g. 1 day, 3 days, 5 days).
 - Items are shown connected by an horizontal line between them. (*)
-- Show tooltips for items.
+- Show tooltips for musicItems.
 - Possibility to revert resizing or dragging if condition is not met.
 - Autoscrolling when reaching limits of visible range.
 - Tooltip on item update.
@@ -41,7 +41,7 @@ This deploys demo at http://localhost:8080
 Create a new component Toast-ui-grid:
 
 ```java
-Toast-ui-grid timeline = new Toast-ui-grid(items);
+Toast-ui-grid timeline = new Toast-ui-grid(musicItems);
 ```
 
 ## Examples

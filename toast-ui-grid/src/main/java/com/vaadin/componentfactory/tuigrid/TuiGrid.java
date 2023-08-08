@@ -22,13 +22,10 @@ package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +36,7 @@ import java.util.stream.Collectors;
 
 @JsModule("./src/views/toastuigrid/toast-ui-grid-view.ts")
 public class TuiGrid extends Div {
-    private List<Music> musics = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
     //    private List<Column> columns = new ArrayList<>();
     protected TuiGridOption tuiGridOption = new TuiGridOption();
     private int frozenCount = 2;
@@ -51,24 +48,24 @@ public class TuiGrid extends Div {
         setClassName("grid");
     }
 
-    public TuiGrid(List<Music> musics, List<Column> columns) {
+    public TuiGrid(List<Item> items, List<Column> columns) {
         this();
-        this.musics = musics;
+        this.items = items;
         tuiGridOption.columns = columns;
         initTuiGrid();
     }
 
-    public TuiGrid(List<Music> musics, List<Column> columns, List<Summary> summaries) {
+    public TuiGrid(List<Item> items, List<Column> columns, List<Summary> summaries) {
         this();
-        this.musics = musics;
+        this.items = items;
         tuiGridOption.columns = columns;
         tuiGridOption.summaryList = summaries;
         initTuiGrid();
     }
 
-    public TuiGrid(List<ComplexColumn> customHeader, List<Music> musics, List<Column> columns, List<Summary> summaries) {
+    public TuiGrid(List<ComplexColumn> customHeader, List<Item> items, List<Column> columns, List<Summary> summaries) {
         this();
-        this.musics = musics;
+        this.items = items;
         tuiGridOption.columns = columns;
         tuiGridOption.summaryList = summaries;
         tuiGridOption.header = customHeader;
@@ -98,7 +95,7 @@ public class TuiGrid extends Div {
         this.getElement()
                 .executeJs(
                         "toastuigrid.create($0, $1, $2);",
-                        this, "[" + convertMusicsToJson() + "]",
+                        this, "[" + convertItemsToJson() + "]",
                         tuiGridOption.toJSON());
     }
 
@@ -111,9 +108,9 @@ public class TuiGrid extends Div {
         }
     }
 
-    private String convertMusicsToJson() {
-        return this.musics != null
-                ? this.musics.stream().map(music -> music.toJSON()).collect(Collectors.joining(","))
+    private String convertItemsToJson() {
+        return this.items != null
+                ? this.items.stream().map(music -> music.toJSON()).collect(Collectors.joining(","))
                 : "";
     }
 }

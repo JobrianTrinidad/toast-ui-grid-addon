@@ -11,6 +11,7 @@ window["toastuigrid"] = {
     _createGrid: function (container: HTMLElement, itemsJson: any, optionsJson: any, _: any) {
         let parsedItems = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
+        console.log("AAA: ", parsedItems);
         const onClick = (e: any) => {
             // console.log(e);
         }
@@ -116,7 +117,6 @@ window["toastuigrid"] = {
         setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
     },
     _setColumnContentMatchedName(columnContent) {
-
         const onSum = () => {
             return {
                 template: (valueMap) => {
@@ -175,6 +175,8 @@ window["toastuigrid"] = {
         return complexColumns;
     },
     getSummary(parsedSummary) {
+        if (parsedSummary == undefined || !parsedSummary.hasOwnProperty('columnContent'))
+            return null;
         let summaries: OptSummaryData = parsedSummary;
         let columnContents = JSON.parse(summaries.columnContent);
         for (const columnContent of columnContents) {
