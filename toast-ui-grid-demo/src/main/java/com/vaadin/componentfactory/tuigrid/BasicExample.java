@@ -18,6 +18,8 @@ public class BasicExample extends Div {
         TuiGrid grid = new TuiGrid(null, this.getTableData(),
                 this.getColumns(), null);
         grid.setHeaderHeight(100);
+        grid.setTableWidth(950);
+        grid.setTableHeight(600);
         add(grid);
     }
 

@@ -4,12 +4,17 @@ import {OptColumn} from 'tui-grid/types/options';
 import {CellEditor, CellEditorProps} from 'tui-grid/types/editor';
 import {OptSummaryData} from 'tui-grid/types/options';
 import React from "react";
+
 export class FeatureTable extends React.Component<any, any> {
     TableData;
     columns;
     summary;
     columnOptions;
     header;
+    width;
+    bodyHeight;
+    scrollX;
+    scrollY;
     onClick;
     onDblclick;
     onMousedown;
@@ -40,6 +45,10 @@ export class FeatureTable extends React.Component<any, any> {
         this.summary = props.summary;
         this.columnOptions = props.columnOptions;
         this.header = props.header;
+        this.width = props.width;
+        this.bodyHeight = props.bodyHeight;
+        this.scrollX = props.scrollX;
+        this.scrollY = props.scrollY;
         this.onClick = props.onClick;
         this.onDblclick = props.onDblclick;
         this.onMousedown = props.onMousedown;
@@ -78,14 +87,14 @@ export class FeatureTable extends React.Component<any, any> {
                 data={this.TableData}
                 columns={this.columns}
                 className="table-center"
-                width={1200}
-                bodyHeight={500}
-                scrollX={true}
-                scrollY={true}
+                width={this.width}
+                bodyHeight={this.bodyHeight}
+                scrollX={this.scrollX}
+                scrollY={this.scrollY}
                 // rowHeaders={["rowNum", "checkbox"]}
-                {...(this.summary && { summary: this.summary })}
-                {...(this.header && { header: this.header })}
-                {...(this.columnOptions && { columnOptions: this.columnOptions })}
+                {...(this.summary && {summary: this.summary})}
+                {...(this.header && {header: this.header})}
+                {...(this.columnOptions && {columnOptions: this.columnOptions})}
                 onClick={this.onClick}
                 onDblclick={this.onDblclick}
                 onMousedown={this.onMousedown}

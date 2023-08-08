@@ -44,11 +44,12 @@ public class DateItem implements Item{
         this.yearPicker = yearPicker;
     }
 
+
     public String toJSON() {
         JsonObject js = Json.createObject();
-        Optional.ofNullable(getDefaultDate()).ifPresent(v -> js.put("Default", v.toString()));
-        Optional.ofNullable(getOptionsDate()).ifPresent(v -> js.put("Using options", v.toString()));
-        Optional.ofNullable(getSelectableRange()).ifPresent(v -> js.put("SelectableRanges", v.toString()));
+        Optional.ofNullable(getDefaultDate()).ifPresent(v -> js.put("DatePicker (Default)", v.toString()));
+        Optional.ofNullable(getOptionsDate()).ifPresent(v -> js.put("DatePicker (Using options)", v.toString()));
+        Optional.ofNullable(getSelectableRange()).ifPresent(v -> js.put("DatePicker (selectableRanges)", v.toString()));
         Optional.ofNullable(getTimePicker()).ifPresent(v -> js.put("Date-TimePicker", v.toString()));
         Optional.ofNullable(getTimePickerWithTab()).ifPresent(v -> js.put("Date-TimePicker With tab", v.toString()));
         Optional.ofNullable(getMonthPicker()).ifPresent(v -> js.put("MonthPicker", v.toString()));

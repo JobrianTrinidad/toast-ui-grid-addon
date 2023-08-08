@@ -46,13 +46,22 @@ public class TuiGridOption {
     public List<Summary> summaryList;
     public int summaryHeight = 0;
     public SummaryPosition pos = SummaryPosition.bottom;
-    public int frozenCount = 2;
+    public int frozenCount = 0;
     public int frozenBorderWidth = 1;
+    public boolean vScroll = false;
+    public boolean hScroll = false;
+    public int tableWidth = 1200;
+    public int tableHeight = 500;
+
 
     public String toJSON() {
         JsonObject js = Json.createObject();
         Optional.ofNullable(convertColumnsToJson()).ifPresent(v -> js.put("columns", "[" + v + "]"));
         Optional.ofNullable(convertHeaderToJson()).ifPresent(v -> js.put("header", v));
+        js.put("width", tableWidth);
+        js.put("bodyHeight", tableHeight);
+        js.put("scrollX", vScroll);
+        js.put("scrollY", hScroll);
         if (header != null) {
             JsonObject headerJs = Json.createObject();
             if (headerHeight != 0) {

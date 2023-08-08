@@ -39,9 +39,6 @@ public class TuiGrid extends Div {
     private List<Item> items = new ArrayList<>();
     //    private List<Column> columns = new ArrayList<>();
     protected TuiGridOption tuiGridOption = new TuiGridOption();
-    private int frozenCount = 2;
-    private int frozenBorderWidth = 2;
-
     public TuiGrid() {
         setId("visualization" + this.hashCode());
         setWidthFull();
@@ -88,6 +85,35 @@ public class TuiGrid extends Div {
 
     public void setSummaryHeight(int summaryHeight) {
         tuiGridOption.summaryHeight = summaryHeight;
+        this.updateTuiGridOptions();
+    }
+
+    public void setvScroll(boolean vScroll) {
+        tuiGridOption.vScroll = vScroll;
+        this.updateTuiGridOptions();
+    }
+    public void sethScroll(boolean hScroll) {
+        tuiGridOption.hScroll = hScroll;
+        this.updateTuiGridOptions();
+    }
+
+    public void setFrozenCount(int frozenCount) {
+        tuiGridOption.frozenCount = frozenCount;
+        this.updateTuiGridOptions();
+    }
+
+    public void setFrozenBorderWidth(int frozenBorderWidth) {
+        tuiGridOption.frozenBorderWidth = frozenBorderWidth;
+        this.updateTuiGridOptions();
+    }
+
+    public void setTableWidth(int tableWidth) {
+        tuiGridOption.tableWidth = tableWidth;
+        this.updateTuiGridOptions();
+    }
+
+    public void setTableHeight(int tableHeight) {
+        tuiGridOption.tableHeight = tableHeight;
         this.updateTuiGridOptions();
     }
 

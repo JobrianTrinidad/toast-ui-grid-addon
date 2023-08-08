@@ -32,13 +32,22 @@ public class Column {
     private int width;
     private String align;
     private String className;
-    private String sortingType;
-    private boolean sortable;
+    private boolean editable = false;
     private String type;
     private int maxLength;
     private String format;
-    private boolean editable = false;
     private boolean timepicker = false;
+    private int fromYear;
+    private int fromMonth;
+    private int fromDay;
+    private int toYear;
+    private int toMonth;
+    private int toDay;
+    private String layoutType;
+    private String inputType;
+    private String optionType;
+    private String sortingType;
+    private boolean sortable;
 
     public boolean isEditable() {
         return editable;
@@ -144,6 +153,78 @@ public class Column {
         this.timepicker = timepicker;
     }
 
+    public int getFromYear() {
+        return fromYear;
+    }
+
+    public void setFromYear(int fromYear) {
+        this.fromYear = fromYear;
+    }
+
+    public int getFromMonth() {
+        return fromMonth;
+    }
+
+    public void setFromMonth(int fromMonth) {
+        this.fromMonth = fromMonth;
+    }
+
+    public int getFromDay() {
+        return fromDay;
+    }
+
+    public void setFromDay(int fromDay) {
+        this.fromDay = fromDay;
+    }
+
+    public int getToYear() {
+        return toYear;
+    }
+
+    public void setToYear(int toYear) {
+        this.toYear = toYear;
+    }
+
+    public int getToMonth() {
+        return toMonth;
+    }
+
+    public void setToMonth(int toMonth) {
+        this.toMonth = toMonth;
+    }
+
+    public int getToDay() {
+        return toDay;
+    }
+
+    public void setToDay(int toDay) {
+        this.toDay = toDay;
+    }
+
+    public String getLayoutType() {
+        return layoutType;
+    }
+
+    public void setLayoutType(String layoutType) {
+        this.layoutType = layoutType;
+    }
+
+    public String getInputType() {
+        return inputType;
+    }
+
+    public void setInputType(String inputType) {
+        this.inputType = inputType;
+    }
+
+    public String getOptionType() {
+        return optionType;
+    }
+
+    public void setOptionType(String optionType) {
+        this.optionType = optionType;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -166,8 +247,10 @@ public class Column {
         Optional.ofNullable(getWidth()).ifPresent(v -> js.put("width", v));
         Optional.ofNullable(getAlign()).ifPresent(v -> js.put("align", v));
         Optional.ofNullable(getClassName()).ifPresent(v -> js.put("className", v));
-        Optional.ofNullable(getSortingType()).ifPresent(v -> js.put("sortingType", v));
-        Optional.ofNullable(isSortable()).ifPresent(v -> js.put("sortable", v));
+        if (getSortingType() != "") {
+            Optional.ofNullable(getSortingType()).ifPresent(v -> js.put("sortingType", v));
+            Optional.ofNullable(isSortable()).ifPresent(v -> js.put("sortable", v));
+        }
         if (this.editable) {
             JsonObject editableJs = Json.createObject();
             Optional.ofNullable(getType()).ifPresent(v -> editableJs.put("type", String.valueOf(v)));
@@ -176,7 +259,27 @@ public class Column {
                 Optional.ofNullable(getMaxLength()).ifPresent(v -> optionsJs.put("maxLength", v));
             else {
                 Optional.ofNullable(getFormat()).ifPresent(v -> optionsJs.put("format", v));
-                Optional.ofNullable(isTimepicker()).ifPresent(v -> optionsJs.put("timepicker", v));
+
+                if (getFromYear() != 0) {
+                    Optional.ofNullable(getFromYear()).ifPresent(v -> optionsJs.put("fromYear", v));
+                    Optional.ofNullable(getFromMonth()).ifPresent(v -> optionsJs.put("fromMonth", v));
+                    Optional.ofNullable(getFromDay()).ifPresent(v -> optionsJs.put("fromDay", v));
+                    Optional.ofNullable(getToYear()).ifPresent(v -> optionsJs.put("toYear", v));
+                    Optional.ofNullable(getToMonth()).ifPresent(v -> optionsJs.put("toMonth", v));
+                    Optional.ofNullable(getToDay()).ifPresent(v -> optionsJs.put("toDay", v));
+                }
+
+                if (getLayoutType() == "")
+                    Optional.ofNullable(isTimepicker()).ifPresent(v -> optionsJs.put("timepicker", v));
+                else {
+                    JsonObject timepickerJs = Json.createObject();
+                    Optional.ofNullable(getLayoutType()).ifPresent(v -> timepickerJs.put("layoutType", v));
+                    Optional.ofNullable(getInputType()).ifPresent(v -> timepickerJs.put("inputType", v));
+                    optionsJs.put("timepicker", timepickerJs);
+                }
+                if (getOptionType() != "")
+                    Optional.ofNullable(getOptionType()).ifPresent(v -> optionsJs.put("type", v));
+
             }
             editableJs.put("options", optionsJs);
             js.put("editor", editableJs);
@@ -187,45 +290,81 @@ public class Column {
 
 
     public Column(int id, String headerName, String name, int width, String align) {
-        this.id = id;
-        this.headerName = headerName;
-        this.name = name;
-        this.width = width;
-        this.align = align;
+        this(id, headerName, name, width, align, "", false, "input", 0);
     }
 
-    public Column(int id, String headerName, String name, int width, String align, String className, boolean editable, String type, int maxLength) {
+    public Column(int id, String headerName, String name, int width, String align,
+                  String className, boolean editable, String type, int maxLength) {
+        this(id, headerName, name, width, align, className, editable, type, maxLength,
+                "", false, 0, 0, 0,
+                0, 0, 0, "", "", "", "", false);
+    }
+
+    public Column(int id, String headerName, String name, int width, String align,
+                  String className, boolean editable, String type, String format, boolean timepicker) {
+        this(id, headerName, name, width, align, className, editable, type, 0,
+                format, timepicker, 0, 0, 0,
+                0, 0, 0, "", "", "", "", false);
+    }
+
+    public Column(int id, String headerName, String name, int width, String align,
+                  String className, String sortingType, boolean sortable) {
+        this(id, headerName, name, width, align, className, false, "", 0,
+                "", false, 0, 0, 0,
+                0, 0, 0, "", "", "", sortingType, sortable);
+    }
+
+    public Column(int id, String headerName, String name, int width, String align,
+                  boolean editable, String type,
+                  int fromYear, int fromMonth, int fromDay,
+                  int toYear, int toMonth, int toDay) {
+        this(id, headerName, name, width, align, "", editable, type, 0,
+                "", false, fromYear, fromMonth, fromDay,
+                toYear, toMonth, toDay, "", "", "", "", false);
+    }
+
+    public Column(int id, String headerName, String name, int width, String align,
+                  boolean editable, String type, String format,
+                  boolean timepicker, String layoutType, String inputType) {
+        this(id, headerName, name, width, align, "", editable, type, 0,
+                format, timepicker, 0, 0, 0,
+                0, 0, 0, layoutType, inputType, "", "", false);
+    }
+
+    public Column(int id, String headerName, String name, int width, String align,
+                  boolean editable, String type, String format, String optionType) {
+        this(id, headerName, name, width, align, "", editable, type, 0,
+                format, false, 0, 0, 0,
+                0, 0, 0, "", "", optionType, "", false);
+    }
+
+    public Column(int id, String headerName, String name, int width, String align,
+                  String className, boolean editable, String type, int maxLength,
+                  String format, boolean timepicker,
+                  int fromYear, int fromMonth, int fromDay,
+                  int toYear, int toMonth, int toDay,
+                  String layoutType, String inputType, String optionType,
+                  String sortingType, boolean sortable) {
         this.id = id;
         this.headerName = headerName;
         this.name = name;
         this.width = width;
         this.align = align;
         this.className = className;
+        this.editable = editable;
         this.type = type;
         this.maxLength = maxLength;
-        this.editable = editable;
-    }
-
-    public Column(int id, String headerName, String name, int width, String align, String className, boolean editable, String type, String format, boolean timepicker) {
-        this.id = id;
-        this.headerName = headerName;
-        this.name = name;
-        this.width = width;
-        this.align = align;
-        this.className = className;
-        this.type = type;
         this.format = format;
-        this.editable = editable;
         this.timepicker = timepicker;
-    }
-
-    public Column(int id, String headerName, String name, int width, String align, String className, String sortingType, boolean sortable) {
-        this.id = id;
-        this.headerName = headerName;
-        this.name = name;
-        this.width = width;
-        this.align = align;
-        this.className = className;
+        this.fromYear = fromYear;
+        this.fromMonth = fromMonth;
+        this.fromDay = fromDay;
+        this.toYear = toYear;
+        this.toMonth = toMonth;
+        this.toDay = toDay;
+        this.layoutType = layoutType;
+        this.inputType = inputType;
+        this.optionType = optionType;
         this.sortingType = sortingType;
         this.sortable = sortable;
     }

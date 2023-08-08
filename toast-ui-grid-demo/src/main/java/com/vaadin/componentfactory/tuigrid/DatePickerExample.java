@@ -34,13 +34,13 @@ public class DatePickerExample extends Div {
 
     private List<Column> getColumns() {
         List<Column> columns = List.of(
-                new Column(0, "DatePicker (Default)", "default", 150, "center", "tui-grid-cell-required", true, "datePicker", "yyyy-MM-dd", false),
-                new Column(1, "DatePicker (Using options)", "options", 150, "center", "tui-grid-cell-required", true, "datePicker", "yyyy-MM-dd", false),
-                new Column(2, "DatePicker (selectableRanges)", "ranges", 150, "center", "tui-grid-cell-required", true, "datePicker", "yyyy-MM-dd", false),
-                new Column(3, "Date-TimePicker", "timepicker", 150, "center", "tui-grid-cell-required", true, "datePicker", "yyyy-MM-dd", false),
-                new Column(4, "Date-TimePicker With tab", "timepickerwithtab", 150, "center", "tui-grid-cell-required", true, "datePicker", "yyyy-MM-dd", false),
-                new Column(5, "MonthPicker", "month", 150, "center", "tui-grid-cell-required", true, "datePicker", "yyyy-MM-dd", false),
-                new Column(6, "YearPicker", "year", 150, "center", "tui-grid-cell-required", true, "datePicker", "yyyy-MM-dd", false));
+                new Column(0, "default", "DatePicker (Default)", 150, "center", "", true, "datePicker", "yyyy/MM/dd", false),
+                new Column(1, "options", "DatePicker (Using options)", 150, "center", "", true, "datePicker", "dd/MM/yyyy", false),
+                new Column(2, "ranges", "DatePicker (selectableRanges)", 150, "center", true, "datePicker", 2023, 7, 10, 2023, 8, 20),
+                new Column(3, "timepicker", "Date-TimePicker", 150, "center", "", true, "datePicker", "yyyy-MM-dd HH:mm A", true),
+                new Column(4, "timepickerwithtab", "Date-TimePicker With tab", 150, "center", true, "datePicker", "yyyy-MM-dd HH:mm A", true, "tab", "spinbox"),
+                new Column(5, "month", "MonthPicker", 150, "center", true, "datePicker", "yyyy-MM", "month"),
+                new Column(6, "year", "YearPicker", 150, "center", true, "datePicker", "yyyy", "year"));
         return columns;
     }
 }

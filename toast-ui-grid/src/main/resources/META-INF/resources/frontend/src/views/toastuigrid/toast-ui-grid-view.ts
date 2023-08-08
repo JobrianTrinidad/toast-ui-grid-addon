@@ -3,6 +3,7 @@ import "@vaadin/text-field";
 import {FeatureTable} from "../../views/components/Table/FeaturesTable";
 import "tui-grid/dist/tui-grid.css";
 import "tui-date-picker/dist/tui-date-picker.css";
+import "tui-time-picker/dist/tui-time-picker.css";
 import {createRoot} from "react-dom/client";
 import {OptColumn, OptSummaryData} from "tui-grid/types/options";
 import CustomTextEditor from "../../views/components/Table/CustomeEditor";
@@ -12,6 +13,7 @@ window["toastuigrid"] = {
         let parsedItems = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
         console.log("AAA: ", parsedItems);
+        console.log("BBB: ", this.getColumns(JSON.parse(parsedOptions.columns)));
         const onClick = (e: any) => {
             // console.log(e);
         }
@@ -86,6 +88,10 @@ window["toastuigrid"] = {
             summary: this.getSummary(parsedOptions.summary),
             columnOptions: parsedOptions.columnOptions,
             header: this.getHeader(parsedOptions.header),
+            width: parsedOptions.width,
+            bodyHeight: parsedOptions.bodyHeight,
+            scrollX: parsedOptions.scrollX,
+            scrollY: parsedOptions.scrollY,
             onClick: onClick,
             onDblclick: onDblclick,
             onMousedown: onMousedown,
@@ -199,6 +205,19 @@ window["toastuigrid"] = {
         for (const column of columns) {
             if (column.editor && column.editor.type == "input") {
                 column.editor.type = CustomTextEditor;
+            }
+            if (column.hasOwnProperty('editor') &&
+                column.editor.hasOwnProperty('options') &&
+                parseInt(column.editor.options.fromYear) > 0) {
+                let fromYear = parseInt(column.editor.options.fromYear);
+                let fromMonth = parseInt(column.editor.options.fromMonth);
+                let fromDay = parseInt(column.editor.options.fromDay);
+                let toYear = parseInt(column.editor.options.toYear);
+                let toMonth = parseInt(column.editor.options.toMonth);
+                let toDay = parseInt(column.editor.options.toDay);
+                column.editor.options = {
+                    selectableRanges: [[new Date(fromYear, fromMonth - 1, fromDay), new Date(toYear, toMonth - 1, toDay)]]
+                };
             }
         }
         return columns;
