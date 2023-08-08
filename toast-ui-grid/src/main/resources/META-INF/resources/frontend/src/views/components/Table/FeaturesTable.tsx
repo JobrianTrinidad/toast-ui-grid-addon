@@ -91,7 +91,7 @@ export class FeatureTable extends React.Component<any, any> {
                 bodyHeight={this.bodyHeight}
                 scrollX={this.scrollX}
                 scrollY={this.scrollY}
-                // rowHeaders={["rowNum", "checkbox"]}
+                rowHeaders={["rowNum", "checkbox"]}
                 {...(this.summary && {summary: this.summary})}
                 {...(this.header && {header: this.header})}
                 {...(this.columnOptions && {columnOptions: this.columnOptions})}

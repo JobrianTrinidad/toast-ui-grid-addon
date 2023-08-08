@@ -4,7 +4,8 @@ import {FeatureTable} from "../../views/components/Table/FeaturesTable";
 import "tui-grid/dist/tui-grid.css";
 import "tui-date-picker/dist/tui-date-picker.css";
 import "tui-time-picker/dist/tui-time-picker.css";
-import {createRoot} from "react-dom/client";
+// import {createRoot} from "react-dom/client";
+import ReactDOM from "react-dom";
 import {OptColumn, OptSummaryData} from "tui-grid/types/options";
 import CustomTextEditor from "../../views/components/Table/CustomeEditor";
 
@@ -116,7 +117,8 @@ window["toastuigrid"] = {
         });
         container.grid = gridTable;
 
-        createRoot(container).render(gridTable.render());
+        ReactDOM.render(gridTable.render(), container);
+        // createRoot(container).render(gridTable.render());
     },
     create(container: HTMLElement, itemsJson: any, optionsJson: any) {
         setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
