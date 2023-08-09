@@ -26,12 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Column {
-    private int id;
-    private String headerName;
-    private String name;
-    private int width;
-    private String align;
-    private String className;
+    private ColumnBaseOption columnBaseOption;
     private boolean editable = false;
     private String type;
     private int maxLength;
@@ -45,54 +40,6 @@ public class Column {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getHeaderName() {
-        return headerName;
-    }
-
-    public void setHeaderName(String headerName) {
-        this.headerName = headerName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public String getAlign() {
-        return align;
-    }
-
-    public void setAlign(String align) {
-        this.align = align;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
     }
 
     public String getType() {
@@ -134,34 +81,14 @@ public class Column {
     public void setDateOption(DateOption dateOption) {
         this.dateOption = dateOption;
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        Column other = (Column) obj;
-        return Objects.equals(id, other.id);
-    }
-
     public String toJSON() {
-        JsonObject js = Json.createObject();
-        Optional.ofNullable(getId()).ifPresent(v -> js.put("id", v));
-        Optional.ofNullable(getName()).ifPresent(v -> js.put("name", v));
-        Optional.ofNullable(getHeaderName()).ifPresent(v -> js.put("headerName", v));
-        Optional.ofNullable(getWidth()).ifPresent(v -> js.put("width", v));
-        Optional.ofNullable(getAlign()).ifPresent(v -> js.put("align", v));
-        Optional.ofNullable(getClassName()).ifPresent(v -> js.put("className", v));
+        JsonObject js = columnBaseOption.toJSON();
+
         if (getSortingType() != "") {
             Optional.ofNullable(getSortingType()).ifPresent(v -> js.put("sortingType", v));
             Optional.ofNullable(isSortable()).ifPresent(v -> js.put("sortable", v));
         }
-        if (this.editable) {
+        if (this.isEditable()) {
             JsonObject editableJs = Json.createObject();
             Optional.ofNullable(getType()).ifPresent(v -> editableJs.put("type", String.valueOf(v)));
             if (getType() == "input") {
@@ -205,12 +132,7 @@ public class Column {
                   String className, boolean editable, String type, int maxLength,
                   DateOption dateOption,
                   String sortingType, boolean sortable) {
-        this.id = id;
-        this.headerName = headerName;
-        this.name = name;
-        this.width = width;
-        this.align = align;
-        this.className = className;
+        this.columnBaseOption = new ColumnBaseOption(id, headerName, name, width, align, className);
         this.editable = editable;
         this.type = type;
         this.maxLength = maxLength;
