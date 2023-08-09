@@ -1,9 +1,6 @@
 package com.vaadin.componentfactory.tuigrid;
 
-import com.vaadin.componentfactory.tuigrid.model.Column;
-import com.vaadin.componentfactory.tuigrid.model.DateOption;
-import com.vaadin.componentfactory.tuigrid.model.Item;
-import com.vaadin.componentfactory.tuigrid.model.MusicItem;
+import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
 import jakarta.persistence.Table;
@@ -220,11 +217,11 @@ public class BasicExample extends Div {
 
     private List<Column> getColumns() {
         List<Column> columns = List.of(
-                new Column(0, "Name", "name", 250, "center"),
-                new Column(1, "Artist", "artist", 250, "center"),
-                new Column(2, "Type", "type", 150, "center"),
-                new Column(3, "Genre", "genre", 150, "center", "", false, "input", 10),
-                new Column(4, "Release", "release", 150, "center", "", false, "datePicker", new DateOption("yyyy-MM-dd", false)));
+                new Column(new ColumnBaseOption(0, "Name", "name", 250, "center", "")),
+                new Column(new ColumnBaseOption(1, "Artist", "artist", 250, "center", "")),
+                new Column(new ColumnBaseOption(2, "Type", "type", 150, "center", "")),
+                new Column(new ColumnBaseOption(3, "Genre", "genre", 150, "center", ""), false, "input", 10),
+                new Column(new ColumnBaseOption(4, "Release", "release", 150, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false)));
         return columns;
     }
 }

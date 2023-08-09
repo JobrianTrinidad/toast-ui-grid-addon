@@ -81,6 +81,7 @@ public class Column {
     public void setDateOption(DateOption dateOption) {
         this.dateOption = dateOption;
     }
+
     public String toJSON() {
         JsonObject js = columnBaseOption.toJSON();
 
@@ -95,8 +96,7 @@ public class Column {
                 JsonObject optionsJs = Json.createObject();
                 Optional.ofNullable(getMaxLength()).ifPresent(v -> optionsJs.put("maxLength", v));
                 editableJs.put("options", optionsJs);
-            }
-            else {
+            } else {
                 editableJs.put("options", dateOption.toJSON());
             }
             js.put("editor", editableJs);
@@ -106,33 +106,26 @@ public class Column {
     }
 
 
-    public Column(int id, String headerName, String name, int width, String align) {
-        this(id, headerName, name, width, align, "", false, "input", 0);
+    public Column(ColumnBaseOption columnBaseOption) {
+        this(columnBaseOption, false, "input", 0);
     }
 
-    public Column(int id, String headerName, String name, int width, String align,
-                  String className, boolean editable, String type, int maxLength) {
-        this(id, headerName, name, width, align, className,
-                editable, type, maxLength, null, "", false);
+    public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, int maxLength) {
+        this(columnBaseOption, editable, type, maxLength, null, "", false);
     }
 
-    public Column(int id, String headerName, String name, int width, String align,
-                  String className, boolean editable, String type, DateOption option) {
-        this(id, headerName, name, width, align, className,
-                editable, type, 0, option, "", false);
+    public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, DateOption option) {
+        this(columnBaseOption, editable, type, 0, option, "", false);
     }
 
-    public Column(int id, String headerName, String name, int width, String align,
-                  String className, String sortingType, boolean sortable) {
-        this(id, headerName, name, width, align, className,
-                false, "", 0, null, sortingType, sortable);
+    public Column(ColumnBaseOption columnBaseOption, String sortingType, boolean sortable) {
+        this(columnBaseOption, false, "", 0, null, sortingType, sortable);
     }
 
-    public Column(int id, String headerName, String name, int width, String align,
-                  String className, boolean editable, String type, int maxLength,
+    public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, int maxLength,
                   DateOption dateOption,
                   String sortingType, boolean sortable) {
-        this.columnBaseOption = new ColumnBaseOption(id, headerName, name, width, align, className);
+        this.columnBaseOption = columnBaseOption;
         this.editable = editable;
         this.type = type;
         this.maxLength = maxLength;
