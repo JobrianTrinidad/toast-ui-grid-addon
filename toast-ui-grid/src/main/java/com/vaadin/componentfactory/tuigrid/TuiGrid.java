@@ -122,6 +122,14 @@ public class TuiGrid extends Div {
         this.updateTuiGridOptions();
     }
 
+    public void setRowHeaders(List<String> rowHeaders) {
+        tuiGridOption.rowHeaders = rowHeaders;
+        this.updateTuiGridOptions();
+    }
+    public void setTreeOption(TreeOption treeOption) {
+        tuiGridOption.treeOption = treeOption;
+    }
+
     private void initTuiGrid() {
         this.getElement()
                 .executeJs(

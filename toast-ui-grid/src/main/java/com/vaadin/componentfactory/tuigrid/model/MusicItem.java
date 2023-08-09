@@ -24,10 +24,12 @@ package com.vaadin.componentfactory.tuigrid.model;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class MusicItem implements Item{
+public class MusicItem implements Item {
     private long Id;
     private String name;
     private String artist;
@@ -37,11 +39,21 @@ public class MusicItem implements Item{
     private String price;
     private String download;
     private String listen;
+    private boolean expanded;
+    private List<MusicItem> _children;
 
     public MusicItem(String name, String artist,
                      String type, String genre,
                      String release, String price,
                      String download, String listen) {
+        this(name, artist, type, genre, release, price, download, listen, false);
+    }
+
+    public MusicItem(String name, String artist,
+                     String type, String genre,
+                     String release, String price,
+                     String download, String listen,
+                     boolean expanded) {
         this.name = name;
         this.artist = artist;
         this.type = type;
@@ -50,8 +62,35 @@ public class MusicItem implements Item{
         this.price = price;
         this.download = download;
         this.listen = listen;
+        this.expanded = expanded;
     }
+    public MusicItem() {
 
+    }
+    public String toJSON() {
+        JsonObject js = Json.createObject();
+        Optional.ofNullable(getId()).ifPresent(v -> js.put("id", v));
+        Optional.ofNullable(getName()).ifPresent(v -> js.put("name", v));
+        Optional.ofNullable(getArtist()).ifPresent(v -> js.put("artist", v.toString()));
+        Optional.ofNullable(getType()).ifPresent(v -> js.put("type", v.toString()));
+        Optional.ofNullable(getGenre()).ifPresent(v -> js.put("genre", v));
+        Optional.ofNullable(getRelease()).ifPresent(v -> js.put("release", v));
+        Optional.ofNullable(getPrice()).ifPresent(v -> js.put("price", v));
+        Optional.ofNullable(getDownload()).ifPresent(v -> js.put("download", v));
+        Optional.ofNullable(getListen()).ifPresent(v -> js.put("listen", v));
+        if(isExpanded()){
+            JsonObject attributesJs = Json.createObject();
+            Optional.ofNullable(isExpanded()).ifPresent(v -> attributesJs.put("expanded", v));
+            js.put("_attributes", attributesJs);
+            Optional.ofNullable(convertChildrenToJson()).ifPresent(v -> js.put("_children", "[" + v + "]"));
+        }
+        return js.toJson();
+    }
+    private String convertChildrenToJson() {
+        return this._children != null
+                ? this._children.stream().map(child -> child.toJSON()).collect(Collectors.joining(","))
+                : "";
+    }
     public long getId() {
         return Id;
     }
@@ -128,6 +167,22 @@ public class MusicItem implements Item{
         this.name = name;
     }
 
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
+
+    public List<MusicItem> get_children() {
+        return _children;
+    }
+
+    public void set_children(List<MusicItem> _children) {
+        this._children = _children;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(Id);
@@ -140,23 +195,5 @@ public class MusicItem implements Item{
         if (getClass() != obj.getClass()) return false;
         MusicItem other = (MusicItem) obj;
         return Objects.equals(Id, other.Id);
-    }
-    public String toJSON() {
-        JsonObject js = Json.createObject();
-        Optional.ofNullable(getId()).ifPresent(v -> js.put("id", v));
-        Optional.ofNullable(getName()).ifPresent(v -> js.put("name", v));
-        Optional.ofNullable(getArtist()).ifPresent(v -> js.put("artist", v.toString()));
-        Optional.ofNullable(getType()).ifPresent(v -> js.put("type", v.toString()));
-        Optional.ofNullable(getGenre()).ifPresent(v -> js.put("genre", v));
-        Optional.ofNullable(getRelease()).ifPresent(v -> js.put("release", v));
-        Optional.ofNullable(getPrice()).ifPresent(v -> js.put("price", v));
-        Optional.ofNullable(getDownload()).ifPresent(v -> js.put("download", v));
-        Optional.ofNullable(getListen()).ifPresent(v -> js.put("listen", v));
-
-        return js.toJson();
-    }
-
-    public MusicItem() {
-
     }
 }

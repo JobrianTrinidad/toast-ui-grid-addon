@@ -17,73 +17,72 @@ window["toastuigrid"] = {
             // container.$server.onClick(e.columnName, 1);
         }
         const onDblclick = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onMousedown = (e: any) => {
-            // console.log(e);
+            // //console.log(e);
         }
         const onMouseover = (e: any) => {
-            // console.log(e);
+            // //console.log(e);
         }
         const onMouseout = (e: any) => {
-            // console.log(e);
+            // //console.log(e);
         }
         const onFocusChange = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onColumnResize = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onCheck = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onUncheck = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onCheckAll = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onUncheckAll = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onSelection = (e: any) => {
-            console.log("AAA: ", e);
             container.$server.onClick(e.toString(), 1);
         }
         const onEditingStart = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onEditingFinish = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onSort = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onFilter = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onScrollEnd = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onBeforeRequest = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onResponse = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onSuccessResponse = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onFailResponse = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
         const onErrorResponse = (e: any) => {
-            console.log(e);
+            //console.log(e);
         }
 
         // Implementation goes here
         let gridTable: FeatureTable = new FeatureTable({
-            TableData: parsedItems,
+            TableData: this.getTableData(parsedItems),
             columns: this.getColumns(JSON.parse(parsedOptions.columns)),
             summary: this.getSummary(parsedOptions.summary),
             columnOptions: parsedOptions.columnOptions,
@@ -92,6 +91,8 @@ window["toastuigrid"] = {
             bodyHeight: parsedOptions.bodyHeight,
             scrollX: parsedOptions.scrollX,
             scrollY: parsedOptions.scrollY,
+            rowHeaders: parsedOptions.rowHeaders ? this.getRowHeaders(parsedOptions.rowHeaders) : null,
+            treeColumnOptions: parsedOptions.treeColumnOptions ? JSON.parse(parsedOptions.treeColumnOptions) : null,
             onClick: onClick,
             onDblclick: onDblclick,
             onMousedown: onMousedown,
@@ -116,6 +117,39 @@ window["toastuigrid"] = {
             onErrorResponse: onErrorResponse,
         });
         container.grid = gridTable;
+        container.grid.expand = (ev: any) => {
+            const {rowKey} = ev;
+            const descendantRows = container.grid.getDescendantRows(rowKey);
+
+            //console.log('rowKey: ' + rowKey);
+            //console.log('descendantRows: ' + descendantRows);
+
+            if (!descendantRows.length) {
+                container.grid.appendRow(
+                    {
+                        name: 'dynamic loading data',
+                        _children: [
+                            {
+                                name: 'leaf row'
+                            },
+                            {
+                                name: 'internal row',
+                                _children: []
+                            }
+                        ]
+                    },
+                    {parentRowKey: rowKey}
+                );
+            }
+        };
+
+        container.grid.collapse = (ev: any) => {
+            const {rowKey} = ev;
+            const descendantRows = container.grid.getDescendantRows(rowKey);
+
+            //console.log('rowKey: ' + rowKey);
+            //console.log('descendantRows: ' + descendantRows);
+        };
 
         ReactDOM.render(gridTable.render(), container);
         // createRoot(container).render(gridTable.render());
@@ -174,6 +208,21 @@ window["toastuigrid"] = {
             return header;
         }
     },
+    getTableData(parsedData) {
+        let listData = parsedData;
+        for (const data of listData) {
+
+            if (data.hasOwnProperty('_attributes') &&
+                data.hasOwnProperty('_children')) {
+                data._children = this.getTableData(JSON.parse(data._children));
+                // data._children = JSON.parse(data._children);
+            }
+        }
+        return listData;
+    },
+    getRowHeaders(parsedRowHeaders) {
+        return parsedRowHeaders.slice(1, -1).split(",").map((item) => item.trim());
+    },
     getComplexColumns(parsedColumnContent) {
         let complexColumns = JSON.parse(parsedColumnContent);
         for (const complexColumn of complexColumns) {
@@ -227,6 +276,6 @@ window["toastuigrid"] = {
         container.grid.setOption(optionsJson);
     },
     setTest: function (container, content) {
-        console.log("ABC: ", content);
+        console.log("Event Test: ", content);
     },
 }

@@ -1,8 +1,4 @@
 import Grid from '@toast-ui/react-grid';
-import {OptColumn} from 'tui-grid/types/options';
-
-import {CellEditor, CellEditorProps} from 'tui-grid/types/editor';
-import {OptSummaryData} from 'tui-grid/types/options';
 import React from "react";
 
 export class FeatureTable extends React.Component<any, any> {
@@ -15,6 +11,8 @@ export class FeatureTable extends React.Component<any, any> {
     bodyHeight;
     scrollX;
     scrollY;
+    rowHeaders;
+    treeColumnOptions;
     onClick;
     onDblclick;
     onMousedown;
@@ -49,6 +47,8 @@ export class FeatureTable extends React.Component<any, any> {
         this.bodyHeight = props.bodyHeight;
         this.scrollX = props.scrollX;
         this.scrollY = props.scrollY;
+        this.rowHeaders = props.rowHeaders;
+        this.treeColumnOptions = props.treeColumnOptions;
         this.onClick = props.onClick;
         this.onDblclick = props.onDblclick;
         this.onMousedown = props.onMousedown;
@@ -71,6 +71,7 @@ export class FeatureTable extends React.Component<any, any> {
         this.onSuccessResponse = props.onSuccessResponse;
         this.onFailResponse = props.onFailResponse;
         this.onErrorResponse = props.onErrorResponse;
+
     }
 
     setOption(props: any) {
@@ -79,19 +80,24 @@ export class FeatureTable extends React.Component<any, any> {
         this.summary = props.summary;
         this.columnOptions = props.columnOptions;
         this.header = props.header;
+        this.bodyHeight = props.bodyHeight;
+        this.scrollX = props.scrollX;
+        this.scrollY = props.scrollY;
+        this.rowHeaders = props.rowHeaders;
+        this.treeColumnOptions = props.treeColumnOptions
     }
-
     render() {
         return (
             <Grid
                 data={this.TableData}
                 columns={this.columns}
+                {...(this.treeColumnOptions && {treeColumnOptions: this.treeColumnOptions})}
                 className="table-center"
                 width={this.width}
                 bodyHeight={this.bodyHeight}
                 scrollX={this.scrollX}
                 scrollY={this.scrollY}
-                rowHeaders={["rowNum", "checkbox"]}
+                {...(this.rowHeaders && {rowHeaders: this.rowHeaders})}
                 {...(this.summary && {summary: this.summary})}
                 {...(this.header && {header: this.header})}
                 {...(this.columnOptions && {columnOptions: this.columnOptions})}

@@ -24,6 +24,7 @@ import elemental.json.Json;
 import elemental.json.JsonObject;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,7 +53,8 @@ public class TuiGridOption {
     public boolean hScroll = false;
     public int tableWidth = 1200;
     public int tableHeight = 500;
-
+    public List<String> rowHeaders = new ArrayList<>();
+    public TreeOption treeOption;
 
     public String toJSON() {
         JsonObject js = Json.createObject();
@@ -62,6 +64,12 @@ public class TuiGridOption {
         js.put("bodyHeight", tableHeight);
         js.put("scrollX", vScroll);
         js.put("scrollY", hScroll);
+        if (treeOption != null && treeOption.isTreeColumnOptions()) {
+            js.put("treeColumnOptions", treeOption.toJSON());
+        }
+        if (rowHeaders.size() > 0)
+//            js.put("rowHeaders", rowHeaders.toString());
+            Optional.ofNullable(convertRowHeadersToJson()).ifPresent(v -> js.put("rowHeaders", "[" + v + "]"));
         if (header != null) {
             JsonObject headerJs = Json.createObject();
             if (headerHeight != 0) {
@@ -108,6 +116,12 @@ public class TuiGridOption {
     private String convertSummaryToJson() {
         return this.summaryList != null
                 ? this.summaryList.stream().map(header -> header.toJSON()).collect(Collectors.joining(","))
+                : "";
+    }
+
+    private String convertRowHeadersToJson() {
+        return this.rowHeaders != null
+                ? this.rowHeaders.stream().collect(Collectors.joining(","))
                 : "";
     }
 }
