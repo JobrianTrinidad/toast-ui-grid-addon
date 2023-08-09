@@ -258,16 +258,21 @@ window["toastuigrid"] = {
             }
             if (column.hasOwnProperty('editor') &&
                 column.editor.hasOwnProperty('options') &&
-                parseInt(column.editor.options.fromYear) > 0) {
-                let fromYear = parseInt(column.editor.options.fromYear);
-                let fromMonth = parseInt(column.editor.options.fromMonth);
-                let fromDay = parseInt(column.editor.options.fromDay);
-                let toYear = parseInt(column.editor.options.toYear);
-                let toMonth = parseInt(column.editor.options.toMonth);
-                let toDay = parseInt(column.editor.options.toDay);
-                column.editor.options = {
-                    selectableRanges: [[new Date(fromYear, fromMonth - 1, fromDay), new Date(toYear, toMonth - 1, toDay)]]
-                };
+                !column.editor.options.hasOwnProperty('maxLength')) {
+
+                column.editor.options = JSON.parse(column.editor.options);
+                if (column.editor.options.hasOwnProperty('fromYear') &&
+                    parseInt(column.editor.options.fromYear) > 0) {
+                    let fromYear = parseInt(column.editor.options.fromYear);
+                    let fromMonth = parseInt(column.editor.options.fromMonth);
+                    let fromDay = parseInt(column.editor.options.fromDay);
+                    let toYear = parseInt(column.editor.options.toYear);
+                    let toMonth = parseInt(column.editor.options.toMonth);
+                    let toDay = parseInt(column.editor.options.toDay);
+                    column.editor.options = {
+                        selectableRanges: [[new Date(fromYear, fromMonth - 1, fromDay), new Date(toYear, toMonth - 1, toDay)]]
+                    };
+                }
             }
         }
         return columns;

@@ -25,7 +25,7 @@ import elemental.json.JsonObject;
 
 import java.util.Optional;
 
-public class TreeOption implements Item {
+public class TreeOption {
     private boolean treeColumnOptions = false;
     private String baseFieldForTree;
     private boolean useCascadingCheckbox = false;

@@ -1,6 +1,7 @@
 package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.model.Column;
+import com.vaadin.componentfactory.tuigrid.model.DateOption;
 import com.vaadin.componentfactory.tuigrid.model.Item;
 import com.vaadin.componentfactory.tuigrid.model.MusicItem;
 import com.vaadin.flow.component.html.Div;
@@ -223,7 +224,7 @@ public class BasicExample extends Div {
                 new Column(1, "Artist", "artist", 250, "center"),
                 new Column(2, "Type", "type", 150, "center"),
                 new Column(3, "Genre", "genre", 150, "center", "", false, "input", 10),
-                new Column(4, "Release", "release", 150, "center", "", false, "datePicker", "yyyy-MM-dd", false));
+                new Column(4, "Release", "release", 150, "center", "", false, "datePicker", new DateOption("yyyy-MM-dd", false)));
         return columns;
     }
 }

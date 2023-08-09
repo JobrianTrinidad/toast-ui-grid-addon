@@ -213,7 +213,7 @@ public class GridExample extends Div {
                 new Column(1, "Artist", "artist", 250, "center", "", true, "input", 10),
                 new Column(2, "Type", "type", 150, "center", "", true, "input", 10),
                 new Column(3, "Genre", "genre", 150, "center", "tui-grid-cell-required", true, "input", 10),
-                new Column(4, "Release", "release", 150, "center", "tui-grid-cell-required", true, "datePicker", "yyyy-MM-dd", false),
+                new Column(4, "Release", "release", 150, "center", "tui-grid-cell-required", true, "datePicker", new DateOption("yyyy-MM-dd", false)),
                 new Column(5, "Price", "price", 150, "center", "", "asc", true),
                 new Column(6, "Download", "download", 150, "center"),
                 new Column(7, "Listen", "listen", 150, "center"));

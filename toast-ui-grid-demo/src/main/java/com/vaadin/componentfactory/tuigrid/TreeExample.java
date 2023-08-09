@@ -15,7 +15,7 @@ public class TreeExample extends Div {
         TuiGrid grid = new TuiGrid(null, this.getTableData(),
                 this.getColumns(), null);
         grid.setHeaderHeight(100);
-        grid.setTableWidth(850);
+        grid.setTableWidth(1000);
         grid.sethScroll(true);
 //        grid.setRowHeaders(List.of("rowNum", "checkbox"));
         grid.setRowHeaders(List.of("checkbox"));
@@ -60,7 +60,7 @@ public class TreeExample extends Div {
                 new Column(1, "Artist", "artist", 250, "center", "", false, "input", 10),
                 new Column(2, "Type", "type", 150, "center", "", false, "input", 10),
                 new Column(3, "Genre", "genre", 150, "center", "", false, "input", 10),
-                new Column(4, "Release", "release", 150, "center", "", false, "datePicker", "yyyy-MM-dd", false)
+                new Column(4, "Release", "release", 150, "center", "", false, "datePicker",new DateOption( "yyyy-MM-dd", false))
                 );
         return columns;
     }
