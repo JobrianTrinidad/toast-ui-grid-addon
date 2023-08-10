@@ -90,6 +90,13 @@ window["toastuigrid"] = {
                 }
             }
         };
+        const onMin = () => {
+            return {
+                template: (valueMap) => {
+                    return `MIN: ${valueMap.min}`;
+                }
+            }
+        };
 
         switch (columnContent[Object.keys(columnContent)[0]]) {
             case "sum":
@@ -100,6 +107,9 @@ window["toastuigrid"] = {
                 break;
             case "max":
                 columnContent[Object.keys(columnContent)[0]] = onMax();
+                break;
+            case "min":
+                columnContent[Object.keys(columnContent)[0]] = onMin();
                 break;
             default:
                 columnContent[Object.keys(columnContent)[0]] = onSum();

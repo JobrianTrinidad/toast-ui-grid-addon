@@ -149,7 +149,7 @@ public class TuiGrid extends Div {
 
     private String convertItemsToJson() {
         return this.items != null
-                ? this.items.stream().map(music -> music.toJSON()).collect(Collectors.joining(","))
+                ? this.items.stream().map(item -> item.toJSON()).collect(Collectors.joining(","))
                 : "";
     }
 
