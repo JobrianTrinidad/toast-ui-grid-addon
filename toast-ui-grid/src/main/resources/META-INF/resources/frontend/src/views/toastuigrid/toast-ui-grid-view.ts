@@ -13,72 +13,6 @@ window["toastuigrid"] = {
     _createGrid: function (container: HTMLElement, itemsJson: any, optionsJson: any, _: any) {
         let parsedItems = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
-        const onClick = (e: any) => {
-            // container.$server.onClick(e.columnName, 1);
-        }
-        const onDblclick = (e: any) => {
-            //console.log(e);
-        }
-        const onMousedown = (e: any) => {
-            // //console.log(e);
-        }
-        const onMouseover = (e: any) => {
-            // //console.log(e);
-        }
-        const onMouseout = (e: any) => {
-            // //console.log(e);
-        }
-        const onFocusChange = (e: any) => {
-            //console.log(e);
-        }
-        const onColumnResize = (e: any) => {
-            //console.log(e);
-        }
-        const onCheck = (e: any) => {
-            //console.log(e);
-        }
-        const onUncheck = (e: any) => {
-            //console.log(e);
-        }
-        const onCheckAll = (e: any) => {
-            //console.log(e);
-        }
-        const onUncheckAll = (e: any) => {
-            //console.log(e);
-        }
-        const onSelection = (e: any) => {
-            container.$server.onClick(e.toString(), 1);
-        }
-        const onEditingStart = (e: any) => {
-            //console.log(e);
-        }
-        const onEditingFinish = (e: any) => {
-            //console.log(e);
-        }
-        const onSort = (e: any) => {
-            //console.log(e);
-        }
-        const onFilter = (e: any) => {
-            //console.log(e);
-        }
-        const onScrollEnd = (e: any) => {
-            //console.log(e);
-        }
-        const onBeforeRequest = (e: any) => {
-            //console.log(e);
-        }
-        const onResponse = (e: any) => {
-            //console.log(e);
-        }
-        const onSuccessResponse = (e: any) => {
-            //console.log(e);
-        }
-        const onFailResponse = (e: any) => {
-            //console.log(e);
-        }
-        const onErrorResponse = (e: any) => {
-            //console.log(e);
-        }
 
         // Implementation goes here
         let gridTable: FeatureTable = new FeatureTable({
@@ -93,28 +27,6 @@ window["toastuigrid"] = {
             scrollY: parsedOptions.scrollY,
             rowHeaders: parsedOptions.rowHeaders ? this.getRowHeaders(parsedOptions.rowHeaders) : null,
             treeColumnOptions: parsedOptions.treeColumnOptions ? JSON.parse(parsedOptions.treeColumnOptions) : null,
-            onClick: onClick,
-            onDblclick: onDblclick,
-            onMousedown: onMousedown,
-            onMouseover: onMouseover,
-            onMouseout: onMouseout,
-            onFocusChange: onFocusChange,
-            onColumnResize: onColumnResize,
-            onCheck: onCheck,
-            onUncheck: onUncheck,
-            onCheckAll: onCheckAll,
-            onUncheckAll: onUncheckAll,
-            onSelection: onSelection,
-            onEditingStart: onEditingStart,
-            onEditingFinish: onEditingFinish,
-            onSort: onSort,
-            onFilter: onFilter,
-            onScrollEnd: onScrollEnd,
-            onBeforeRequest: onBeforeRequest,
-            onResponse: onResponse,
-            onSuccessResponse: onSuccessResponse,
-            onFailResponse: onFailResponse,
-            onErrorResponse: onErrorResponse,
         });
         container.grid = gridTable;
         container.grid.expand = (ev: any) => {
@@ -142,7 +54,6 @@ window["toastuigrid"] = {
                 );
             }
         };
-
         container.grid.collapse = (ev: any) => {
             const {rowKey} = ev;
             const descendantRows = container.grid.getDescendantRows(rowKey);

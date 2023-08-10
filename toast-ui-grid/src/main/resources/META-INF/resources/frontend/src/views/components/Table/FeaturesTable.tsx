@@ -13,31 +13,13 @@ export class FeatureTable extends React.Component<any, any> {
     scrollY;
     rowHeaders;
     treeColumnOptions;
-    onClick;
-    onDblclick;
-    onMousedown;
-    onMouseover;
-    onMouseout;
-    onFocusChange;
-    onColumnResize;
-    onCheck;
-    onUncheck;
-    onCheckAll;
-    onUncheckAll;
-    onSelection;
-    onEditingStart;
-    onEditingFinish;
-    onSort;
-    onFilter;
-    onScrollEnd;
-    onBeforeRequest;
-    onResponse;
-    onSuccessResponse;
-    onFailResponse;
-    onErrorResponse;
 
     constructor(props: any) {
         super(props);
+        this.setOption(props);
+    }
+
+    setOption(props: any) {
         this.TableData = props.TableData;
         this.columns = props.columns;
         this.summary = props.summary;
@@ -49,43 +31,8 @@ export class FeatureTable extends React.Component<any, any> {
         this.scrollY = props.scrollY;
         this.rowHeaders = props.rowHeaders;
         this.treeColumnOptions = props.treeColumnOptions;
-        this.onClick = props.onClick;
-        this.onDblclick = props.onDblclick;
-        this.onMousedown = props.onMousedown;
-        this.onMouseover = props.onMouseover;
-        this.onMouseout = props.onMouseout;
-        this.onFocusChange = props.onFocusChange;
-        this.onColumnResize = props.onColumnResize;
-        this.onCheck = props.onCheck;
-        this.onUncheck = props.onUncheck;
-        this.onCheckAll = props.onCheckAll;
-        this.onUncheckAll = props.onUncheckAll;
-        this.onSelection = props.onSelection;
-        this.onEditingStart = props.onEditingStart;
-        this.onEditingFinish = props.onEditingFinish;
-        this.onSort = props.onSort;
-        this.onFilter = props.onFilter;
-        this.onScrollEnd = props.onScrollEnd;
-        this.onBeforeRequest = props.onBeforeRequest;
-        this.onResponse = props.onResponse;
-        this.onSuccessResponse = props.onSuccessResponse;
-        this.onFailResponse = props.onFailResponse;
-        this.onErrorResponse = props.onErrorResponse;
-
     }
 
-    setOption(props: any) {
-        this.TableData = props.TableData;
-        this.columns = props.columns;
-        this.summary = props.summary;
-        this.columnOptions = props.columnOptions;
-        this.header = props.header;
-        this.bodyHeight = props.bodyHeight;
-        this.scrollX = props.scrollX;
-        this.scrollY = props.scrollY;
-        this.rowHeaders = props.rowHeaders;
-        this.treeColumnOptions = props.treeColumnOptions
-    }
     render() {
         return (
             <Grid
@@ -101,28 +48,7 @@ export class FeatureTable extends React.Component<any, any> {
                 {...(this.summary && {summary: this.summary})}
                 {...(this.header && {header: this.header})}
                 {...(this.columnOptions && {columnOptions: this.columnOptions})}
-                onClick={this.onClick}
-                onDblclick={this.onDblclick}
-                onMousedown={this.onMousedown}
-                onMouseover={this.onMouseover}
-                onMouseout={this.onMouseout}
-                onFocusChange={this.onFocusChange}
-                onColumnResize={this.onColumnResize}
-                onCheck={this.onCheck}
-                onUncheck={this.onUncheck}
-                onCheckAll={this.onCheckAll}
-                onUncheckAll={this.onUncheckAll}
-                onSelection={this.onSelection}
-                onEditingStart={this.onEditingStart}
-                onEditingFinish={this.onEditingFinish}
-                onSort={this.onSort}
-                onFilter={this.onFilter}
-                onScrollEnd={this.onScrollEnd}
-                onBeforeRequest={this.onBeforeRequest}
-                onResponse={this.onResponse}
-                onSuccessResponse={this.onSuccessResponse}
-                onFailResponse={this.onFailResponse}
-                onErrorResponse={this.onErrorResponse}></Grid>
+            />
         );
     }
 }

@@ -38,32 +38,6 @@ public class DateOption {
     private String inputType;
     private String optionType;
 
-    public DateOption(String format, boolean timepicker) {
-        this.format = format;
-        this.timepicker = timepicker;
-    }
-
-    public DateOption(String format, String optionType) {
-        this.format = format;
-        this.optionType = optionType;
-    }
-
-    public DateOption(String format, boolean timepicker, String layoutType, String inputType) {
-        this.format = format;
-        this.timepicker = timepicker;
-        this.layoutType = layoutType;
-        this.inputType = inputType;
-    }
-
-    public DateOption(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay) {
-        this.fromYear = fromYear;
-        this.fromMonth = fromMonth;
-        this.fromDay = fromDay;
-        this.toYear = toYear;
-        this.toMonth = toMonth;
-        this.toDay = toDay;
-    }
-
     public String toJSON() {
         JsonObject js = Json.createObject();
 
@@ -90,6 +64,32 @@ public class DateOption {
             Optional.ofNullable(getOptionType()).ifPresent(v -> js.put("type", v));
 
         return js.toJson();
+    }
+
+    public DateOption(String format, boolean timepicker) {
+        this.format = format;
+        this.timepicker = timepicker;
+    }
+
+    public DateOption(String format, String optionType) {
+        this.format = format;
+        this.optionType = optionType;
+    }
+
+    public DateOption(String format, boolean timepicker, String layoutType, String inputType) {
+        this.format = format;
+        this.timepicker = timepicker;
+        this.layoutType = layoutType;
+        this.inputType = inputType;
+    }
+
+    public DateOption(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay) {
+        this.fromYear = fromYear;
+        this.fromMonth = fromMonth;
+        this.fromDay = fromDay;
+        this.toYear = toYear;
+        this.toMonth = toMonth;
+        this.toDay = toDay;
     }
 
     public String getFormat() {
