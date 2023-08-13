@@ -22,15 +22,20 @@ package com.vaadin.componentfactory.tuigrid.model;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 
-import java.util.Objects;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Column {
+
     private ColumnBaseOption columnBaseOption;
     private boolean editable = false;
     private String type;
     private int maxLength;
     private DateOption dateOption;
+    private List<RelationOption> relationOptions;
+    private String target;
+    private boolean root;
     private String sortingType;
     private boolean sortable;
 
@@ -82,6 +87,22 @@ public class Column {
         this.dateOption = dateOption;
     }
 
+    public boolean isRoot() {
+        return root;
+    }
+
+    public void setRoot(boolean root) {
+        this.root = root;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
     public String toJSON() {
         JsonObject js = columnBaseOption.toJSON();
 
@@ -96,15 +117,55 @@ public class Column {
                 JsonObject optionsJs = Json.createObject();
                 Optional.ofNullable(getMaxLength()).ifPresent(v -> optionsJs.put("maxLength", v));
                 editableJs.put("options", optionsJs);
+            } else if (getType() == "select") {
+                this.toRelationJSON(js, this.relationOptions);
+                js.put("targetNames", this.getTarget());
             } else {
                 editableJs.put("options", dateOption.toJSON());
             }
             js.put("editor", editableJs);
         }
+//        }
+        return js.toJson();
+    }
+
+    public String toRelationJSON(JsonObject js, List<RelationOption> relationOptions) {
+        RelationOption select = new RelationOption("Select", "");
+        if (relationOptions.get(1).getChildren().size() > 0) {
+            JsonObject tempJs = Json.createObject();
+
+            for (RelationOption relationOption : relationOptions) {
+                if (relationOption.getValue() != "")
+                    tempJs.put(relationOption.getValue(), "[" + select.toSelfJSON() + "," + relationOption.toJSON() + "]");
+            }
+
+            js.put("depth1", tempJs);
+        } else {
+            js.put("depth1", "[]");
+        }
+
+        if (isRoot())
+            js.put("depth0", "[" + select.toSelfJSON() + "," + this.convertRelationOptionsToJson() + "]");
+        else
+            js.put("depth0", "[]");
 
         return js.toJson();
     }
 
+    private String convertRelationOptionsToJson() {
+        return this.relationOptions != null
+                ? this.relationOptions.stream().map(relationOption -> relationOption.toSelfJSON()).collect(Collectors.joining(","))
+                : "";
+    }
+
+    public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, boolean root, String target, List<RelationOption> relationOptions) {
+        this.columnBaseOption = columnBaseOption;
+        this.editable = editable;
+        this.type = type;
+        this.root = root;
+        this.target = target;
+        this.relationOptions = relationOptions;
+    }
 
     public Column(ColumnBaseOption columnBaseOption) {
         this(columnBaseOption, false, "input", 0);
@@ -122,9 +183,7 @@ public class Column {
         this(columnBaseOption, false, "", 0, null, sortingType, sortable);
     }
 
-    public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, int maxLength,
-                  DateOption dateOption,
-                  String sortingType, boolean sortable) {
+    public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, int maxLength, DateOption dateOption, String sortingType, boolean sortable) {
         this.columnBaseOption = columnBaseOption;
         this.editable = editable;
         this.type = type;

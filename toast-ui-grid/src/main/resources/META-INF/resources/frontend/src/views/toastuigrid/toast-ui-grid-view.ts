@@ -1,6 +1,5 @@
 import "@vaadin/button";
 import "@vaadin/text-field";
-import {FeatureTable} from "../../views/components/Table/FeaturesTable";
 import "tui-grid/dist/tui-grid.css";
 import "tui-date-picker/dist/tui-date-picker.css";
 import "tui-time-picker/dist/tui-time-picker.css";
@@ -8,6 +7,7 @@ import "tui-time-picker/dist/tui-time-picker.css";
 import ReactDOM from "react-dom";
 import {OptColumn, OptSummaryData} from "tui-grid/types/options";
 import CustomTextEditor from "../../views/components/Table/CustomeEditor";
+import {FeatureTable} from "../components/Table/FeaturesTable";
 
 window["toastuigrid"] = {
     _createGrid: function (container: HTMLElement, itemsJson: any, optionsJson: any, _: any) {
@@ -16,6 +16,7 @@ window["toastuigrid"] = {
 
         // Implementation goes here
         let gridTable: FeatureTable = new FeatureTable({
+            el: document.getElementsByClassName("grid")[0],
             TableData: this.getTableData(parsedItems),
             columns: this.getColumns(JSON.parse(parsedOptions.columns)),
             summary: this.getSummary(parsedOptions.summary),
@@ -25,16 +26,17 @@ window["toastuigrid"] = {
             bodyHeight: parsedOptions.bodyHeight,
             scrollX: parsedOptions.scrollX,
             scrollY: parsedOptions.scrollY,
+            rowHeight: 40,
+            minBodyHeight: 120,
             rowHeaders: parsedOptions.rowHeaders ? this.getRowHeaders(parsedOptions.rowHeaders) : null,
             treeColumnOptions: parsedOptions.treeColumnOptions ? JSON.parse(parsedOptions.treeColumnOptions) : null,
         });
+
         container.grid = gridTable;
+
         container.grid.expand = (ev: any) => {
             const {rowKey} = ev;
             const descendantRows = container.grid.getDescendantRows(rowKey);
-
-            //console.log('rowKey: ' + rowKey);
-            //console.log('descendantRows: ' + descendantRows);
 
             if (!descendantRows.length) {
                 container.grid.appendRow(
@@ -57,9 +59,6 @@ window["toastuigrid"] = {
         container.grid.collapse = (ev: any) => {
             const {rowKey} = ev;
             const descendantRows = container.grid.getDescendantRows(rowKey);
-
-            //console.log('rowKey: ' + rowKey);
-            //console.log('descendantRows: ' + descendantRows);
         };
 
         ReactDOM.render(gridTable.render(), container);
@@ -136,7 +135,6 @@ window["toastuigrid"] = {
             if (data.hasOwnProperty('_attributes') &&
                 data.hasOwnProperty('_children')) {
                 data._children = this.getTableData(JSON.parse(data._children));
-                // data._children = JSON.parse(data._children);
             }
         }
         return listData;
@@ -173,10 +171,13 @@ window["toastuigrid"] = {
     },
     getColumns(parsedColumn) {
         let columns: OptColumn[] = parsedColumn;
+        let tempColumns: OptColumn[] = [];
+
         for (const column of columns) {
             if (column.editor && column.editor.type == "input") {
                 column.editor.type = CustomTextEditor;
             }
+
             if (column.hasOwnProperty('editor') &&
                 column.editor.hasOwnProperty('options') &&
                 !column.editor.options.hasOwnProperty('maxLength')) {
@@ -195,7 +196,35 @@ window["toastuigrid"] = {
                     };
                 }
             }
+
+            if (column.editor && column.editor.type == "select") {
+                let tempColumn = {
+                    header: column.headerName,
+                    name: column.name,
+                    formatter: "listItemText",
+                    editor: {
+                        type: "select",
+                        options: {
+                            listItems: column["depth0"] ? JSON.parse(column["depth0"]) : []
+                        }
+                    },
+                    ...(column["depth1"] != "[]" && {
+                        relations: [{
+                            targetNames: [column.targetNames],
+                            listItems({value}) {
+                                return column["depth1"][value] ? JSON.parse(column["depth1"][value]) : [];
+                            },
+                            disabled({value}) {
+                                return !value;
+                            }
+                        }]
+                    })
+                };
+                tempColumns.push(tempColumn);
+            }
         }
+        if (tempColumns.length != 0)
+            return tempColumns;
         return columns;
     },
     setOptions: function (container, optionsJson) {

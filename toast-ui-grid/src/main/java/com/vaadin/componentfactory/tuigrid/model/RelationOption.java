@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 public class RelationOption {
     private String name;
     private String value;
-    private int depth = -1;
     private List<RelationOption> children = new ArrayList<>();
 
     public String getName() {
@@ -61,15 +60,17 @@ public class RelationOption {
 
     public int getDepth() {
         return this.value.split("-", -1).length;
-//        return depth;
     }
 
-//    public void setDepth(int depth) {
-//        this.depth = depth;
-//    }
+    public boolean isRoot() {
+        if (this.value.split("-", -1).length == 1)
+            return true;
+        else
+            return false;
+    }
 
     public RelationOption(String name, String value) {
-        this.children.add(new RelationOption("Select", ""));
+//        this.children.add(new RelationOption("Select", ""));
         this.name = name;
         this.value = value;
     }

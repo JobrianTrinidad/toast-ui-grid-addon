@@ -13,8 +13,8 @@ public class RelationBetweenColumnsExample extends Div {
     public RelationBetweenColumnsExample() {
         Span sp = new Span("Clicked table!");
         // create items
-        TuiGrid grid = new TuiGrid(this.getCustomHeader(), this.getTableData(),
-                this.getColumns(), this.getSummaries());
+        TuiGrid grid = new TuiGrid(null, this.getTableData(),
+                this.getColumns(), null);
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
         add(grid);
@@ -22,217 +22,113 @@ public class RelationBetweenColumnsExample extends Div {
 
     private List<Item> getTableData() {
 
-        List<Item> TableData = List.of(
-                new MusicItem("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"),
-                new MusicItem(
-                        "X",
-                        "Ed Sheeran",
-                        "Deluxe;",
-                        "",
-                        "",
-                        "20000",
-                        "1900",
-                        "2005"),
-                new MusicItem(
-                        "Moves Like Jagger",
-                        "Maroon5",
-                        "Single;",
-                        "Pop,Rock",
-                        "2011-08-08",
-                        "7000",
-                        "11000",
-                        "3100"
-                ),
-                new MusicItem(
-                        "A Head Full Of Dreams",
-                        "Coldplay",
-                        "Deluxe;",
-                        "Rock",
-                        "2015-12-04",
-                        "25000",
-                        "2230",
-                        "4030"
-                ),
-                new MusicItem(
-                        "21",
-                        "Adele",
-                        "Deluxe;",
-                        "Pop,R&B",
-                        "2011-01-21",
-                        "15000",
-                        "1007",
-                        "12000"
-                ),
-                new MusicItem(
-                        "Warm On A Cold Night",
-                        "HONNE",
-                        "EP;",
-                        "R&B,Electronic",
-                        "2016-07-22",
-                        "11000",
-                        "1502",
-                        "5000"
-                ),
-                new MusicItem(
-                        "Take Me To The Alley",
-                        "Gregory Porter",
-                        "Deluxe;",
-                        "Jazz",
-                        "2016-09-02",
-                        "30000",
-                        "1200",
-                        "5003"
-                ),
-                new MusicItem(
-                        "Make Out",
-                        "LANY",
-                        "EP;",
-                        "Electronic",
-                        "2015-12-11",
-                        "12000",
-                        "8005",
-                        "9000"
-                ),
-                new MusicItem(
-                        "Get Lucky",
-                        "Daft Punk",
-                        "Single",
-                        "Pop,Funk",
-                        "2013-04-23",
-                        "9000",
-                        "11000",
-                        "1500"
-                ),
-                new MusicItem(
-                        "Valtari",
-                        "Sigur Rós",
-                        "EP;",
-                        "Rock",
-                        "2012-05-31",
-                        "10000",
-                        "9000",
-                        "8010"
-                ),
-                new MusicItem(
-                        "Bush",
-                        "Snoop Dogg",
-                        "EP",
-                        "Hiphop",
-                        "2015-05-12",
-                        "18000",
-                        "3000",
-                        "2005"
-                ),
-                new MusicItem(
-                        "Chaos And The Calm",
-                        "James Bay",
-                        "EP",
-                        "Pop,Rock",
-                        "2015-03-23",
-                        "12000",
-                        "8007",
-                        "9000"
-                ),
-                new MusicItem(
-                        "4",
-                        "Beyoncé",
-                        "Deluxe",
-                        "Pop",
-                        "2011-07-26",
-                        "12000",
-                        "7000",
-                        "11002"
-                ),
-                new MusicItem(
-                        "I Won't Give Up",
-                        "Jason Mraz",
-                        "Single",
-                        "Pop",
-                        "2012-01-03",
-                        "7000",
-                        "8000",
-                        "2000"
-                ),
-                new MusicItem(
-                        "Following My Intuition",
-                        "Craig David",
-                        "Deluxe",
-                        "R&B,Electronic",
-                        "2016-10-01",
-                        "15000",
-                        "9001",
-                        "8100"
-                ),
-                new MusicItem(
-                        "Blue Skies",
-                        "Lenka",
-                        "Single",
-                        "Pop,Rock",
-                        "2015-03-18",
-                        "6000",
-                        "11000",
-                        "9000"
-                ),
-                new MusicItem(
-                        "This Is Acting",
-                        "Sia",
-                        "EP",
-                        "Pop",
-                        "2016-10-22",
-                        "20000",
-                        "11400",
-                        "5800"
-                ),
-                new MusicItem(
-                        "Blurryface",
-                        "Twenty One Pilots",
-                        "EP",
-                        "Rock",
-                        "2015-05-19",
-                        "13000",
-                        "6010",
-                        "3020"
-                ),
-                new MusicItem(
-                        "I am Not The Only One",
-                        "Sam Smith",
-                        "Single",
-                        "Pop,R&B",
-                        "",
-                        "",
-                        "",
-                        ""
-                ));
-
+        List<String> headers = List.of("category1", "category2", "category3");
+        RelationItem item1 = new RelationItem(List.of("", "", ""), headers);
+        RelationItem item2 = new RelationItem(List.of("2", "2_3", "2_3_1"), headers);
+        RelationItem item3 = new RelationItem(List.of("3", "3_1", "3_1_1"), headers);
+        List<Item> TableData = List.of(item1, item2, item3);
         return TableData;
     }
 
     private List<Column> getColumns() {
+//        RelationOption select = new RelationOption("Select", "");
+        RelationOption root1 = new RelationOption("Domestic", "1");
+        RelationOption root2 = new RelationOption("Overseas", "2");
+        RelationOption root3 = new RelationOption("Etc", "3");
+        RelationOption child1_1 = new RelationOption("Balad/Dance/Pop", "1_1");
+        RelationOption child1_2 = new RelationOption("Hiphop/R&B", "1_2");
+        RelationOption child1_3 = new RelationOption("Indie", "1_3");
+        RelationOption child2_1 = new RelationOption("Pop", "2_1");
+        RelationOption child2_2 = new RelationOption("Hiphop", "2_2");
+        RelationOption child2_3 = new RelationOption("R&B", "2_3");
+        RelationOption child3_1 = new RelationOption("OST", "3_1");
+        RelationOption child3_2 = new RelationOption("Classic", "3_2");
+        RelationOption child3_3 = new RelationOption("New Age", "3_3");
+        RelationOption child1_1_1 = new RelationOption("I Miss You", "1_1_1");
+        RelationOption child1_1_2 = new RelationOption("Russian Roulette", "1_1_2");
+        RelationOption child1_1_3 = new RelationOption("TT", "1_1_3");
+        RelationOption child1_1_4 = new RelationOption("Beautiful", "1_1_4");
+        RelationOption child1_1_5 = new RelationOption("KNOCK KNOCK", "1_1_5");
+        RelationOption child1_1_6 = new RelationOption("Rookie", "1_1_6");
+        RelationOption child1_1_7 = new RelationOption("Round And Round", "1_1_7");
+        RelationOption child1_2_1 = new RelationOption("BERMUDA TRIANGLE", "1_2_1");
+        RelationOption child1_2_2 = new RelationOption("Day Day", "1_2_2");
+        RelationOption child1_2_3 = new RelationOption("Bye bye my blue", "1_2_3");
+        RelationOption child1_2_4 = new RelationOption("Comedian", "1_2_4");
+        RelationOption child1_2_5 = new RelationOption("what2do", "1_2_5");
+        RelationOption child1_2_6 = new RelationOption("Bye bye my blue", "1_2_6");
+        RelationOption child1_2_7 = new RelationOption("I NEED U", "1_2_7");
+        RelationOption child1_3_1 = new RelationOption("Madeleine Love", "1_3_1");
+        RelationOption child1_3_2 = new RelationOption("Mood Indigo", "1_3_2");
+        RelationOption child1_3_3 = new RelationOption("I Don't Wanna Love You", "1_3_3");
+        RelationOption child1_3_4 = new RelationOption("Come Back Home", "1_3_4");
+        RelationOption child1_3_5 = new RelationOption("MONSTER", "1_3_5");
+        RelationOption child1_3_6 = new RelationOption("Free Somebody", "1_3_6");
+        RelationOption child1_3_7 = new RelationOption("Vineyard", "1_3_7");
+        RelationOption child2_1_1 = new RelationOption("Cave Me In", "2_1_1");
+        RelationOption child2_1_2 = new RelationOption("Hello", "2_1_2");
+        RelationOption child2_1_3 = new RelationOption("When We Were Young", "2_1_3");
+        RelationOption child2_1_4 = new RelationOption("Stay With Me", "2_1_4");
+        RelationOption child2_1_5 = new RelationOption("I'm Not The Only One", "2_1_5");
+        RelationOption child2_1_6 = new RelationOption("Youth", "2_1_6");
+        RelationOption child2_1_7 = new RelationOption("Love On Top", "2_1_7");
+        RelationOption child2_2_1 = new RelationOption("Love The Way You Lie", "2_2_1");
+        RelationOption child2_2_2 = new RelationOption("Flower Dance", "2_2_2");
+        RelationOption child2_2_3 = new RelationOption("I Feel It Coming", "2_2_3");
+        RelationOption child2_2_4 = new RelationOption("Love The Way You Lie", "2_2_4");
+        RelationOption child2_2_5 = new RelationOption("I Feel It Coming", "2_2_5");
+        RelationOption child2_2_6 = new RelationOption("GDFR", "2_2_6");
+        RelationOption child2_2_7 = new RelationOption("Love Me In Everything", "2_2_7");
+        RelationOption child2_3_1 = new RelationOption("Marry You", "2_3_1");
+        RelationOption child2_3_2 = new RelationOption("Hello", "2_3_2");
+        RelationOption child2_3_3 = new RelationOption("Coastal Love", "2_3_3");
+        RelationOption child2_3_4 = new RelationOption("Happy", "2_3_4");
+        RelationOption child2_3_5 = new RelationOption("If You Wonder", "2_3_5");
+        RelationOption child2_3_6 = new RelationOption("Want To Want Me", "2_3_6");
+        RelationOption child2_3_7 = new RelationOption("Get Lucky", "2_3_7");
+        RelationOption child3_1_1 = new RelationOption("City Of Stars", "3_1_1");
+        RelationOption child3_1_2 = new RelationOption("You Are My Everything", "3_1_2");
+        RelationOption child3_1_3 = new RelationOption("Summer Montage / Madeline", "3_1_3");
+        RelationOption child3_1_4 = new RelationOption("Memory", "3_1_4");
+        RelationOption child3_1_5 = new RelationOption("A Lovely Night", "3_1_5");
+        RelationOption child3_2_1 = new RelationOption("Ravel: Pavane Pour Une Infant Defunte", "3_2_1");
+        RelationOption child3_2_2 = new RelationOption("Elgar: Salut D`amour", "3_2_2");
+        RelationOption child3_2_3 = new RelationOption("Refuse", "3_2_3");
+        RelationOption child3_2_4 = new RelationOption("Liebestraume s541: No. 3 in A flat", "3_2_4");
+        RelationOption child3_2_5 = new RelationOption("three Romances Op94: n 2 in A", "3_2_5");
+        RelationOption child3_3_1 = new RelationOption("Kiss The Rain", "3_3_1");
+        RelationOption child3_3_2 = new RelationOption("Blind Flim", "3_3_2");
+        RelationOption child3_3_3 = new RelationOption("Merry Christmas Mr.Lawrence", "3_3_3");
+        RelationOption child3_3_4 = new RelationOption("After The Play", "3_3_4");
+        RelationOption child3_3_5 = new RelationOption("River Flows In You", "3_3_5");
+        root1.setChildren(List.of(child1_1, child1_2, child1_3));
+        root2.setChildren(List.of(child2_1, child2_2, child2_3));
+        root3.setChildren(List.of(child3_1, child3_2, child3_3));
+        child1_1.setChildren(List.of(child1_1_1, child1_1_2, child1_1_3, child1_1_4, child1_1_5, child1_1_6, child1_1_7));
+        child1_2.setChildren(List.of(child1_2_1, child1_2_2, child1_2_3, child1_2_4, child1_2_5, child1_2_6, child1_2_7));
+        child1_3.setChildren(List.of(child1_3_1, child1_3_2, child1_3_3, child1_3_4, child1_3_5, child1_3_6, child1_3_7));
+        child2_1.setChildren(List.of(child2_1_1, child2_1_2, child2_1_3, child2_1_4, child2_1_5, child2_1_6, child2_1_7));
+        child2_2.setChildren(List.of(child2_2_1, child2_2_2, child2_2_3, child2_2_4, child2_2_5, child2_2_6, child2_2_7));
+        child2_3.setChildren(List.of(child2_3_1, child2_3_2, child2_3_3, child2_3_4, child2_3_5, child2_3_6, child2_3_7));
+        child3_1.setChildren(List.of(child3_1_1, child3_1_2, child3_1_3, child3_1_4, child3_1_5));
+        child3_2.setChildren(List.of(child3_2_1, child3_2_2, child3_2_3, child3_2_4, child3_2_5));
+        child3_3.setChildren(List.of(child3_3_1, child3_3_2, child3_3_3, child3_3_4, child3_3_5));
+
         List<Column> columns = List.of(
-                new Column(new ColumnBaseOption(0, "Name", "name", 250, "center", "")),
-                new Column(new ColumnBaseOption(1, "Artist", "artist", 250, "center", ""), true, "input", 10),
-                new Column(new ColumnBaseOption(2, "Type", "type", 150, "center", ""), true, "input", 10),
-                new Column(new ColumnBaseOption(3, "Genre", "genre", 150, "center", "tui-grid-cell-required"), true, "input", 10),
-                new Column(new ColumnBaseOption(4, "Release", "release", 150, "center", "tui-grid-cell-required"), true, "datePicker", new DateOption("yyyy-MM-dd", false)),
-                new Column(new ColumnBaseOption(5, "Price", "price", 150, "center", ""), "asc", true),
-                new Column(new ColumnBaseOption(6, "Download", "download", 150, "center", "")),
-                new Column(new ColumnBaseOption(7, "Listen", "listen", 150, "center", "")));
+                new Column(new ColumnBaseOption(0, "Category1", "category1", 250, "center", ""),
+                        true, "select", true, "category2", List.of(root1, root2, root3)),
+                new Column(new ColumnBaseOption(1, "Category2", "category2", 250, "center", ""),
+                        true, "select", false, "category3", List.of(child1_1, child1_2, child1_3, child2_1, child2_2, child2_3, child3_1, child3_2, child3_3)),
+                new Column(new ColumnBaseOption(2, "Category3", "category3", 250, "center", ""),
+                        true, "select", false, "", List.of(child1_1_1, child1_1_2, child1_1_3, child1_1_4, child1_1_5, child1_1_6, child1_1_7,
+                        child1_2_1, child1_2_2, child1_2_3, child1_2_4, child1_2_5, child1_2_6, child1_2_7,
+                        child1_3_1, child1_3_2, child1_3_3, child1_3_4, child1_3_5, child1_3_6, child1_3_7,
+                        child2_1_1, child2_1_2, child2_1_3, child2_1_4, child2_1_5, child2_1_6, child2_1_7,
+                        child2_2_1, child2_2_2, child2_2_3, child2_2_4, child2_2_5, child2_2_6, child2_2_7,
+                        child2_3_1, child2_3_2, child2_3_3, child2_3_4, child2_3_5, child2_3_6, child2_3_7,
+                        child3_1_1, child3_1_2, child3_1_3, child3_1_4, child3_1_5,
+                        child3_2_1, child3_2_2, child3_2_3, child3_2_4, child3_2_5,
+                        child3_3_1, child3_3_2, child3_3_3, child3_3_4, child3_3_5)));
         return columns;
-    }
-
-    private List<Summary> getSummaries() {
-        List<Summary> summaries = List.of(
-                new Summary("price", Summary.OperationType.sum),
-                new Summary("download", Summary.OperationType.avg),
-                new Summary("listen", Summary.OperationType.max));
-        return summaries;
-    }
-
-    private List<ComplexColumn> getCustomHeader() {
-        List<ComplexColumn> customHeaders = List.of(
-                new ComplexColumn("Details Info", "Details Info", List.of("type", "genre", "release")),
-                new ComplexColumn("Count", "Count", List.of("download", "listen")),
-                new ComplexColumn("Extra Info", "Extra Info", List.of("price", "Count")));
-        return customHeaders;
     }
 }
