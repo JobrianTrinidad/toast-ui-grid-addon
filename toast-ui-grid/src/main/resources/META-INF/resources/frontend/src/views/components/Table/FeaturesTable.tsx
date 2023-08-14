@@ -1,21 +1,21 @@
 import Grid from '@toast-ui/react-grid';
-import React from "react";
+import {Component} from "react";
 
-export class FeatureTable extends React.Component<any, any> {
-    TableData;
-    columns;
-    summary;
-    columnOptions;
-    header;
-    width;
-    bodyHeight;
-    scrollX;
-    scrollY;
-    rowHeaders;
-    treeColumnOptions;
-    rowHeight;
-    minBodyHeight;
-    el;
+export class FeatureTable extends Component<any, any> {
+    TableData: any;
+    columns: any;
+    summary: any;
+    columnOptions: any;
+    header: any;
+    width: any;
+    bodyHeight: any;
+    scrollX: any;
+    scrollY: any;
+    rowHeaders: any;
+    treeColumnOptions: any;
+    rowHeight: any;
+    minBodyHeight: any;
+    el: any;
 
     constructor(props: any) {
         super(props);
