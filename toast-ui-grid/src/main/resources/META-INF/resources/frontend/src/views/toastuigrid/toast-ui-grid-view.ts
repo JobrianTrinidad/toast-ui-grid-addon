@@ -4,7 +4,7 @@ import "@vaadin/text-field";
 // import "tui-date-picker/dist/tui-date-picker.css";
 // import "tui-time-picker/dist/tui-time-picker.css";
 // import {createRoot} from "react-dom/client";
-import ReactDOM from "react-dom";
+import {render} from "react-dom";
 import {OptColumn, OptSummaryData} from "tui-grid/types/options";
 import CustomTextEditor from "../../views/components/Table/CustomeEditor";
 import {FeatureTable} from "../components/Table/FeaturesTable";
@@ -61,7 +61,7 @@ window["toastuigrid"] = {
             const descendantRows = container.grid.getDescendantRows(rowKey);
         };
 
-        ReactDOM.render(gridTable.render(), container);
+        render(gridTable.render(), container);
         // createRoot(container).render(gridTable.render());
     },
     create(container: HTMLElement, itemsJson: any, optionsJson: any) {
