@@ -5,7 +5,6 @@ import "@vaadin/text-field";
 // import "tui-time-picker/dist/tui-time-picker.css";
 // import {createRoot} from "react-dom/client";
 import {render} from "react-dom";
-import {OptColumn, OptSummaryData} from "tui-grid/types/options";
 import CustomTextEditor from "../../views/components/Table/CustomeEditor";
 import {FeatureTable} from "../components/Table/FeaturesTable";
 
@@ -39,6 +38,7 @@ window.toastuigrid = {
         });
 
         container.grid = gridTable;
+        console.log("AAA: ", container.grid);
 
         container.grid.expand = (ev: any) => {
             const {rowKey} = ev;
@@ -67,7 +67,7 @@ window.toastuigrid = {
             const descendantRows = container.grid.getDescendantRows(rowKey);
         };
 
-        render(gridTable.render(), container);
+        render(container.grid.render(), container);
         // createRoot(container).render(gridTable.render());
     },
     create(container: HTMLElement, itemsJson: any, optionsJson: any) {
@@ -145,17 +145,17 @@ window.toastuigrid = {
         }
         return listData;
     },
-    getRowHeaders(parsedRowHeaders: any){
+    getRowHeaders(parsedRowHeaders: any) {
         return parsedRowHeaders.slice(1, -1).split(",").map((item: any) => item.trim());
     },
-    getComplexColumns(parsedColumnContent: any){
+    getComplexColumns(parsedColumnContent: any) {
         let complexColumns = JSON.parse(parsedColumnContent);
         for (const complexColumn of complexColumns) {
             complexColumn.childNames = complexColumn.childNames.slice(1, -1).split(", ").map((item: any) => item.trim());
         }
         return complexColumns;
     },
-    getSummary(parsedSummary: any){
+    getSummary(parsedSummary: any) {
         if (parsedSummary == undefined || !parsedSummary.hasOwnProperty('columnContent'))
             return null;
         let summaries: any = parsedSummary;
@@ -175,7 +175,7 @@ window.toastuigrid = {
             }, {})
         }
     },
-    getColumns(parsedColumn: any){
+    getColumns(parsedColumn: any) {
         let columns: any[] = parsedColumn;
         let tempColumns: any[] = [];
 
@@ -217,10 +217,10 @@ window.toastuigrid = {
                     ...(column["depth1"] != "[]" && {
                         relations: [{
                             targetNames: [column.targetNames],
-                            listItems({value}: any){
+                            listItems({value}: any) {
                                 return column["depth1"][value] ? JSON.parse(column["depth1"][value]) : [];
                             },
-                            disabled({value}: any){
+                            disabled({value}: any) {
                                 return !value;
                             }
                         }]
@@ -233,10 +233,10 @@ window.toastuigrid = {
             return tempColumns;
         return columns;
     },
-    setOptions: function (container: any, optionsJson: any){
+    setOptions: function (container: any, optionsJson: any) {
         container.grid.setOption(optionsJson);
     },
-    setTest: function (container: any, content: any){
+    setTest: function (container: any, content: any) {
         console.log("Event Test: ", content);
     },
 }
