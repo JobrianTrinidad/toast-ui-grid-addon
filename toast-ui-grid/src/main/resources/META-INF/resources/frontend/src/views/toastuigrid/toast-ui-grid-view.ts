@@ -39,6 +39,7 @@ window.toastuigrid = {
 
         container.grid = gridTable;
         console.log("AAA: ", container.grid);
+        console.log("AAA: ", container.grid.render());
 
         container.grid.expand = (ev: any) => {
             const {rowKey} = ev;

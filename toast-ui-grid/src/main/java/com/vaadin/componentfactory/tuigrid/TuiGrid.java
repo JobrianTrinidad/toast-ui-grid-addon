@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
  */
 
 @SuppressWarnings("serial")
+@NpmPackage(value = "react", version = "^16.7.0")
+@NpmPackage(value = "react-dom", version = "^16.7.0")
 @NpmPackage(value = "@types/react", version = "^16.7.0")
 @NpmPackage(value = "@types/react-dom", version = "^16.7.0")
 @NpmPackage(value = "@toast-ui/react-grid", version = "^4.21.15")
