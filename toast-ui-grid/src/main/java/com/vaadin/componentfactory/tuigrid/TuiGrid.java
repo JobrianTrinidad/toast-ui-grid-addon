@@ -39,12 +39,12 @@ import java.util.stream.Collectors;
  */
 
 @SuppressWarnings("serial")
-@NpmPackage(value = "react", version = "^16.7.0")
-@NpmPackage(value = "react-dom", version = "^16.7.0")
 @NpmPackage(value = "@types/react", version = "^16.7.0")
 @NpmPackage(value = "@types/react-dom", version = "^16.7.0")
 @NpmPackage(value = "@toast-ui/react-grid", version = "^4.21.15")
 @JsModule("./src/views/toastuigrid/toast-ui-grid-view.ts")
+@JsModule("./src/views/toastuigrid/components/Table/FeaturesTable.ts")
+@JsModule("./src/views/toastuigrid/components/Table/CustomeEditor.ts")
 @CssImport("tui-grid/dist/tui-grid.css")
 @CssImport("tui-date-picker/dist/tui-date-picker.css")
 @CssImport("tui-time-picker/dist/tui-time-picker.css")
