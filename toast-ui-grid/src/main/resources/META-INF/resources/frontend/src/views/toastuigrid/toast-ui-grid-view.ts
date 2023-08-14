@@ -9,8 +9,14 @@ import {OptColumn, OptSummaryData} from "tui-grid/types/options";
 import CustomTextEditor from "../../views/components/Table/CustomeEditor";
 import {FeatureTable} from "../components/Table/FeaturesTable";
 
-window["toastuigrid"] = {
-    _createGrid: function (container: HTMLElement, itemsJson: any, optionsJson: any, _: any) {
+declare global {
+    interface Window {
+        toastuigrid: { [key: string]: any };
+    }
+}
+
+window.toastuigrid = {
+    _createGrid: function (container: HTMLElement & { grid: any }, itemsJson: any, optionsJson: any, _: any) {
         let parsedItems = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
 
@@ -67,31 +73,31 @@ window["toastuigrid"] = {
     create(container: HTMLElement, itemsJson: any, optionsJson: any) {
         setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
     },
-    _setColumnContentMatchedName(columnContent) {
+    _setColumnContentMatchedName(columnContent: any) {
         const onSum = () => {
             return {
-                template: (valueMap) => {
+                template: (valueMap: any) => {
                     return `Sum: ${valueMap.sum}`;
                 }
             }
         };
         const onAvg = () => {
             return {
-                template: (valueMap) => {
+                template: (valueMap: any) => {
                     return `AVG: ${valueMap.avg.toFixed(2)}`;
                 }
             }
         };
         const onMax = () => {
             return {
-                template: (valueMap) => {
+                template: (valueMap: any) => {
                     return `MAX: ${valueMap.max}`;
                 }
             }
         };
         const onMin = () => {
             return {
-                template: (valueMap) => {
+                template: (valueMap: any) => {
                     return `MIN: ${valueMap.min}`;
                 }
             }
@@ -115,7 +121,7 @@ window["toastuigrid"] = {
                 break;
         }
     },
-    getHeader(parsedHeader) {
+    getHeader(parsedHeader: any) {
         if (!parsedHeader.hasOwnProperty('complexColumns'))
             return null;
         else {
@@ -128,7 +134,7 @@ window["toastuigrid"] = {
             return header;
         }
     },
-    getTableData(parsedData) {
+    getTableData(parsedData: any) {
         let listData = parsedData;
         for (const data of listData) {
 
@@ -139,20 +145,20 @@ window["toastuigrid"] = {
         }
         return listData;
     },
-    getRowHeaders(parsedRowHeaders) {
-        return parsedRowHeaders.slice(1, -1).split(",").map((item) => item.trim());
+    getRowHeaders(parsedRowHeaders: any){
+        return parsedRowHeaders.slice(1, -1).split(",").map((item: any) => item.trim());
     },
-    getComplexColumns(parsedColumnContent) {
+    getComplexColumns(parsedColumnContent: any){
         let complexColumns = JSON.parse(parsedColumnContent);
         for (const complexColumn of complexColumns) {
-            complexColumn.childNames = complexColumn.childNames.slice(1, -1).split(", ").map((item) => item.trim());
+            complexColumn.childNames = complexColumn.childNames.slice(1, -1).split(", ").map((item: any) => item.trim());
         }
         return complexColumns;
     },
-    getSummary(parsedSummary) {
+    getSummary(parsedSummary: any){
         if (parsedSummary == undefined || !parsedSummary.hasOwnProperty('columnContent'))
             return null;
-        let summaries: OptSummaryData = parsedSummary;
+        let summaries: any = parsedSummary;
         let columnContents = JSON.parse(summaries.columnContent);
         for (const columnContent of columnContents) {
             this._setColumnContentMatchedName(columnContent);
@@ -161,7 +167,7 @@ window["toastuigrid"] = {
         return summaries = {
             height: summaries.height ? summaries.height : 40,
             position: summaries.position,
-            columnContent: columnContents.reduce((acc, obj) => {
+            columnContent: columnContents.reduce((acc: any, obj: any) => {
                 const key = Object.keys(obj)[0];
                 const value = obj[key];
                 acc[key] = value;
@@ -169,9 +175,9 @@ window["toastuigrid"] = {
             }, {})
         }
     },
-    getColumns(parsedColumn) {
-        let columns: OptColumn[] = parsedColumn;
-        let tempColumns: OptColumn[] = [];
+    getColumns(parsedColumn: any){
+        let columns: any[] = parsedColumn;
+        let tempColumns: any[] = [];
 
         for (const column of columns) {
             if (column.editor && column.editor.type == "input") {
@@ -211,10 +217,10 @@ window["toastuigrid"] = {
                     ...(column["depth1"] != "[]" && {
                         relations: [{
                             targetNames: [column.targetNames],
-                            listItems({value}) {
+                            listItems({value}: any){
                                 return column["depth1"][value] ? JSON.parse(column["depth1"][value]) : [];
                             },
-                            disabled({value}) {
+                            disabled({value}: any){
                                 return !value;
                             }
                         }]
@@ -227,10 +233,10 @@ window["toastuigrid"] = {
             return tempColumns;
         return columns;
     },
-    setOptions: function (container, optionsJson) {
+    setOptions: function (container: any, optionsJson: any){
         container.grid.setOption(optionsJson);
     },
-    setTest: function (container, content) {
+    setTest: function (container: any, content: any){
         console.log("Event Test: ", content);
     },
 }
