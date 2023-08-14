@@ -1,7 +1,7 @@
 import Grid from '@toast-ui/react-grid';
 import React from "react";
 
-export class FeatureTable extends Grid<any, any> {
+export class FeatureTable extends React.Component<any, any> {
     TableData;
     columns;
     summary;
