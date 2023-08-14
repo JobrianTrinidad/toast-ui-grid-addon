@@ -24,10 +24,11 @@ import com.vaadin.componentfactory.tuigrid.event.SelectionEvent;
 import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClientCallable;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +38,14 @@ import java.util.stream.Collectors;
  * more at https://github.com/toast-ui-grid).
  */
 
+@SuppressWarnings("serial")
+@NpmPackage(value = "react", version = "^16.7.0")
+@NpmPackage(value = "react-dom", version = "^16.7.0")
+@NpmPackage(value = "@toast-ui/react-grid", version = "^4.21.15")
 @JsModule("./src/views/toastuigrid/toast-ui-grid-view.ts")
+@CssImport("tui-grid/dist/tui-grid.css")
+@CssImport("tui-date-picker/dist/tui-date-picker.css")
+@CssImport("tui-time-picker/dist/tui-time-picker.css")
 public class TuiGrid extends Div {
     private List<Item> items = new ArrayList<>();
     //    private List<Column> columns = new ArrayList<>();
@@ -126,6 +134,7 @@ public class TuiGrid extends Div {
         tuiGridOption.rowHeaders = rowHeaders;
         this.updateTuiGridOptions();
     }
+
     public void setTreeOption(TreeOption treeOption) {
         tuiGridOption.treeOption = treeOption;
     }
