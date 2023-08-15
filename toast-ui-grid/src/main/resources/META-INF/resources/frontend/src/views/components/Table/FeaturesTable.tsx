@@ -39,25 +39,27 @@ export class FeatureTable extends React.Component<any, any> {
         this.minBodyHeight = props.minBodyHeight;
     }
 
-    render() {
+    render(): JSX.Element {
         return (
-            <Grid
-                {...(this.el && {el: this.el})}
-                data={this.TableData}
-                columns={this.columns}
-                {...(this.treeColumnOptions && {treeColumnOptions: this.treeColumnOptions})}
-                className="table-center"
-                width={this.width}
-                bodyHeight={this.bodyHeight}
-                {...(this.rowHeight && {rowHeight: this.rowHeight})}
-                {...(this.minBodyHeight && {minBodyHeight: this.minBodyHeight})}
-                scrollX={this.scrollX}
-                scrollY={this.scrollY}
-                {...(this.rowHeaders && {rowHeaders: this.rowHeaders})}
-                {...(this.summary && {summary: this.summary})}
-                {...(this.header && {header: this.header})}
-                {...(this.columnOptions && {columnOptions: this.columnOptions})}
-            />
+            <div>
+                <Grid
+                    {...(this.el && {el: this.el})}
+                    data={this.TableData}
+                    columns={this.columns}
+                    {...(this.treeColumnOptions && {treeColumnOptions: this.treeColumnOptions})}
+                    className="table-center"
+                    width={this.width}
+                    bodyHeight={this.bodyHeight}
+                    {...(this.rowHeight && {rowHeight: this.rowHeight})}
+                    {...(this.minBodyHeight && {minBodyHeight: this.minBodyHeight})}
+                    scrollX={this.scrollX}
+                    scrollY={this.scrollY}
+                    {...(this.rowHeaders && {rowHeaders: this.rowHeaders})}
+                    {...(this.summary && {summary: this.summary})}
+                    {...(this.header && {header: this.header})}
+                    {...(this.columnOptions && {columnOptions: this.columnOptions})}
+                />
+            </div>
         );
     }
 
