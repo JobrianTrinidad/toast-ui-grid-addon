@@ -5,7 +5,7 @@ import "@vaadin/text-field";
 // import "tui-time-picker/dist/tui-time-picker.css";
 // import {createRoot} from "react-dom/client";
 import * as ReactDOM  from "react-dom";
-import CustomTextEditor from "../../views/components/Table/CustomeEditor";
+import CustomTextEditor from "../components/Table/CustomeEditor";
 import {FeatureTable} from "../components/Table/FeaturesTable";
 
 declare global {
