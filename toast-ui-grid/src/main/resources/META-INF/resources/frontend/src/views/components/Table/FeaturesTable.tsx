@@ -1,6 +1,33 @@
 import Grid from '@toast-ui/react-grid';
 import * as React from "react";
 
+interface ErrorBoundaryState {
+    hasError: boolean;
+}
+
+class ErrorBoundary extends React.Component<{}, ErrorBoundaryState> {
+    constructor(props: any) {
+        super(props);
+        this.state = {hasError: false};
+    }
+
+    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+        // Log the error or perform any necessary actions
+        console.error(error, errorInfo);
+        this.setState({hasError: true});
+    }
+
+    render() {
+        if (this.state.hasError == true) {
+            // Render a fallback UI when an error occurs
+            return <div>Something went wrong.</div>;
+        }
+
+        // Render the children components normally
+        return this.props.children;
+    }
+}
+
 export class FeatureTable extends React.Component<any, any> {
     TableData: any;
     columns: any;
@@ -41,25 +68,27 @@ export class FeatureTable extends React.Component<any, any> {
 
     render(): JSX.Element {
         return (
-            <div>
-                <Grid
-                    {...(this.el && {el: this.el})}
-                    data={this.TableData}
-                    columns={this.columns}
-                    {...(this.treeColumnOptions && {treeColumnOptions: this.treeColumnOptions})}
-                    className="table-center"
-                    width={this.width}
-                    bodyHeight={this.bodyHeight}
-                    {...(this.rowHeight && {rowHeight: this.rowHeight})}
-                    {...(this.minBodyHeight && {minBodyHeight: this.minBodyHeight})}
-                    scrollX={this.scrollX}
-                    scrollY={this.scrollY}
-                    {...(this.rowHeaders && {rowHeaders: this.rowHeaders})}
-                    {...(this.summary && {summary: this.summary})}
-                    {...(this.header && {header: this.header})}
-                    {...(this.columnOptions && {columnOptions: this.columnOptions})}
-                />
-            </div>
+            <ErrorBoundary>
+                <div>
+                    <Grid
+                        {...(this.el && {el: this.el})}
+                        data={this.TableData}
+                        columns={this.columns}
+                        {...(this.treeColumnOptions && {treeColumnOptions: this.treeColumnOptions})}
+                        className="table-center"
+                        width={this.width}
+                        bodyHeight={this.bodyHeight}
+                        {...(this.rowHeight && {rowHeight: this.rowHeight})}
+                        {...(this.minBodyHeight && {minBodyHeight: this.minBodyHeight})}
+                        scrollX={this.scrollX}
+                        scrollY={this.scrollY}
+                        {...(this.rowHeaders && {rowHeaders: this.rowHeaders})}
+                        {...(this.summary && {summary: this.summary})}
+                        {...(this.header && {header: this.header})}
+                        {...(this.columnOptions && {columnOptions: this.columnOptions})}
+                    />
+                </div>
+            </ErrorBoundary>
         );
     }
 
