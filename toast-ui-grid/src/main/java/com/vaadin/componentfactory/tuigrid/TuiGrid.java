@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 @NpmPackage(value = "@types/react", version = "^16.7.0")
 @NpmPackage(value = "@types/react-dom", version = "^16.7.0")
 @NpmPackage(value = "@toast-ui/react-grid", version = "^4.21.15")
-@JsModule("./src/views/toastuigrid/toast-ui-grid-view.ts")
+@JsModule("./src/views/toastuigrid/toast-ui-grid-view.tsx")
 @JsModule("./src/views/components/Table/FeaturesTable.tsx")
 @JsModule("./src/views/components/Table/CustomeEditor.tsx")
 @CssImport("tui-grid/dist/tui-grid.css")
