@@ -18,9 +18,11 @@ public class MainLayout extends AppLayout {
                 new RouterLink("3. DatePicker", DatePickerExample.class);
         final RouterLink treeExample =
                 new RouterLink("4. Tree", TreeExample.class);
+        final RouterLink gridExample =
+                new RouterLink("4. Tree", GridExample.class);
 
         final VerticalLayout menuLayout = new VerticalLayout(basicExample, relationBetweenColumnsExample,
-                datePickerExample, treeExample);
+                datePickerExample, treeExample, gridExample);
         addToDrawer(menuLayout);
         addToNavbar(drawerToggle);
     }

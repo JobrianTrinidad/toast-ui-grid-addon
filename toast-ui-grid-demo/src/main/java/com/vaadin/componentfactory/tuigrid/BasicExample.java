@@ -1,9 +1,9 @@
 package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.model.*;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
-import jakarta.persistence.Table;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +13,17 @@ public class BasicExample extends Div {
 
     public BasicExample() {
         // create items
-        TuiGrid grid = new TuiGrid(null, this.getTableData(),
+        TuiGrid grid = new TuiGrid(null, null,
                 this.getColumns(), null);
         grid.setHeaderHeight(100);
         grid.setTableWidth(950);
         grid.setTableHeight(600);
-        add(grid);
+
+
+        Button addBtn = new Button("Add Item", e -> {
+            grid.addData(this.getTableData());
+        });
+        add(addBtn, grid);
     }
 
     private List<Item> getTableData() {

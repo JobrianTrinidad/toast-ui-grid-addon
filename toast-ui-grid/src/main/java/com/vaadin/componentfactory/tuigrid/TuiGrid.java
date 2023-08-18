@@ -90,6 +90,10 @@ public class TuiGrid extends Div {
         initTuiGrid();
     }
 
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
     public int getHeaderHeight() {
         return tuiGridOption.headerHeight;
     }
@@ -151,6 +155,20 @@ public class TuiGrid extends Div {
                         tuiGridOption.toJSON());
     }
 
+    public void addData(List<Item> items) {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.addTableData($0, $1);",
+                        this, "[" + convertItemsToJson(items) + "]");
+    }
+
+    public void setData() {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setTableData($0, $1);",
+                        this, "[" + convertItemsToJson() + "]");
+    }
+
     /**
      * Updates tuigrid options after tuigrid creation.
      */
@@ -163,6 +181,12 @@ public class TuiGrid extends Div {
     private String convertItemsToJson() {
         return this.items != null
                 ? this.items.stream().map(item -> item.toJSON()).collect(Collectors.joining(","))
+                : "";
+    }
+
+    private String convertItemsToJson(List<Item> items) {
+        return items != null
+                ? items.stream().map(item -> item.toJSON()).collect(Collectors.joining(","))
                 : "";
     }
 
