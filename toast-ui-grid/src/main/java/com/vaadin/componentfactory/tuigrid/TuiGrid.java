@@ -162,11 +162,11 @@ public class TuiGrid extends Div {
                         this, "[" + convertItemsToJson(items) + "]");
     }
 
-    public void setData() {
+    public void setData(List<Item> items) {
         this.getElement()
                 .executeJs(
                         "toastuigrid.setTableData($0, $1);",
-                        this, "[" + convertItemsToJson() + "]");
+                        this, "[" + convertItemsToJson(items) + "]");
     }
 
     /**
