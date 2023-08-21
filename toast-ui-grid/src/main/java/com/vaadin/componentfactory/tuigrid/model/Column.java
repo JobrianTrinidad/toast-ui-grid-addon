@@ -87,6 +87,14 @@ public class Column {
         this.dateOption = dateOption;
     }
 
+    public ColumnBaseOption getColumnBaseOption() {
+        return columnBaseOption;
+    }
+
+    public void setColumnBaseOption(ColumnBaseOption columnBaseOption) {
+        this.columnBaseOption = columnBaseOption;
+    }
+
     public boolean isRoot() {
         return root;
     }
@@ -103,9 +111,10 @@ public class Column {
         this.target = target;
     }
 
-    public String toJSON() {
+    public String toJSON(boolean bResizable) {
         JsonObject js = columnBaseOption.toJSON();
-
+        if (!bResizable)
+            js.put("resizable", false);
         if (getSortingType() != "") {
             Optional.ofNullable(getSortingType()).ifPresent(v -> js.put("sortingType", v));
             Optional.ofNullable(isSortable()).ifPresent(v -> js.put("sortable", v));

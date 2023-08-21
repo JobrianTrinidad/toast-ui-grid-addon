@@ -43,6 +43,8 @@ export class FeatureTable extends React.Component<any, any> {
     rowHeight: any;
     minBodyHeight: any;
     el: any;
+    private onEditingStart: any;
+    private onEditingFinish: any;
 
     constructor(props: any) {
         super(props);
@@ -64,6 +66,8 @@ export class FeatureTable extends React.Component<any, any> {
         this.treeColumnOptions = props.treeColumnOptions;
         this.rowHeight = props.rowHeight;
         this.minBodyHeight = props.minBodyHeight;
+        this.onEditingStart = props.onEditingStart;
+        this.onEditingFinish = props.onEditingFinish;
     }
 
     render(): JSX.Element {
@@ -76,7 +80,7 @@ export class FeatureTable extends React.Component<any, any> {
                         columns={this.columns}
                         {...(this.treeColumnOptions && {treeColumnOptions: this.treeColumnOptions})}
                         className="table-center"
-                        // width={this.width}
+                        {...(this.width && {width: this.width})}
                         bodyHeight={this.bodyHeight}
                         {...(this.rowHeight && {rowHeight: this.rowHeight})}
                         {...(this.minBodyHeight && {minBodyHeight: this.minBodyHeight})}
@@ -86,6 +90,8 @@ export class FeatureTable extends React.Component<any, any> {
                         {...(this.summary && {summary: this.summary})}
                         {...(this.header && {header: this.header})}
                         {...(this.columnOptions && {columnOptions: this.columnOptions})}
+                        onEditingStart={this.onEditingStart}
+                        onEditingFinish={this.onEditingFinish}
                     />
                 </div>
             </ErrorBoundary>

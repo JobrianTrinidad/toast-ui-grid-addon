@@ -23,7 +23,6 @@ package com.vaadin.componentfactory.tuigrid.model;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +38,7 @@ public class TuiGridOption {
     }
 
     /* Minimum Date for the visible range.*/
-    public List<Column> columns;
+    public List<Column> columns = new ArrayList<>();
 
     /* Maximum Date for the visible range (excluded).*/
     public List<ComplexColumn> header;
@@ -49,9 +48,10 @@ public class TuiGridOption {
     public SummaryPosition pos = SummaryPosition.bottom;
     public int frozenCount = 0;
     public int frozenBorderWidth = 1;
+    public boolean resizable = true;
     public boolean vScroll = false;
     public boolean hScroll = false;
-    public int tableWidth = 1200;
+    public int tableWidth = 0;
     public int tableHeight = 500;
     public List<String> rowHeaders = new ArrayList<>();
     public TreeOption treeOption;
@@ -60,7 +60,8 @@ public class TuiGridOption {
         JsonObject js = Json.createObject();
         Optional.ofNullable(convertColumnsToJson()).ifPresent(v -> js.put("columns", "[" + v + "]"));
         Optional.ofNullable(convertHeaderToJson()).ifPresent(v -> js.put("header", v));
-        js.put("width", tableWidth);
+        if (tableWidth > 0)
+            js.put("width", tableWidth);
         js.put("bodyHeight", tableHeight);
         js.put("scrollX", vScroll);
         js.put("scrollY", hScroll);
@@ -80,12 +81,15 @@ public class TuiGridOption {
             js.put("header", headerJs);
         }
 
+
+        JsonObject columnOptionsJs = Json.createObject();
         if (frozenCount > 0) {
-            JsonObject columnOptionsJs = Json.createObject();
             columnOptionsJs.put("frozenCount", frozenCount);
             columnOptionsJs.put("frozenBorderWidth", frozenBorderWidth);
-            js.put("columnOptions", columnOptionsJs);
         }
+        columnOptionsJs.put("resizable", resizable);
+        js.put("columnOptions", columnOptionsJs);
+
 
         if (summaryList != null) {
             JsonObject summaryJs = Json.createObject();
@@ -103,7 +107,13 @@ public class TuiGridOption {
 
     private String convertColumnsToJson() {
         return this.columns != null
-                ? this.columns.stream().map(column -> column.toJSON()).collect(Collectors.joining(","))
+                ? this.columns.stream().map(column -> {
+            int index = this.columns.indexOf(column);
+            if (index < this.columns.size())
+                return column.toJSON(true);
+            else
+                return column.toJSON(false);
+        }).collect(Collectors.joining(","))
                 : "";
     }
 

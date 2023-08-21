@@ -28,6 +28,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
+import elemental.json.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,6 @@ import java.util.stream.Collectors;
 @CssImport("tui-time-picker/dist/tui-time-picker.css")
 public class TuiGrid extends Div {
     private List<Item> items = new ArrayList<>();
-    //    private List<Column> columns = new ArrayList<>();
     protected TuiGridOption tuiGridOption = new TuiGridOption();
 
     public TuiGrid() {
@@ -65,7 +65,7 @@ public class TuiGrid extends Div {
         this();
         this.items = items;
         tuiGridOption.columns = columns;
-        initTuiGrid();
+//        initTuiGrid();
     }
 
     public TuiGrid(List<Item> items, List<Column> columns, List<Summary> summaries) {
@@ -73,7 +73,7 @@ public class TuiGrid extends Div {
         this.items = items;
         tuiGridOption.columns = columns;
         tuiGridOption.summaryList = summaries;
-        initTuiGrid();
+//        initTuiGrid();
     }
 
     public TuiGrid(List<ComplexColumn> customHeader, List<Item> items, List<Column> columns, List<Summary> summaries) {
@@ -92,6 +92,40 @@ public class TuiGrid extends Div {
 
     public void setItems(List<Item> items) {
         this.items = items;
+        if (this.getElement().getNode().isAttached()) {
+            this.getElement()
+                    .executeJs(
+                            "toastuigrid.setTableData($0, $1);",
+                            this, "[" + convertItemsToJson(items) + "]");
+        }
+    }
+
+    public void addItem(List<Item> items) {
+        if (this.getElement().getNode().isAttached())
+            this.getElement()
+                    .executeJs(
+                            "toastuigrid.addTableData($0, $1);",
+                            this, "[" + convertItemsToJson(items) + "]");
+    }
+
+    public void setColumns(List<Column> columns) {
+        tuiGridOption.columns.addAll(columns);
+        this.updateTuiGridOptions();
+    }
+
+    public void insertColumn(Column column) {
+        tuiGridOption.columns.add(column);
+        for (Item item :
+                this.items) {
+            item.addHeader(column.getColumnBaseOption().getHeaderName());
+        }
+        this.setItems(this.items);
+        if (this.getElement().getNode().isAttached())
+            this.getElement()
+                    .executeJs(
+                            "toastuigrid.insertColumn($0, $1, $2);",
+                            this, "[" + convertColumnsToJson() + "]",
+                            "[" + convertItemsToJson(this.items) + "]");
     }
 
     public int getHeaderHeight() {
@@ -147,6 +181,10 @@ public class TuiGrid extends Div {
         tuiGridOption.treeOption = treeOption;
     }
 
+    public void setResizable(boolean resizable) {
+        tuiGridOption.resizable = resizable;
+    }
+
     private void initTuiGrid() {
         this.getElement()
                 .executeJs(
@@ -155,19 +193,6 @@ public class TuiGrid extends Div {
                         tuiGridOption.toJSON());
     }
 
-    public void addData(List<Item> items) {
-        this.getElement()
-                .executeJs(
-                        "toastuigrid.addTableData($0, $1);",
-                        this, "[" + convertItemsToJson(items) + "]");
-    }
-
-    public void setData(List<Item> items) {
-        this.getElement()
-                .executeJs(
-                        "toastuigrid.setTableData($0, $1);",
-                        this, "[" + convertItemsToJson(items) + "]");
-    }
 
     /**
      * Updates tuigrid options after tuigrid creation.
@@ -187,6 +212,18 @@ public class TuiGrid extends Div {
     private String convertItemsToJson(List<Item> items) {
         return items != null
                 ? items.stream().map(item -> item.toJSON()).collect(Collectors.joining(","))
+                : "";
+    }
+
+    private String convertColumnsToJson() {
+        return tuiGridOption.columns != null
+                ? tuiGridOption.columns.stream().map(column -> {
+            int index = tuiGridOption.columns.indexOf(column);
+            if (index < tuiGridOption.columns.size())
+                return column.toJSON(true);
+            else
+                return column.toJSON(false);
+        }).collect(Collectors.joining(","))
                 : "";
     }
 
@@ -213,5 +250,14 @@ public class TuiGrid extends Div {
                 .executeJs(
                         "toastuigrid.setTest($0, $1);",
                         this, colName);
+    }
+
+    @ClientCallable
+    public void onEditingFinish(JsonObject eventData) {
+//        String message = eventData.getString("message");
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setTest($0, $1);",
+                        this, eventData.get("columnName"));
     }
 }

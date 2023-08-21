@@ -86,6 +86,12 @@ public class MusicItem implements Item {
         }
         return js.toJson();
     }
+
+    @Override
+    public void addHeader(String headerName) {
+
+    }
+
     private String convertChildrenToJson() {
         return this._children != null
                 ? this._children.stream().map(child -> child.toJSON()).collect(Collectors.joining(","))

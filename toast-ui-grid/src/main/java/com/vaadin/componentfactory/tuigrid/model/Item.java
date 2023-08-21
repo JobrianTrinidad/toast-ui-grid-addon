@@ -29,4 +29,6 @@ import java.util.Optional;
 
 public interface Item {
     String toJSON();
+
+    void addHeader(String headerName);
 }

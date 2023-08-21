@@ -18,8 +18,22 @@ window.toastuigrid = {
     _createGrid: function (container: HTMLElement & { grid: any }, itemsJson: any, optionsJson: any, _: any) {
         let parsedItems = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
-
+        console.log("AAA: ", parsedOptions);
         // Implementation goes here
+        const onEditingStart = (ev: any) => {
+            console.log("ABCDEF_start: ", ev);
+        };
+        const onEditingFinish = (ev: any) => {
+            var cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+                if (value instanceof Node) {
+                    return null; // Remove the DOM node reference
+                }
+                return value;
+            }));
+
+// Send the cleaned object to the server
+            container.$server.onEditingFinish(cleanedObject);
+        };
         let gridTable: FeatureTable = new FeatureTable({
             el: document.getElementsByClassName("grid")[0],
             TableData: this.getTableData(parsedItems),
@@ -35,6 +49,8 @@ window.toastuigrid = {
             minBodyHeight: 120,
             rowHeaders: parsedOptions.rowHeaders ? this.getRowHeaders(parsedOptions.rowHeaders) : null,
             treeColumnOptions: parsedOptions.treeColumnOptions ? JSON.parse(parsedOptions.treeColumnOptions) : null,
+            onEditingStart: onEditingStart,
+            onEditingFinish: onEditingFinish,
         });
 
         container.grid = gridTable;
@@ -66,23 +82,22 @@ window.toastuigrid = {
             const descendantRows = container.grid.getDescendantRows(rowKey);
         };
 
-        ReactDOM.render(container.grid.render(), container);
-        // createRoot(container).render(gridTable.render());
+        this.updateGrid(container);
     },
     create(container: HTMLElement, itemsJson: any, optionsJson: any) {
         setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
     },
-    setTableData(container: HTMLElement & { grid: any }, data: any) {
+    setTableData(container: HTMLElement & { grid: FeatureTable }, data: any) {
         let parsedItems = JSON.parse(data);
-        container.grid.TableData = this.getTableData(parsedItems);
-        ReactDOM.render(container.grid.render(), container);
+        container.grid.setOption({TableData: this.getTableData(parsedItems)});
+        this.updateGrid(container);
     },
-    addTableData(container: HTMLElement & { grid: any }, data: any) {
+    addTableData(container: HTMLElement & { grid: FeatureTable }, data: any) {
         console.log("BBB: ", container);
         console.log("AAA: ", container.grid);
         let parsedItems = JSON.parse(data);
         container.grid.TableData = [...container.grid.TableData, ...this.getTableData(parsedItems)];
-        ReactDOM.render(container.grid.render(), container);
+        this.updateGrid(container);
     },
     _setColumnContentMatchedName(columnContent: any) {
         const onSum = () => {
@@ -244,10 +259,25 @@ window.toastuigrid = {
             return tempColumns;
         return columns;
     },
-    setOptions: function (container: any, optionsJson: any) {
-        container.grid.setOption(optionsJson);
+    setOptions: function (container: HTMLElement & { grid: FeatureTable }, optionsJson: any) {
+        let parsedOptions = JSON.parse(optionsJson);
+        container.grid.setOption(parsedOptions);
+        this.updateGrid(container);
+    },
+    insertColumn: function (container: HTMLElement & { grid: FeatureTable }, optionsJson: any, itemsJson: any) {
+        let parsedOptions = JSON.parse(optionsJson);
+        let parsedItems = JSON.parse(itemsJson);
+
+        container.grid.setOption({
+            TableData: this.getTableData(parsedItems),
+            columns: this.getColumns(parsedOptions),
+        });
+        this.updateGrid(container);
     },
     setTest: function (container: any, content: any) {
         console.log("Event Test: ", content);
     },
+    updateGrid: function (container: any) {
+        ReactDOM.render(container.grid.render(), container);
+    }
 }

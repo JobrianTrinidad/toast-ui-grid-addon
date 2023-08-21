@@ -58,6 +58,11 @@ public class DateItem implements Item{
         return js.toJson();
     }
 
+    @Override
+    public void addHeader(String headerName) {
+
+    }
+
     public String getDefaultDate() {
         return defaultDate;
     }

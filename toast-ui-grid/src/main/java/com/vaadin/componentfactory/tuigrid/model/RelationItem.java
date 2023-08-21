@@ -23,22 +23,24 @@ package com.vaadin.componentfactory.tuigrid.model;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RelationItem implements Item {
     private List<String> recordData;
-    private List<String> headers;
+    private List<String> headers = new ArrayList<>();
 
     public RelationItem(List<String> recordData, List<String> headers) {
         this.recordData = recordData;
-        this.headers = headers;
+        this.headers.clear();
+        this.headers.addAll(headers);
     }
 
     public String toJSON() {
         JsonObject js = Json.createObject();
 
         for (int i = 0; i < this.headers.size(); i++) {
-            js.put(this.headers.get(i), this.recordData.get(i));
+            js.put(this.headers.get(i), this.recordData.get(i) != null ? this.recordData.get(i) : "");
         }
 
         return js.toJson();
@@ -54,6 +56,10 @@ public class RelationItem implements Item {
 
     public List<String> getHeaders() {
         return headers;
+    }
+
+    public void addHeader(String headerName) {
+        this.headers.add(headerName);
     }
 
     public void setHeaders(List<String> headers) {
