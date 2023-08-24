@@ -19,7 +19,7 @@ public class MainLayout extends AppLayout {
         final RouterLink treeExample =
                 new RouterLink("4. Tree", TreeExample.class);
         final RouterLink gridExample =
-                new RouterLink("4. Tree", GridExample.class);
+                new RouterLink("5. GridExample", GridExample.class);
 
         final VerticalLayout menuLayout = new VerticalLayout(basicExample, relationBetweenColumnsExample,
                 datePickerExample, treeExample, gridExample);

@@ -13,18 +13,26 @@ public class GridExample extends Div {
     public GridExample() {
         Span sp = new Span("Clicked table!");
         // create items
-        TuiGrid grid = new TuiGrid(this.getCustomHeader(), this.getTableData(),
-                this.getColumns(), this.getSummaries());
+        TuiGrid grid = new TuiGrid();
+
+        grid.setColumns(this.getColumns());
+        grid.setItems(this.getTableData());
+        grid.setComplexColumns(this.getCustomHeader());
+        grid.setSummaries(this.getSummaries());
+
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
-        add(grid);
+        grid.addItemChangeListener(ev -> {
+            sp.add(ev.getColName() + ": " + grid.getData().get(1).toJSON());
+        });
+        add(grid, sp);
     }
 
     private List<Item> getTableData() {
-
+        List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen");
         List<Item> TableData = List.of(
-                new MusicItem("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"),
-                new MusicItem(
+                new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers),
+                new GuiItem(List.of(
                         "X",
                         "Ed Sheeran",
                         "Deluxe;",
@@ -32,8 +40,8 @@ public class GridExample extends Div {
                         "",
                         "20000",
                         "1900",
-                        "2005"),
-                new MusicItem(
+                        "2005"), headers),
+                new GuiItem(List.of(
                         "Moves Like Jagger",
                         "Maroon5",
                         "Single;",
@@ -42,8 +50,8 @@ public class GridExample extends Div {
                         "7000",
                         "11000",
                         "3100"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "A Head Full Of Dreams",
                         "Coldplay",
                         "Deluxe;",
@@ -52,8 +60,8 @@ public class GridExample extends Div {
                         "25000",
                         "2230",
                         "4030"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "21",
                         "Adele",
                         "Deluxe;",
@@ -62,8 +70,8 @@ public class GridExample extends Div {
                         "15000",
                         "1007",
                         "12000"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "Warm On A Cold Night",
                         "HONNE",
                         "EP;",
@@ -72,8 +80,8 @@ public class GridExample extends Div {
                         "11000",
                         "1502",
                         "5000"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "Take Me To The Alley",
                         "Gregory Porter",
                         "Deluxe;",
@@ -82,8 +90,8 @@ public class GridExample extends Div {
                         "30000",
                         "1200",
                         "5003"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "Make Out",
                         "LANY",
                         "EP;",
@@ -92,8 +100,8 @@ public class GridExample extends Div {
                         "12000",
                         "8005",
                         "9000"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "Get Lucky",
                         "Daft Punk",
                         "Single",
@@ -102,8 +110,8 @@ public class GridExample extends Div {
                         "9000",
                         "11000",
                         "1500"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "Valtari",
                         "Sigur Rós",
                         "EP;",
@@ -112,8 +120,8 @@ public class GridExample extends Div {
                         "10000",
                         "9000",
                         "8010"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "Bush",
                         "Snoop Dogg",
                         "EP",
@@ -122,8 +130,8 @@ public class GridExample extends Div {
                         "18000",
                         "3000",
                         "2005"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "Chaos And The Calm",
                         "James Bay",
                         "EP",
@@ -132,8 +140,8 @@ public class GridExample extends Div {
                         "12000",
                         "8007",
                         "9000"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "4",
                         "Beyoncé",
                         "Deluxe",
@@ -142,8 +150,8 @@ public class GridExample extends Div {
                         "12000",
                         "7000",
                         "11002"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "I Won't Give Up",
                         "Jason Mraz",
                         "Single",
@@ -152,8 +160,8 @@ public class GridExample extends Div {
                         "7000",
                         "8000",
                         "2000"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "Following My Intuition",
                         "Craig David",
                         "Deluxe",
@@ -162,8 +170,8 @@ public class GridExample extends Div {
                         "15000",
                         "9001",
                         "8100"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "Blue Skies",
                         "Lenka",
                         "Single",
@@ -172,8 +180,8 @@ public class GridExample extends Div {
                         "6000",
                         "11000",
                         "9000"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "This Is Acting",
                         "Sia",
                         "EP",
@@ -182,8 +190,8 @@ public class GridExample extends Div {
                         "20000",
                         "11400",
                         "5800"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "Blurryface",
                         "Twenty One Pilots",
                         "EP",
@@ -192,8 +200,8 @@ public class GridExample extends Div {
                         "13000",
                         "6010",
                         "3020"
-                ),
-                new MusicItem(
+                ), headers),
+                new GuiItem(List.of(
                         "I am Not The Only One",
                         "Sam Smith",
                         "Single",
@@ -202,7 +210,7 @@ public class GridExample extends Div {
                         "",
                         "",
                         ""
-                ));
+                ), headers));
 
         return TableData;
     }

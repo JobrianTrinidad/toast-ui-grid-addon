@@ -138,13 +138,13 @@ public class Column {
         return js.toJson();
     }
 
-    public String toRelationJSON(JsonObject js, List<RelationOption> relationOptions) {
+    String toRelationJSON(JsonObject js, List<RelationOption> relationOptions) {
         RelationOption select = new RelationOption("Select", "");
         if (relationOptions.get(1).getChildren().size() > 0) {
             JsonObject tempJs = Json.createObject();
 
             for (RelationOption relationOption : relationOptions) {
-                if (relationOption.getValue() != "")
+                if (relationOption.getName() != "Select")
                     tempJs.put(relationOption.getValue(), "[" + select.toSelfJSON() + "," + relationOption.toJSON() + "]");
             }
 
@@ -167,6 +167,16 @@ public class Column {
                 : "";
     }
 
+    /**
+     * This is a constructor for creating a column object with the column base option, editable, type, and maximum length specified.
+     *
+     * @param columnBaseOption the ColumnBaseOption to be set
+     * @param editable         the boolean value whether cell is edit enabled
+     * @param type             the string value whether cell is type of input, or date...
+     * @param root             the boolean whether cell is root of relation
+     * @param target           the string value to be set child column of this column
+     * @param relationOptions  the RelationOption List value to be set list of RelationOption
+     */
     public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, boolean root, String target, List<RelationOption> relationOptions) {
         this.columnBaseOption = columnBaseOption;
         this.editable = editable;
@@ -176,22 +186,61 @@ public class Column {
         this.relationOptions = relationOptions;
     }
 
+    /**
+     * This is a constructor for creating a column object with only the column base option specified.
+     *
+     * @param columnBaseOption the ColumnBaseOption to be set
+     */
     public Column(ColumnBaseOption columnBaseOption) {
         this(columnBaseOption, false, "input", 0);
     }
 
+    /**
+     * This is a constructor for creating a column object with the column base option, editable, type, and maximum length specified.
+     *
+     * @param columnBaseOption the ColumnBaseOption to be set
+     * @param editable         the boolean value whether cell is edit enabled
+     * @param type             the string value whether cell is type of input, or date...
+     * @param maxLength        the letter length to be set
+     */
     public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, int maxLength) {
         this(columnBaseOption, editable, type, maxLength, null, "", false);
     }
 
+    /**
+     * This is a constructor for creating a column object with the column base option, editable, type, and DateOption specified.
+     *
+     * @param columnBaseOption the ColumnBaseOption to be set
+     * @param editable         the boolean value whether cell is edit enabled
+     * @param type             the string value whether cell is type of input, or date...
+     * @param option           the DateOption value when cell is type of date
+     */
     public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, DateOption option) {
         this(columnBaseOption, editable, type, 0, option, "", false);
     }
 
+    /**
+     * This is a constructor for creating a column object with the column base option, sorting type, and sortable specified.
+     *
+     * @param columnBaseOption the ColumnBaseOption to be set
+     * @param sortingType      the string value whether is asc or dec
+     * @param sortable         the boolean value whether cell is sortable
+     */
     public Column(ColumnBaseOption columnBaseOption, String sortingType, boolean sortable) {
         this(columnBaseOption, false, "", 0, null, sortingType, sortable);
     }
 
+    /**
+     * This is a constructor for creating a column object with all the specified properties.
+     *
+     * @param columnBaseOption the ColumnBaseOption to be set
+     * @param editable         the boolean value whether cell is edit enabled
+     * @param type             the string value whether cell is type of input, or date...
+     * @param maxLength        the letter length to be set
+     * @param dateOption       the DateOption value when cell is type of date
+     * @param sortingType      the string value whether is asc or dec
+     * @param sortable         the boolean value whether cell is sortable
+     */
     public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, int maxLength, DateOption dateOption, String sortingType, boolean sortable) {
         this.columnBaseOption = columnBaseOption;
         this.editable = editable;

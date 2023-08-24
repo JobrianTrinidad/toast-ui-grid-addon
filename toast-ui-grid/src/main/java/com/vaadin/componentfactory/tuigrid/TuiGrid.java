@@ -20,15 +20,18 @@
 
 package com.vaadin.componentfactory.tuigrid;
 
+import com.vaadin.componentfactory.tuigrid.event.ItemChangeEvent;
 import com.vaadin.componentfactory.tuigrid.event.SelectionEvent;
 import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClientCallable;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
 import elemental.json.JsonObject;
+import elemental.json.impl.JreJsonArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +41,6 @@ import java.util.stream.Collectors;
  * Toast-ui-grid component definition. Toast-ui-grid uses vis-timeline component to display data in time (see
  * more at https://github.com/toast-ui-grid).
  */
-
 @SuppressWarnings("serial")
 @NpmPackage(value = "react", version = "^16.7.0")
 @NpmPackage(value = "react-dom", version = "^16.7.0")
@@ -54,6 +56,8 @@ import java.util.stream.Collectors;
 public class TuiGrid extends Div {
     private List<Item> items = new ArrayList<>();
     protected TuiGridOption tuiGridOption = new TuiGridOption();
+    String colName;
+    String colValue;
 
     public TuiGrid() {
         setId("visualization" + this.hashCode());
@@ -65,7 +69,6 @@ public class TuiGrid extends Div {
         this();
         this.items = items;
         tuiGridOption.columns = columns;
-//        initTuiGrid();
     }
 
     public TuiGrid(List<Item> items, List<Column> columns, List<Summary> summaries) {
@@ -73,7 +76,6 @@ public class TuiGrid extends Div {
         this.items = items;
         tuiGridOption.columns = columns;
         tuiGridOption.summaryList = summaries;
-//        initTuiGrid();
     }
 
     public TuiGrid(List<ComplexColumn> customHeader, List<Item> items, List<Column> columns, List<Summary> summaries) {
@@ -84,12 +86,21 @@ public class TuiGrid extends Div {
         tuiGridOption.header = customHeader;
     }
 
+    /**
+     * Method called when the component is attached to the UI.
+     * It initializes the TuiGrid component.
+     */
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
         initTuiGrid();
     }
 
+    /**
+     * Sets the items of the grid with the provided list of items.
+     *
+     * @param items the items to be set
+     */
     public void setItems(List<Item> items) {
         this.items = items;
         if (this.getElement().getNode().isAttached()) {
@@ -100,6 +111,11 @@ public class TuiGrid extends Div {
         }
     }
 
+    /**
+     * Adds the provided list of items to the existing items in the grid.
+     *
+     * @param items the items to be added
+     */
     public void addItem(List<Item> items) {
         if (this.getElement().getNode().isAttached())
             this.getElement()
@@ -108,83 +124,182 @@ public class TuiGrid extends Div {
                             this, "[" + convertItemsToJson(items) + "]");
     }
 
+    /**
+     * Sets the columns of the grid with the provided list of columns.
+     *
+     * @param columns the columns to be set
+     */
     public void setColumns(List<Column> columns) {
         tuiGridOption.columns.addAll(columns);
         this.updateTuiGridOptions();
     }
 
-    public void insertColumn(Column column) {
-        tuiGridOption.columns.add(column);
-        for (Item item :
-                this.items) {
-            item.addHeader(column.getColumnBaseOption().getHeaderName());
-        }
-        this.setItems(this.items);
-        if (this.getElement().getNode().isAttached())
-            this.getElement()
-                    .executeJs(
-                            "toastuigrid.insertColumn($0, $1, $2);",
-                            this, "[" + convertColumnsToJson() + "]",
-                            "[" + convertItemsToJson(this.items) + "]");
+    /**
+     * Sets the columns of the grid with the provided list of summaries.
+     *
+     * @param summaries the summaries to be set
+     */
+    public void setSummaries(List<Summary> summaries) {
+        tuiGridOption.summaryList.addAll(summaries);
+        this.updateTuiGridOptions();
     }
 
+    /**
+     * Sets the complex columns of the grid with the provided list of complex columns.
+     *
+     * @param complexColumns the complexColumns to be set
+     */
+    public void setComplexColumns(List<ComplexColumn> complexColumns) {
+        tuiGridOption.header.addAll(complexColumns);
+        this.updateTuiGridOptions();
+    }
+
+    /**
+     * Returns the header height of the grid.
+     */
     public int getHeaderHeight() {
         return tuiGridOption.headerHeight;
     }
 
+    /**
+     * Sets the header height of the grid with the provided value.
+     *
+     * @param headerHeight the headerHeight to be set
+     */
     public void setHeaderHeight(int headerHeight) {
         tuiGridOption.headerHeight = headerHeight;
         this.updateTuiGridOptions();
     }
 
+    /**
+     * Sets the summary height of the grid with the provided value.
+     *
+     * @param summaryHeight the summaryHeight to be set
+     */
     public void setSummaryHeight(int summaryHeight) {
         tuiGridOption.summaryHeight = summaryHeight;
         this.updateTuiGridOptions();
     }
 
+    /**
+     * Sets whether vertical scrolling is enabled in the grid.
+     *
+     * @param vScroll the boolean value to be set
+     */
     public void setvScroll(boolean vScroll) {
         tuiGridOption.vScroll = vScroll;
         this.updateTuiGridOptions();
     }
 
+    /**
+     * Sets whether horizontal scrolling is enabled in the grid.
+     *
+     * @param hScroll the boolean value to be set
+     */
     public void sethScroll(boolean hScroll) {
         tuiGridOption.hScroll = hScroll;
         this.updateTuiGridOptions();
     }
 
+    /**
+     * Sets the number of frozen columns in the grid.
+     *
+     * @param frozenCount the int value to be set
+     */
     public void setFrozenCount(int frozenCount) {
         tuiGridOption.frozenCount = frozenCount;
         this.updateTuiGridOptions();
     }
 
+    /**
+     * Sets the border width of frozen columns in the grid.
+     *
+     * @param frozenBorderWidth the int value to be set
+     */
     public void setFrozenBorderWidth(int frozenBorderWidth) {
         tuiGridOption.frozenBorderWidth = frozenBorderWidth;
         this.updateTuiGridOptions();
     }
 
+    /**
+     * Sets the width of the grid table.
+     *
+     * @param tableWidth the int value to be set
+     */
     public void setTableWidth(int tableWidth) {
         tuiGridOption.tableWidth = tableWidth;
         this.updateTuiGridOptions();
     }
 
+    /**
+     * Sets the height of the grid table.
+     *
+     * @param tableHeight the int value to be set
+     */
     public void setTableHeight(int tableHeight) {
         tuiGridOption.tableHeight = tableHeight;
         this.updateTuiGridOptions();
     }
 
+    /**
+     * Sets the row headers of the grid with the provided list of row headers.
+     *
+     * @param rowHeaders the rowHeaders to be set
+     */
     public void setRowHeaders(List<String> rowHeaders) {
         tuiGridOption.rowHeaders = rowHeaders;
         this.updateTuiGridOptions();
     }
 
+    /**
+     * Sets the tree option for the grid.
+     *
+     * @param treeOption the TreeOption to be set
+     */
     public void setTreeOption(TreeOption treeOption) {
         tuiGridOption.treeOption = treeOption;
     }
 
+    /**
+     * Sets whether the grid is resizable.
+     *
+     * @param resizable the boolean value to be set
+     */
     public void setResizable(boolean resizable) {
         tuiGridOption.resizable = resizable;
     }
 
+    /**
+     * Returns the current column name.
+     */
+    private String getColName() {
+        return colName;
+    }
+
+    /**
+     * Sets the column name.
+     */
+    private void setColName(String colName) {
+        this.colName = colName;
+    }
+
+    /**
+     * Returns the current column value.
+     */
+    private String getColValue() {
+        return colValue;
+    }
+
+    /**
+     * Sets the column value.
+     */
+    private void setColValue(String colValue) {
+        this.colValue = colValue;
+    }
+
+    /**
+     * Initializes the TuiGrid component.
+     */
     private void initTuiGrid() {
         this.getElement()
                 .executeJs(
@@ -192,7 +307,6 @@ public class TuiGrid extends Div {
                         this, "[" + convertItemsToJson() + "]",
                         tuiGridOption.toJSON());
     }
-
 
     /**
      * Updates tuigrid options after tuigrid creation.
@@ -203,34 +317,36 @@ public class TuiGrid extends Div {
         }
     }
 
+    /**
+     * Converts the items in the grid to JSON format.
+     */
     private String convertItemsToJson() {
         return this.items != null
                 ? this.items.stream().map(item -> item.toJSON()).collect(Collectors.joining(","))
                 : "";
     }
 
+    /**
+     * Converts the provided list of items to JSON format.
+     */
     private String convertItemsToJson(List<Item> items) {
         return items != null
                 ? items.stream().map(item -> item.toJSON()).collect(Collectors.joining(","))
                 : "";
     }
 
-    private String convertColumnsToJson() {
-        return tuiGridOption.columns != null
-                ? tuiGridOption.columns.stream().map(column -> {
-            int index = tuiGridOption.columns.indexOf(column);
-            if (index < tuiGridOption.columns.size())
-                return column.toJSON(true);
-            else
-                return column.toJSON(false);
-        }).collect(Collectors.joining(","))
-                : "";
-    }
-
+    /**
+     * Sets the selected item in the grid based on the provided column name.
+     *
+     * @param colName the String value to be set
+     */
     public void setSelectItem(String colName) {
         fireItemSelectEvent(colName, true);
     }
 
+    /**
+     * Fires an item select event with the provided column name and client information.
+     */
     protected void fireItemSelectEvent(
             String colName, boolean fromClient) {
         SelectionEvent event = new SelectionEvent(this, colName, 1, fromClient);
@@ -244,6 +360,34 @@ public class TuiGrid extends Div {
         }
     }//
 
+    /**
+     * Returns the list of items in the grid.
+     */
+    public List<Item> getData() {
+        return this.items;
+    }
+
+    /**
+     * Refreshes the data in the grid by updating the value at the specified row and column.
+     *
+     * @param row   the grid's row to be changed
+     * @param value the grid's value to be changed
+     */
+    private void refreshData(int row, String value) {
+        List<Item> tempItems = new ArrayList<>();
+        tempItems.addAll(this.items);
+        GuiItem temp = (GuiItem) this.items.get(row);
+        List<String> tempRecord = new ArrayList<>();
+        tempRecord.addAll(temp.getRecordData());
+        tempRecord.set(temp.getHeaders().indexOf(getColName()), value);
+        tempItems.set(row, new GuiItem(tempRecord, temp.getHeaders()));
+//        this.items = new ArrayList<>();
+        this.items = tempItems;
+    }
+
+    /**
+     * Handles the click event in the grid for the specified column name and row.
+     */
     @ClientCallable
     public void onClick(String colName, int row) {
         this.getElement()
@@ -252,12 +396,65 @@ public class TuiGrid extends Div {
                         this, colName);
     }
 
+    /**
+     * Handles the editing start event in the grid.
+     */
+    @ClientCallable
+    public void onEditingStart(JsonObject eventData) {
+        colName = eventData.getString("columnName");
+        colValue = eventData.getString("value");
+    }
+
+    /**
+     * Handles the editing finish event in the grid.
+     */
     @ClientCallable
     public void onEditingFinish(JsonObject eventData) {
-//        String message = eventData.getString("message");
-        this.getElement()
-                .executeJs(
-                        "toastuigrid.setTest($0, $1);",
-                        this, eventData.get("columnName"));
+        if (!getColValue().equals(eventData.getString("value"))) {
+            ItemChangeEvent event = new ItemChangeEvent(
+                    this, getColName(), eventData.getString("value"),
+                    (int) eventData.getNumber("rowKey"), true);
+
+            refreshData((int) eventData.getNumber("rowKey"), eventData.getString("value"));
+
+            RuntimeException exception = null;
+            try {
+
+                fireEvent(event);
+            } catch (RuntimeException e) {
+                exception = e;
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    /**
+     * Handles the event to get data from the grid.
+     */
+    @ClientCallable
+    public void onGetData(JreJsonArray data) {
+        JsonObject temp = data.getObject(0);
+        List<String> headers = new ArrayList<>();
+        headers.addAll(List.of(temp.keys()));
+        for (int i = 0; i < data.length(); i++) {
+            List<String> recordData = new ArrayList<>();
+            JsonObject jsonValue = data.getObject(i);
+            for (String header :
+                    headers) {
+
+                recordData.add(jsonValue.get(header).toString());
+            }
+            this.items = new ArrayList<>();
+            this.items.add(new GuiItem(recordData, headers));
+        }
+    }
+
+    /**
+     * Adds a listener for {@link ItemChangeEvent} to the component.
+     *
+     * @param listener the listener to be added
+     */
+    public void addItemChangeListener(ComponentEventListener<ItemChangeEvent> listener) {
+        addListener(ItemChangeEvent.class, listener);
     }
 }

@@ -1,53 +1,74 @@
-# Toast-ui-grid component for Vaadin Flow
+# TuiGrid component for Vaadin Flow
 
-Toast-ui-grid component uses [vis-timeline](https://visjs.github.io/vis-timeline/docs/timeline/) library to display data in time.
+TuiGrid component uses [tuigrid](https://github.com/rosauromatib/toast-ui-grid-addon/) library to display data in time.
 
 This component is part of Vaadin Component Factory.
+# Description
+The TuiGrid class is a component definition for the Toast-ui-grid component. 
+Toast-ui-grid is a grid component that uses the vis-timeline library to display data in a time-based manner. 
+This class extends the Div component from the Vaadin Flow framework and provides functionality for creating and interacting with the Toast-ui-grid component.
 
-## Description 
-
-Toast-ui-grid component provides support to the following features:
-
-- Create a timeline with a defined visible range.
-- Make musicItems readonly.
-- Update musicItems content.
-- Give musicItems a style by defining a class name.
-- Edit an item by resizing it.
-- Edit an item by drag and drop.
-- Multiple musicItems selection.
-- Possiblity to define zoom options (e.g. 1 day, 3 days, 5 days).
-- Items are shown connected by an horizontal line between them. (*)
-- Show tooltips for musicItems.
-- Possibility to revert resizing or dragging if condition is not met.
-- Autoscrolling when reaching limits of visible range.
-- Tooltip on item update.
-
-(*) Horizontal lines implementation is based on [timeline-arrows](https://github.com/javdome/timeline-arrows).
-
-## Development instructions
-
+# Development Instructions
+To develop or modify the TuiGrid component, follow these instructions:
 - Build the project and install the add-on locally:
 ```
 mvn clean install
 ```
-- For starting the demo server go to timeline-demo and run:
+- For starting the demo server go to toast-ui-grid-demo and run:
 ```
 mvn jetty:run
 ```
 This deploys demo at http://localhost:8080
 
-## How to use it
 
-Create a new component Toast-ui-grid:
+# How to Use It
+To use the TuiGrid component in your Vaadin Flow application, follow these steps:
 
-```java
-Toast-ui-grid timeline = new Toast-ui-grid(musicItems);
-```
+1. Add the TuiGrid component to your project's dependencies.
+2. Import the TuiGrid class into your application.
+3. Create an instance of the TuiGrid component.
+4. Set the necessary properties and options for the grid.
+5. Add the grid component to your application's layout or container.
 
-## Examples
+Example usage:
 
-See examples on [timeline-demo](https://github.com/vaadin-component-factory/toast-ui-grid/tree/master/timeline-demo/src/main/java/com/vaadin/componentfactory/timeline).
+    TuiGrid grid = new TuiGrid();
+    grid.setItems(items);
+    grid.setColumns(columns);
+    grid.setSummaries(summaries);
+    
+    // Add the grid to your layout
+    layout.add(grid);
 
-## Missing features or bugs
+# Examples
+Here is an example of how to use the TuiGrid component:
 
-You can report any issue or missing feature on [GitHub](https://github.com/vaadin-component-factory/toast-ui-grid/issues).
+    // Create a list of items
+    List<Item> items = new ArrayList<>();
+    List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen");
+    items.add(new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
+    items.add(new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
+    items.add(new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
+    
+    // Create a list of columns
+    List<Column> columns = new ArrayList<>();
+    columns.add(new Column(new ColumnBaseOption(0, "Name", "name", 250, "center", ""));
+    
+    // Create a list of summaries
+    List<Summary> summaries = new ArrayList<>();
+    summaries.add(new Summary("price", Summary.OperationType.sum));
+
+    // Create a list of complex header
+     List<ComplexColumn> customHeaders = List.of(
+                new ComplexColumn("Details Info", "Details Info", List.of("type", "genre", "release")),
+                new ComplexColumn("Count", "Count", List.of("download", "listen")),
+                new ComplexColumn("Extra Info", "Extra Info", List.of("price", "Count")));
+    
+    // Create a TuiGrid instance
+    TuiGrid grid = new TuiGrid(customHeaders, items, columns, summaries);
+    
+    // Add the grid to your layout
+    layout.add(grid);
+
+# Missing Features or Bugs
+Currently, there are no missing features or known bugs in the TuiGrid component. If you encounter any issues or have suggestions for improvements, please report them to the project maintainers.

@@ -25,12 +25,16 @@ import elemental.json.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class RelationItem implements Item {
+public class GuiItem implements Item {
     private List<String> recordData;
     private List<String> headers = new ArrayList<>();
+    private boolean expanded;
+    private List<GuiItem> _children;
 
-    public RelationItem(List<String> recordData, List<String> headers) {
+    public GuiItem(List<String> recordData, List<String> headers) {
         this.recordData = recordData;
         this.headers.clear();
         this.headers.addAll(headers);
@@ -42,8 +46,19 @@ public class RelationItem implements Item {
         for (int i = 0; i < this.headers.size(); i++) {
             js.put(this.headers.get(i), this.recordData.get(i) != null ? this.recordData.get(i) : "");
         }
-
+        if(isExpanded()){
+            JsonObject attributesJs = Json.createObject();
+            Optional.ofNullable(isExpanded()).ifPresent(v -> attributesJs.put("expanded", v));
+            js.put("_attributes", attributesJs);
+            Optional.ofNullable(convertChildrenToJson()).ifPresent(v -> js.put("_children", "[" + v + "]"));
+        }
         return js.toJson();
+    }
+
+    private String convertChildrenToJson() {
+        return this._children != null
+                ? this._children.stream().map(child -> child.toJSON()).collect(Collectors.joining(","))
+                : "";
     }
 
     public List<String> getRecordData() {
@@ -64,5 +79,21 @@ public class RelationItem implements Item {
 
     public void setHeaders(List<String> headers) {
         this.headers = headers;
+    }
+
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
+
+    public List<GuiItem> get_children() {
+        return _children;
+    }
+
+    public void set_children(List<GuiItem> _children) {
+        this._children = _children;
     }
 }

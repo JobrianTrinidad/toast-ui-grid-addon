@@ -17,15 +17,18 @@ public class RelationBetweenColumnsExample extends Div {
                 this.getColumns(), null);
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
-        add(grid);
+        grid.addItemChangeListener(ev -> {
+            sp.add(ev.getColName() + ": "+ ev.getColValue() + ": "+ ev.getRow());
+        });
+        add(grid, sp);
     }
 
     private List<Item> getTableData() {
 
         List<String> headers = List.of("category1", "category2", "category3");
-        RelationItem item1 = new RelationItem(List.of("", "", ""), headers);
-        RelationItem item2 = new RelationItem(List.of("2", "2_3", "2_3_1"), headers);
-        RelationItem item3 = new RelationItem(List.of("3", "3_1", "3_1_1"), headers);
+        GuiItem item1 = new GuiItem(List.of("", "", ""), headers);
+        GuiItem item2 = new GuiItem(List.of("2", "2_3", "2_3_1"), headers);
+        GuiItem item3 = new GuiItem(List.of("3", "3_1", "3_1_1"), headers);
         List<Item> TableData = List.of(item1, item2, item3);
         return TableData;
     }

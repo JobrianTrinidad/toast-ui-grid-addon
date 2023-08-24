@@ -37,13 +37,10 @@ public class TuiGridOption {
         bottom
     }
 
-    /* Minimum Date for the visible range.*/
     public List<Column> columns = new ArrayList<>();
-
-    /* Maximum Date for the visible range (excluded).*/
-    public List<ComplexColumn> header;
+    public List<ComplexColumn> header = new ArrayList<>();
     public int headerHeight = 0;
-    public List<Summary> summaryList;
+    public List<Summary> summaryList = new ArrayList<>();
     public int summaryHeight = 0;
     public SummaryPosition pos = SummaryPosition.bottom;
     public int frozenCount = 0;
@@ -77,7 +74,7 @@ public class TuiGridOption {
                 headerJs.put("height", headerHeight);
             }
 //            headerJs.put("height", 100);
-            Optional.ofNullable(convertHeaderToJson()).ifPresent(v -> headerJs.put("columnContent", "[" + v + "]"));
+            Optional.ofNullable(convertHeaderToJson()).ifPresent(v -> headerJs.put("complexColumns", "[" + v + "]"));
             js.put("header", headerJs);
         }
 

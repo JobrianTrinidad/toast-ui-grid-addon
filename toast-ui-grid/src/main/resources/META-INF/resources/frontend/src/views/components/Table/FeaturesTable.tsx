@@ -45,6 +45,7 @@ export class FeatureTable extends React.Component<any, any> {
     el: any;
     private onEditingStart: any;
     private onEditingFinish: any;
+    private onSelection: any;
 
     constructor(props: any) {
         super(props);
@@ -68,6 +69,7 @@ export class FeatureTable extends React.Component<any, any> {
         this.minBodyHeight = props.minBodyHeight;
         this.onEditingStart = props.onEditingStart;
         this.onEditingFinish = props.onEditingFinish;
+        this.onSelection = props.onSelection;
     }
 
     render(): JSX.Element {
@@ -92,6 +94,7 @@ export class FeatureTable extends React.Component<any, any> {
                         {...(this.columnOptions && {columnOptions: this.columnOptions})}
                         onEditingStart={this.onEditingStart}
                         onEditingFinish={this.onEditingFinish}
+                        onSelection={this.onSelection}
                     />
                 </div>
             </ErrorBoundary>

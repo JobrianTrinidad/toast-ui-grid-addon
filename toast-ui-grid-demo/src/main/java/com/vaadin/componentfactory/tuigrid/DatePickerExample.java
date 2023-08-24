@@ -1,7 +1,6 @@
 package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.model.*;
-import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
 
@@ -23,22 +22,23 @@ public class DatePickerExample extends Div {
     private List<Item> getTableData() {
 
         List<Item> TableData = new ArrayList<>();
-        TableData.add(new DateItem("1992/03/25", "12/06/2019",
+        List<String> headers = List.of("default", "options", "ranges", "timepicker", "timepickerwithtab", "month", "year");
+        TableData.add(new GuiItem(List.of("1992/03/25", "12/06/2019",
                 "2014-04-16", "2019-11-19 09:00 AM",
                 "2019-11-19 09:00 AM", "2019-01",
-                "2019"));
+                "2019"), headers));
         return TableData;
     }
 
     private List<Column> getColumns() {
         List<Column> columns = List.of(
-                new Column(new ColumnBaseOption(0, "default", "DatePicker (Default)", 150, "center", ""), true, "datePicker", new DateOption("yyyy/MM/dd", false)),
-                new Column(new ColumnBaseOption(1, "options", "DatePicker (Using options)", 150, "center", ""), true, "datePicker", new DateOption("dd/MM/yyyy", false)),
-                new Column(new ColumnBaseOption(2, "ranges", "DatePicker (selectableRanges)", 150, "center", ""), true, "datePicker", new DateOption(2023, 7, 10, 2023, 8, 20)),
-                new Column(new ColumnBaseOption(3, "timepicker", "Date-TimePicker", 150, "center", ""), true, "datePicker", new DateOption("yyyy-MM-dd HH:mm A", true)),
-                new Column(new ColumnBaseOption(4, "timepickerwithtab", "Date-TimePicker With tab", 150, "center", ""), true, "datePicker", new DateOption("yyyy-MM-dd HH:mm A", true, "tab", "spinbox")),
-                new Column(new ColumnBaseOption(5, "month", "MonthPicker", 150, "center", ""), true, "datePicker", new DateOption("yyyy-MM", "month")),
-                new Column(new ColumnBaseOption(6, "year", "YearPicker", 150, "center", ""), true, "datePicker", new DateOption("yyyy", "year")));
+                new Column(new ColumnBaseOption(0, "DatePicker (Default)", "default", 150, "center", ""), true, "datePicker", new DateOption("yyyy/MM/dd", false)),
+                new Column(new ColumnBaseOption(1, "DatePicker (Using options)", "options", 150, "center", ""), true, "datePicker", new DateOption("dd/MM/yyyy", false)),
+                new Column(new ColumnBaseOption(2, "DatePicker (selectableRanges)", "ranges", 150, "center", ""), true, "datePicker", new DateOption(2023, 7, 10, 2023, 8, 20)),
+                new Column(new ColumnBaseOption(3, "Date-TimePicker", "timepicker", 150, "center", ""), true, "datePicker", new DateOption("yyyy-MM-dd HH:mm A", true)),
+                new Column(new ColumnBaseOption(4, "Date-TimePicker With tab", "timepickerwithtab", 150, "center", ""), true, "datePicker", new DateOption("yyyy-MM-dd HH:mm A", true, "tab", "spinbox")),
+                new Column(new ColumnBaseOption(5, "MonthPicker", "month", 150, "center", ""), true, "datePicker", new DateOption("yyyy-MM", "month")),
+                new Column(new ColumnBaseOption(6, "YearPicker", "year", 150, "center", ""), true, "datePicker", new DateOption("yyyy", "year")));
         return columns;
     }
 }
