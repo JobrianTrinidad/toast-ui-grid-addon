@@ -96,8 +96,9 @@ window.toastuigrid = {
     // The function appends the new data to the existing table data, and then updates the grid.
     addTableData(container: HTMLElement & { grid: FeatureTable }, data: any) {
         let parsedItems = JSON.parse(data);
-        container.grid.TableData = [...container.grid.TableData, ...this.getTableData(parsedItems)];
-        this.updateGrid(container);
+        // container.grid.TableData = [...container.grid.TableData, ...this.getTableData(parsedItems)];
+        container.grid.setOption({TableData: [...container.grid.TableData, ...this.getTableData(parsedItems)]});
+        // this.updateGrid(container);
     },
     //This internal function is used to set the column content based on a matched name.
     // It takes an object columnContent and modifies it based on its value.
@@ -290,7 +291,7 @@ window.toastuigrid = {
     setOptions: function (container: HTMLElement & { grid: FeatureTable }, optionsJson: any) {
         let parsedOptions = JSON.parse(optionsJson);
         container.grid.setOption(parsedOptions);
-        this.updateGrid(container);
+        // this.updateGrid(container);
     },
     setTest: function (container: any, content: any) {
         console.log("Event Test: ", content);
