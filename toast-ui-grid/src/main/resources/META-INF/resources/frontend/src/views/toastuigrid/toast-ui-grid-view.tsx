@@ -89,7 +89,7 @@ window.toastuigrid = {
     setTableData(container: HTMLElement & { grid: FeatureTable }, data: any) {
         let parsedItems = JSON.parse(data);
         container.grid.setOption({TableData: this.getTableData(parsedItems)});
-        this.updateGrid(container);
+        // this.updateGrid(container);
     },
     //This function adds new data to the existing table data of a grid.
     // It takes a container element with a grid property, and JSON data for the new data.
