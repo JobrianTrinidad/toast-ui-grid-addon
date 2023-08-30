@@ -297,6 +297,7 @@ window.toastuigrid = {
     },
     //This function updates the grid by rendering the grid component using ReactDOM.render.
     updateGrid: function (container: any) {
+        console.log("Grid: ", container.grid);
         ReactDOM.render(container.grid.render(), container);
     }
 }
