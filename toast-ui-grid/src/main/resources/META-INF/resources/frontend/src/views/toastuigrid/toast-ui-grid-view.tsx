@@ -28,6 +28,7 @@ window.toastuigrid = {
         let parsedItems = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
         console.log("options: ", parsedOptions);
+        console.log("Items: ", parsedItems);
         // Implementation goes here
         const onSelection = (ev: any) => {
             console.log("selection: ", ev);
