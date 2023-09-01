@@ -234,7 +234,6 @@ window.toastuigrid = {
         for (let column of columns) {
             if (column.editor && column.editor.type == "input") {
                 column.editor.type = CustomTextEditor;
-                tempColumns.push(column);
             }
 
             if (column.hasOwnProperty('editor') &&
@@ -254,7 +253,6 @@ window.toastuigrid = {
                         selectableRanges: [[new Date(fromYear, fromMonth - 1, fromDay), new Date(toYear, toMonth - 1, toDay)]]
                     };
                 }
-                tempColumns.push(column);
             }
 
             if (column.editor && column.editor.type == "select") {
@@ -282,6 +280,8 @@ window.toastuigrid = {
                 };
                 tempColumns.push(tempColumn);
             }
+            else
+                tempColumns.push(column);
         }
         return tempColumns;
     },
