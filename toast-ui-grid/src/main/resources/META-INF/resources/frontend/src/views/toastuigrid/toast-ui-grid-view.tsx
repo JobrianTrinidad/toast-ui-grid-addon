@@ -231,9 +231,10 @@ window.toastuigrid = {
         let columns: any[] = parsedColumn;
         let tempColumns: any[] = [];
 
-        for (const column of columns) {
+        for (let column of columns) {
             if (column.editor && column.editor.type == "input") {
                 column.editor.type = CustomTextEditor;
+                tempColumns.push(column);
             }
 
             if (column.hasOwnProperty('editor') &&
@@ -253,6 +254,7 @@ window.toastuigrid = {
                         selectableRanges: [[new Date(fromYear, fromMonth - 1, fromDay), new Date(toYear, toMonth - 1, toDay)]]
                     };
                 }
+                tempColumns.push(column);
             }
 
             if (column.editor && column.editor.type == "select") {
@@ -281,9 +283,7 @@ window.toastuigrid = {
                 tempColumns.push(tempColumn);
             }
         }
-        if (tempColumns.length != 0)
-            return tempColumns;
-        return columns;
+        return tempColumns;
     },
     //This function updates the options of an existing grid.
     // It takes a container element with a grid property, and JSON data for the new options.

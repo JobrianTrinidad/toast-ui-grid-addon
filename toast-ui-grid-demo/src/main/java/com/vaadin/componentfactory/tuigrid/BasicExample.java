@@ -22,7 +22,6 @@ public class BasicExample extends Div {
         grid.setItems(this.getTableData());
 
         Button addBtn = new Button("Insert Column", e -> {
-            grid.insertColumn(new Column(new ColumnBaseOption(5, "Nameaa", "nameaa", 0, "center", "")));
         });
 
         HorizontalLayout layout = new HorizontalLayout();
