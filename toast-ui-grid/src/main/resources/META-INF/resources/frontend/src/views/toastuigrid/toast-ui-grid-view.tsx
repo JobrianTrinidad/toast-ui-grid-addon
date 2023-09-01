@@ -259,6 +259,7 @@ window.toastuigrid = {
                 let tempColumn = {
                     header: column.headerName,
                     name: column.name,
+                    align: column.align,
                     formatter: "listItemText",
                     editor: {
                         type: "select",
