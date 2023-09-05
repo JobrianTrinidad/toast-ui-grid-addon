@@ -54,7 +54,6 @@ window.toastuigrid = {
                 }
                 return value;
             }));
-console.log("Editing is end: ", cleanObject);
 // Send the cleaned object to the server
             container.$server.onEditingFinish(cleanedObject);
         };
