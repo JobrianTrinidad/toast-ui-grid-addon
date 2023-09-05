@@ -417,7 +417,7 @@ public class TuiGrid extends Div {
         this.getElement()
                 .executeJs(
                         "toastuigrid.setTest($0, $1);",
-                        this, eventData.getString("value")));
+                        this, eventData.getString("value"));
         if (!getColValue().equals(eventData.getString("value"))) {
             this.getElement()
                 .executeJs(
