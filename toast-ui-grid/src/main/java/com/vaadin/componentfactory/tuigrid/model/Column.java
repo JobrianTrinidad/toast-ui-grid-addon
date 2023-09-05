@@ -95,6 +95,14 @@ public class Column {
         this.columnBaseOption = columnBaseOption;
     }
 
+    public List<RelationOption> getRelationOptions() {
+        return relationOptions;
+    }
+
+    public void setRelationOptions(List<RelationOption> relationOptions) {
+        this.relationOptions = relationOptions;
+    }
+
     public boolean isRoot() {
         return root;
     }
