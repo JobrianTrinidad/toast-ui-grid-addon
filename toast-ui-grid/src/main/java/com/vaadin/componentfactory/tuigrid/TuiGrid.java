@@ -403,6 +403,10 @@ public class TuiGrid extends Div {
     public void onEditingStart(JsonObject eventData) {
         colName = eventData.getString("columnName");
         colValue = eventData.getString("value");
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setTest($0, $1);",
+                        this, colName);
     }
 
     /**
