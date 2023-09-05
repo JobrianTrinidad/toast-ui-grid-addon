@@ -35,13 +35,15 @@ window.toastuigrid = {
             console.log("grid: ", container.grid);
         };
         const onEditingStart = (ev: any) => {
+            console.log("Editing is start: ", ev);
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+                console.log("Editing is start: ", value);
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
                 }
                 return value;
             }));
-console.log("Editing is start: ", cleanObject);
+
 // Send the cleaned object to the server
             container.$server.onEditingStart(cleanedObject);
         };
