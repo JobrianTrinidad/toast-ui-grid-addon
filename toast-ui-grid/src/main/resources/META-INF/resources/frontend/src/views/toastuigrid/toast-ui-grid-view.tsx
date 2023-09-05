@@ -41,7 +41,7 @@ window.toastuigrid = {
                 }
                 return value;
             }));
-
+console.log("Editing is start: ", cleanObject);
 // Send the cleaned object to the server
             container.$server.onEditingStart(cleanedObject);
         };
@@ -52,7 +52,7 @@ window.toastuigrid = {
                 }
                 return value;
             }));
-
+console.log("Editing is end: ", cleanObject);
 // Send the cleaned object to the server
             container.$server.onEditingFinish(cleanedObject);
         };
