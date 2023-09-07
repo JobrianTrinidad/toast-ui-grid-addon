@@ -46,6 +46,11 @@ export class FeatureTable extends React.Component<any, any> {
     private onEditingStart: any;
     private onEditingFinish: any;
     private onSelection: any;
+    private onCheck: any;
+    private onCheckAll: any;
+    private onUncheck: any;
+    private onUncheckAll: any;
+    gridRef = React.createRef();
 
     constructor(props: any) {
         super(props);
@@ -70,6 +75,15 @@ export class FeatureTable extends React.Component<any, any> {
         this.onEditingStart = props.onEditingStart;
         this.onEditingFinish = props.onEditingFinish;
         this.onSelection = props.onSelection;
+        this.onCheck = props.onCheck;
+        this.onCheckAll = props.onCheckAll;
+        this.onUncheck = props.onUncheck;
+        this.onUncheckAll = props.onUncheckAll;
+    }
+
+    componentDidMount() {
+        const gridInstance = this.gridRef.current.getInstance();
+        console.log("gridInstance", gridInstance); // Access the grid instance here
     }
 
     render(): JSX.Element {
@@ -77,6 +91,7 @@ export class FeatureTable extends React.Component<any, any> {
             <ErrorBoundary>
                 <div>
                     <Grid
+                        ref={this.gridRef}
                         {...(this.el && {el: this.el})}
                         data={this.TableData}
                         columns={this.columns}
@@ -95,6 +110,10 @@ export class FeatureTable extends React.Component<any, any> {
                         onEditingStart={this.onEditingStart}
                         onEditingFinish={this.onEditingFinish}
                         onSelection={this.onSelection}
+                        onCheck={this.onCheck}
+                        onCheckAll={this.onCheckAll}
+                        onUncheck={this.onUncheck}
+                        onUncheckAll={this.onUncheckAll}
                     />
                 </div>
             </ErrorBoundary>

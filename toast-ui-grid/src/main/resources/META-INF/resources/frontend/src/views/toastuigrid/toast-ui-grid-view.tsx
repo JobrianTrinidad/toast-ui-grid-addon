@@ -34,10 +34,44 @@ window.toastuigrid = {
             console.log("selection: ", ev);
             console.log("grid: ", container.grid);
         };
-        const onEditingStart = (ev: any) => {
-            console.log("Editing is start: ", ev);
+        const onCheck = (ev: any) => {
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
-                console.log("Editing is start: ", value);
+                if (value instanceof Node) {
+                    return null; // Remove the DOM node reference
+                }
+                return value;
+            }))
+            container.$server.onCheck(cleanedObject);
+        };
+        const onUncheck = (ev: any) => {
+            let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+                if (value instanceof Node) {
+                    return null; // Remove the DOM node reference
+                }
+                return value;
+            }))
+            container.$server.onUncheck(cleanedObject);
+        };
+        const onCheckAll = (ev: any) => {
+            let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+                if (value instanceof Node) {
+                    return null; // Remove the DOM node reference
+                }
+                return value;
+            }))
+            container.$server.onCheckAll(cleanedObject);
+        };
+        const onUncheckAll = (ev: any) => {
+            let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+                if (value instanceof Node) {
+                    return null; // Remove the DOM node reference
+                }
+                return value;
+            }))
+            container.$server.onUncheckAll(cleanedObject);
+        };
+        const onEditingStart = (ev: any) => {
+            let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
                 }
@@ -75,8 +109,13 @@ window.toastuigrid = {
             onEditingStart: onEditingStart,
             onEditingFinish: onEditingFinish,
             onSelection: onSelection,
+            onCheck: onCheck,
+            onCheckAll: onCheckAll,
+            onUncheck: onUncheck,
+            onUncheckAll: onUncheckAll,
         });
         container.grid = gridTable;
+        console.log("gridInstance: ", container.grid.gridRef);
 
         this.updateGrid(container);
     },
@@ -281,10 +320,10 @@ window.toastuigrid = {
                     })
                 };
                 tempColumns.push(tempColumn);
-            }
-            else
+            } else
                 tempColumns.push(column);
         }
+        console.log("tempColumns: ", tempColumns);
         return tempColumns;
     },
     //This function updates the options of an existing grid.
@@ -297,6 +336,13 @@ window.toastuigrid = {
     },
     setTest: function (container: any, content: any) {
         console.log("Event Test: ", content);
+    },
+
+    removeRows: function (container: any, rowKeys: any) {
+        const rows =  JSON.parse(rowKeys);
+        for (let i = 0; i < rows.length; i++) {
+            container.grid.gridRef.current.getInstance().removeRow(rows[i]);
+        }
     },
     //This function updates the grid by rendering the grid component using ReactDOM.render.
     updateGrid: function (container: any) {

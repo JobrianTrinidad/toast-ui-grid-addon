@@ -21,6 +21,7 @@
 package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.event.ItemChangeEvent;
+import com.vaadin.componentfactory.tuigrid.event.ItemDeleteEvent;
 import com.vaadin.componentfactory.tuigrid.event.SelectionEvent;
 import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.AttachEvent;
@@ -56,6 +57,8 @@ import java.util.stream.Collectors;
 public class TuiGrid extends Div {
     private List<Item> items = new ArrayList<>();
     protected TuiGridOption tuiGridOption = new TuiGridOption();
+
+    private List<Integer> checkedItems = new ArrayList<>();
     String colName;
     String colValue;
 
@@ -109,6 +112,10 @@ public class TuiGrid extends Div {
                             "toastuigrid.setTableData($0, $1);",
                             this, "[" + convertItemsToJson(items) + "]");
         }
+    }
+
+    public List<Item> getItems() {
+        return items;
     }
 
     /**
@@ -297,6 +304,10 @@ public class TuiGrid extends Div {
         this.colValue = colValue;
     }
 
+    public List<Integer> getCheckedItems() {
+        return checkedItems;
+    }
+
     /**
      * Initializes the TuiGrid component.
      */
@@ -361,6 +372,36 @@ public class TuiGrid extends Div {
     }//
 
     /**
+     * Sets the selected item in the grid based on the provided column name.
+     *
+     * @param rows the String value to be set
+     */
+    public void deleteItems(List<Integer> rows) {
+        fireDeleteItemsEvent(rows, true);
+    }
+
+    /**
+     * Fires an item select event with the provided column name and client information.
+     */
+    protected void fireDeleteItemsEvent(
+            List<Integer> rows, boolean fromClient) {
+        ItemDeleteEvent event = new ItemDeleteEvent(this, rows, fromClient);
+        RuntimeException exception = null;
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.removeRows($0, $1);",
+                        this, rows.toString());
+        checkedItems = new ArrayList<>();
+
+        try {
+            fireEvent(event);
+        } catch (RuntimeException e) {
+            exception = e;
+            event.setCancelled(true);
+        }
+    }//
+
+    /**
      * Returns the list of items in the grid.
      */
     public List<Item> getData() {
@@ -394,6 +435,58 @@ public class TuiGrid extends Div {
                 .executeJs(
                         "toastuigrid.setTest($0, $1);",
                         this, colName);
+    }
+
+    /**
+     * Handles the onCheck event in the grid.
+     */
+    @ClientCallable
+    public void onCheck(JsonObject eventData) {
+        if (eventData.hasKey("rowKey")) {
+            int rowChecked = (int) eventData.getNumber("rowKey");
+            checkedItems.add(rowChecked);
+            this.getElement()
+                    .executeJs(
+                            "toastuigrid.setTest($0, $1);",
+                            this, rowChecked);
+        }
+    }
+
+    /**
+     * Handles the onUncheck event in the grid.
+     */
+    @ClientCallable
+    public void onUncheck(JsonObject eventData) {
+        if (eventData.hasKey("rowKey")) {
+            int rowUnChecked = (int) eventData.getNumber("rowKey");
+            checkedItems.remove(rowUnChecked);
+            this.getElement()
+                    .executeJs(
+                            "toastuigrid.setTest($0, $1);",
+                            this, rowUnChecked);
+        }
+    }
+
+    /**
+     * Handles the onCheckAll event in the grid.
+     */
+    @ClientCallable
+    public void onCheckAll(JsonObject eventData) {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setTest($0, $1);",
+                        this, "checkall");
+    }
+
+    /**
+     * Handles the onUnCheckAll event in the grid.
+     */
+    @ClientCallable
+    public void onUncheckAll(JsonObject eventData) {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setTest($0, $1);",
+                        this, "uncheckall");
     }
 
     /**
@@ -468,5 +561,14 @@ public class TuiGrid extends Div {
      */
     public void addItemChangeListener(ComponentEventListener<ItemChangeEvent> listener) {
         addListener(ItemChangeEvent.class, listener);
+    }
+
+    /**
+     * Adds a listener for {@link ItemDeleteEvent} to the component.
+     *
+     * @param listener the listener to be added
+     */
+    public void addItemDeleteListener(ComponentEventListener<ItemDeleteEvent> listener) {
+        addListener(ItemDeleteEvent.class, listener);
     }
 }

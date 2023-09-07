@@ -16,23 +16,29 @@ public class BasicExample extends Div {
         // create items
         TuiGrid grid = new TuiGrid();
         grid.setColumns(this.getColumns());
+        grid.setItems(this.getTableData());
+        grid.setRowHeaders(List.of("checkbox"));
         grid.setHeaderHeight(100);
 //        grid.setTableWidth(950);
         grid.setTableHeight(600);
-        grid.setItems(this.getTableData());
 
-        Button addBtn = new Button("Insert Column", e -> {
-        });
 
         HorizontalLayout layout = new HorizontalLayout();
-        layout.add(addBtn, grid);
-        add(layout);
+        layout.add(grid);
+
+        Button delBtn = new Button("Delete");
+        delBtn.addClickListener(listener -> {
+            grid.deleteItems(grid.getCheckedItems());
+//            add(layout);
+        });
+
+        add(delBtn, layout);
     }
 
     private List<Item> getTableData() {
 
         List<Item> TableData = new ArrayList<>();
-        List<String> headers = List.of("Name", "Artist", "Type", "Genre", "Release");
+        List<String> headers = List.of("name", "artist", "type", "genre", "release");
 
         TableData.add(new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
         TableData.add(new GuiItem(List.of("X", "Ed Sheeran", "Deluxe;", "", "", "20000", "1900", "2005"), headers));
@@ -58,11 +64,11 @@ public class BasicExample extends Div {
 
     private List<Column> getColumns() {
         List<Column> columns = List.of(
-                new Column(new ColumnBaseOption(0, "Name", "Name", 0, "center", "")),
-                new Column(new ColumnBaseOption(1, "Artist", "Artist", 0, "center", "")),
-                new Column(new ColumnBaseOption(2, "Type", "Type", 0, "center", "")),
-                new Column(new ColumnBaseOption(3, "Genre", "Genre", 0, "center", ""), false, "input", 10),
-                new Column(new ColumnBaseOption(4, "Release", "Release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false)));
+                new Column(new ColumnBaseOption(0, "Name", "name", 0, "center", "")),
+                new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", "")),
+                new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", "")),
+                new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), false, "input", 10),
+                new Column(new ColumnBaseOption(4, "Release", "release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false)));
         return columns;
     }
 }
