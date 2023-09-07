@@ -459,7 +459,10 @@ public class TuiGrid extends Div {
     public void onUncheck(JsonObject eventData) {
         if (eventData.hasKey("rowKey")) {
             int rowUnChecked = (int) eventData.getNumber("rowKey");
-            checkedItems.remove(rowUnChecked);
+//            checkedItems.remove(rowUnChecked);
+            checkedItems = checkedItems.stream()
+                    .filter(item -> item != rowUnChecked)
+                    .collect(Collectors.toList());
             this.getElement()
                     .executeJs(
                             "toastuigrid.setTest($0, $1);",
@@ -472,6 +475,9 @@ public class TuiGrid extends Div {
      */
     @ClientCallable
     public void onCheckAll(JsonObject eventData) {
+        for (int i = 0; i < items.size(); i++) {
+            checkedItems.add(i);
+        }
         this.getElement()
                 .executeJs(
                         "toastuigrid.setTest($0, $1);",
@@ -483,6 +489,7 @@ public class TuiGrid extends Div {
      */
     @ClientCallable
     public void onUncheckAll(JsonObject eventData) {
+        checkedItems = new ArrayList<>();
         this.getElement()
                 .executeJs(
                         "toastuigrid.setTest($0, $1);",
@@ -513,9 +520,9 @@ public class TuiGrid extends Div {
                         this, eventData.getString("value"));
         if (!getColValue().equals(eventData.getString("value"))) {
             this.getElement()
-                .executeJs(
-                        "toastuigrid.setTest($0, $1);",
-                        this, getColValue());
+                    .executeJs(
+                            "toastuigrid.setTest($0, $1);",
+                            this, getColValue());
             ItemChangeEvent event = new ItemChangeEvent(
                     this, getColName(), eventData.getString("value"),
                     (int) eventData.getNumber("rowKey"), true);
