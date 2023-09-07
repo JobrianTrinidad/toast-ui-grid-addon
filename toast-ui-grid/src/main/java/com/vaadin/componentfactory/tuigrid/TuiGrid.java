@@ -457,7 +457,6 @@ public class TuiGrid extends Div {
     public void onUncheck(JsonObject eventData) {
         if (eventData.hasKey("rowKey")) {
             int rowUnChecked = (int) eventData.getNumber("rowKey");
-//            checkedItems.remove(rowUnChecked);
             checkedItems = checkedItems.stream()
                     .filter(item -> item != rowUnChecked)
                     .collect(Collectors.toList());
