@@ -115,7 +115,6 @@ window.toastuigrid = {
             onUncheckAll: onUncheckAll,
         });
         container.grid = gridTable;
-        console.log("gridInstance: ", container.grid.gridRef);
 
         this.updateGrid(container);
     },
