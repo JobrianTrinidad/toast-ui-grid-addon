@@ -26,13 +26,22 @@ public class BasicExample extends Div {
         HorizontalLayout layout = new HorizontalLayout();
         layout.add(grid);
 
+        Button addBtn = new Button("Add");
+        addBtn.addClickListener(listener -> {
+            List<String> headers = List.of("name", "artist", "type", "genre", "release");
+            grid.addItem(List.of(new GuiItem(List.of("", "", "", "", ""), headers)));
+//            add(layout);
+        });
+
         Button delBtn = new Button("Delete");
         delBtn.addClickListener(listener -> {
             grid.deleteItems(grid.getCheckedItems());
 //            add(layout);
         });
 
-        add(delBtn, layout);
+
+
+        add(addBtn, delBtn, layout);
     }
 
     private List<Item> getTableData() {
@@ -63,12 +72,17 @@ public class BasicExample extends Div {
     }
 
     private List<Column> getColumns() {
+        Column nameCol = new Column(new ColumnBaseOption(0, "Name", "name", 0, "center", ""),true, "input", 10);
+        Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", ""),true, "input", 10);
+        Column typeCol = new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", ""),true, "input", 10);
+        Column genreCol = new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), true, "input", 10);
+        Column releaseCol = new Column(new ColumnBaseOption(4, "Release", "release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false));
         List<Column> columns = List.of(
-                new Column(new ColumnBaseOption(0, "Name", "name", 0, "center", "")),
-                new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", "")),
-                new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", "")),
-                new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), false, "input", 10),
-                new Column(new ColumnBaseOption(4, "Release", "release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false)));
+                nameCol,
+                artistCol,
+                typeCol,
+                genreCol,
+                releaseCol);
         return columns;
     }
 }

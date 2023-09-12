@@ -27,6 +27,9 @@ window.toastuigrid = {
     _createGrid: function (container: HTMLElement & { grid: any }, itemsJson: any, optionsJson: any, _: any) {
         let parsedItems = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
+        let editingRowKey;
+        let editingValue;
+        let columns = this.getColumns(JSON.parse(parsedOptions.columns));
         console.log("options: ", parsedOptions);
         console.log("Items: ", parsedItems);
         // Implementation goes here
@@ -73,15 +76,23 @@ window.toastuigrid = {
         const onEditingStart = (ev: any) => {
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
                 if (value instanceof Node) {
-                    return null; // Remove the DOM node reference
+                    return 'null'; // Remove the DOM node reference
                 }
                 return value;
             }));
+            console.log("ABCD: ", container.grid.gridRef.current.getInstance().getFocusedCell());
+            console.log("ABCD: ", ev);
+            editingRowKey = container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'];
+            // if(container.grid.gridRef.current.getInstance().getFocusedCell()['columnName'].equal(columns[0]))
+            //     editingValue = container.grid.gridRef.current.getInstance().getFocusedCell()['value']
 
 // Send the cleaned object to the server
             container.$server.onEditingStart(cleanedObject);
         };
         const onEditingFinish = (ev: any) => {
+            if (editingRowKey !== container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'] &&
+                container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === "")
+                container.grid.gridRef.current.getInstance().removeRow(editingRowKey);
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
@@ -89,12 +100,13 @@ window.toastuigrid = {
                 return value;
             }));
 // Send the cleaned object to the server
-            container.$server.onEditingFinish(cleanedObject);
+            if (container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) !== "")
+                container.$server.onEditingFinish(cleanedObject);
         };
         let gridTable: FeatureTable = new FeatureTable({
             el: document.getElementsByClassName("grid")[0],
             TableData: this.getTableData(parsedItems),
-            columns: this.getColumns(JSON.parse(parsedOptions.columns)),
+            columns: columns,
             summary: this.getSummary(parsedOptions.summary),
             columnOptions: parsedOptions.columnOptions,
             header: this.getHeader(parsedOptions.header),
@@ -134,9 +146,11 @@ window.toastuigrid = {
     // It takes a container element with a grid property, and JSON data for the new data.
     // The function appends the new data to the existing table data, and then updates the grid.
     addTableData(container: HTMLElement & { grid: FeatureTable }, data: any) {
-        let parsedItems = JSON.parse(data);
-        // container.grid.TableData = [...container.grid.TableData, ...this.getTableData(parsedItems)];
-        container.grid.setOption({TableData: [...container.grid.TableData, ...this.getTableData(parsedItems)]});
+        // let parsedItems = JSON.parse(data);
+        // // container.grid.TableData = [...container.grid.TableData, ...this.getTableData(parsedItems)];
+        // container.grid.setOption({TableData: [...container.grid.TableData, ...this.getTableData(parsedItems)]});
+        container.grid.gridRef.current.getInstance().appendRow();
+        container.grid.gridRef.current.getInstance().startEditingAt(container.grid.gridRef.current.getInstance().getRowCount() - 1, 0);
         // this.updateGrid(container);
     },
     //This internal function is used to set the column content based on a matched name.
@@ -338,10 +352,11 @@ window.toastuigrid = {
     },
 
     removeRows: function (container: any, rowKeys: any) {
-        const rows =  JSON.parse(rowKeys);
-        for (let i = 0; i < rows.length; i++) {
-            container.grid.gridRef.current.getInstance().removeRow(rows[i]);
-        }
+        const rows = JSON.parse(rowKeys);
+        // container.grid.gridRef.current.getInstance().reloadData();
+        // for (let i = 0; i < rows.length; i++) {
+        container.grid.gridRef.current.getInstance().removeCheckedRows(true);
+        // }
     },
     //This function updates the grid by rendering the grid component using ReactDOM.render.
     updateGrid: function (container: any) {

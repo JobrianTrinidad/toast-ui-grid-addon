@@ -498,12 +498,17 @@ public class TuiGrid extends Div {
      */
     @ClientCallable
     public void onEditingStart(JsonObject eventData) {
-        colName = eventData.getString("columnName");
-        colValue = eventData.getString("value");
-        this.getElement()
-                .executeJs(
-                        "toastuigrid.setTest($0, $1);",
-                        this, colName);
+        try {
+            colName = eventData.getString("columnName");
+            colValue = eventData.getString("value");
+            this.getElement()
+                    .executeJs(
+                            "toastuigrid.setTest($0, $1);",
+                            this, colName);
+        }catch (Exception e){
+            colValue = "";
+        }
+
     }
 
     /**
