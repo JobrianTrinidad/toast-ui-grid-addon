@@ -27,8 +27,7 @@ window.toastuigrid = {
     _createGrid: function (container: HTMLElement & { grid: any }, itemsJson: any, optionsJson: any, _: any) {
         let parsedItems = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
-        let editingRowKey;
-        let editingValue;
+        let editingRowKey = -1;
         let columns = this.getColumns(JSON.parse(parsedOptions.columns));
         console.log("options: ", parsedOptions);
         console.log("Items: ", parsedItems);
@@ -90,9 +89,6 @@ window.toastuigrid = {
             container.$server.onEditingStart(cleanedObject);
         };
         const onEditingFinish = (ev: any) => {
-            if (editingRowKey !== container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'] &&
-                container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === "")
-                container.grid.gridRef.current.getInstance().removeRow(editingRowKey);
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
@@ -103,6 +99,19 @@ window.toastuigrid = {
             if (container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) !== "")
                 container.$server.onEditingFinish(cleanedObject);
         };
+
+        const onFocusChange = (ev: any) => {
+            console.log("AAAA1: ", ev);
+            console.log("AAAA2: ", editingRowKey);
+            console.log("AAAA3: ", container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name));
+            if (ev.prevRowKey !== ev.rowKey && editingRowKey !== -1)
+                if (container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === "" ||
+                    container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === null) {
+                    container.grid.gridRef.current.getInstance().removeRow(editingRowKey);
+                    editingRowKey = -1;
+                }
+        };
+
         let gridTable: FeatureTable = new FeatureTable({
             el: document.getElementsByClassName("grid")[0],
             TableData: this.getTableData(parsedItems),
@@ -125,6 +134,7 @@ window.toastuigrid = {
             onCheckAll: onCheckAll,
             onUncheck: onUncheck,
             onUncheckAll: onUncheckAll,
+            onFocusChange: onFocusChange,
         });
         container.grid = gridTable;
 

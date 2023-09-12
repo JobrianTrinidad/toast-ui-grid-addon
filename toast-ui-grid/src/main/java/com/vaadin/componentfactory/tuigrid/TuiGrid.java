@@ -505,7 +505,7 @@ public class TuiGrid extends Div {
                     .executeJs(
                             "toastuigrid.setTest($0, $1);",
                             this, colName);
-        }catch (Exception e){
+        } catch (Exception e) {
             colValue = "";
         }
 
@@ -516,10 +516,6 @@ public class TuiGrid extends Div {
      */
     @ClientCallable
     public void onEditingFinish(JsonObject eventData) {
-        this.getElement()
-                .executeJs(
-                        "toastuigrid.setTest($0, $1);",
-                        this, eventData.getString("value"));
         if (!getColValue().equals(eventData.getString("value"))) {
             this.getElement()
                     .executeJs(
@@ -529,6 +525,14 @@ public class TuiGrid extends Div {
                     this, getColName(), eventData.getString("value"),
                     (int) eventData.getNumber("rowKey"), true);
 
+            if ((int) eventData.getNumber("rowKey") >= this.items.size()) {
+                GuiItem temp = (GuiItem) this.items.get(0);
+                List<String> tempData = new ArrayList<>();
+                for (int i = 0; i < temp.getRecordData().size(); i++) {
+                    tempData.add("");
+                }
+                this.items.add(new GuiItem(tempData, temp.getHeaders()));
+            }
             refreshData((int) eventData.getNumber("rowKey"), eventData.getString("value"));
 
             RuntimeException exception = null;

@@ -50,6 +50,7 @@ export class FeatureTable extends React.Component<any, any> {
     private onCheckAll: any;
     private onUncheck: any;
     private onUncheckAll: any;
+    private onFocusChange: any;
     gridRef = React.createRef();
 
     constructor(props: any) {
@@ -79,11 +80,7 @@ export class FeatureTable extends React.Component<any, any> {
         this.onCheckAll = props.onCheckAll;
         this.onUncheck = props.onUncheck;
         this.onUncheckAll = props.onUncheckAll;
-    }
-
-    componentDidMount() {
-        const gridInstance = this.gridRef.current.getInstance();
-        console.log("gridInstance", gridInstance); // Access the grid instance here
+        this.onFocusChange = props.onFocusChange;
     }
 
     render(): JSX.Element {
@@ -114,6 +111,7 @@ export class FeatureTable extends React.Component<any, any> {
                         onCheckAll={this.onCheckAll}
                         onUncheck={this.onUncheck}
                         onUncheckAll={this.onUncheckAll}
+                        onFocusChange={this.onFocusChange}
                     />
                 </div>
             </ErrorBoundary>
