@@ -29,6 +29,7 @@ window.toastuigrid = {
         let parsedOptions = JSON.parse(optionsJson);
         let editingRowKey = -1;
         let columns = this.getColumns(JSON.parse(parsedOptions.columns));
+        let prevColumnName = "";
         // Implementation goes here
         const onSelection = (ev: any) => {
             console.log("selection: ", ev);
@@ -104,14 +105,6 @@ window.toastuigrid = {
                 }
         };
 
-        const onKeydown = (ev: any) => {
-            // console.log("AAA: ", ev);
-        };
-
-        const offKeydown = (ev: any) => {
-            console.log("BBB: ", ev);
-        };
-
         let gridTable: FeatureTable = new FeatureTable({
             el: document.getElementsByClassName("grid")[0],
             TableData: this.getTableData(parsedItems),
@@ -135,17 +128,15 @@ window.toastuigrid = {
             onUncheck: onUncheck,
             onUncheckAll: onUncheckAll,
             onFocusChange: onFocusChange,
-            onKeydown: onKeydown,
-            offKeydown: offKeydown,
         });
         container.grid = gridTable;
         document.addEventListener("keydown", function (event) {
             if (event.code === "Tab" &&
-                container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'] &&
-                container.grid.gridRef.current.getInstance().getFocusedCell()['columnName'] === columns[columns.length - 1].name) {
-                container.grid.gridRef.current.getInstance().appendRow();
-                container.grid.gridRef.current.getInstance().startEditingAt(container.grid.gridRef.current.getInstance().getRowCount() - 1, 0);
+                container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'] === container.grid.gridRef.current.getInstance().getRowCount() - 1 &&
+                prevColumnName === columns[columns.length - 1].name) {
+                container.$server.addItem();
             }
+            prevColumnName = container.grid.gridRef.current.getInstance().getFocusedCell()['columnName'];
         });
         this.updateGrid(container);
 

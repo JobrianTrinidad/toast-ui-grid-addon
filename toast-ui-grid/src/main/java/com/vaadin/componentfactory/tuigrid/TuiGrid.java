@@ -129,6 +129,15 @@ public class TuiGrid extends Div {
                             this, "[" + convertItemsToJson(items) + "]");
     }
 
+    @ClientCallable
+    public void addItem() {
+        if (this.getElement().getNode().isAttached())
+            this.getElement()
+                    .executeJs(
+                            "toastuigrid.addTableData($0, $1);",
+                            this, null);
+    }
+
     /**
      * Sets the columns of the grid with the provided list of columns.
      *
