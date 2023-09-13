@@ -51,11 +51,24 @@ export class FeatureTable extends React.Component<any, any> {
     private onUncheck: any;
     private onUncheckAll: any;
     private onFocusChange: any;
+    private onKeydown: any;
+    private offKeydown: any;
     gridRef = React.createRef();
 
     constructor(props: any) {
         super(props);
         this.setOption(props);
+    }
+
+    componentDidMount() {
+        // console.log("AAABBB: ");
+        // setTimeout(() => {
+        //     console.log("AAA: ", this.gridRef);
+        //     this.gridRef.current.getInstance().on("keydown", (ev: any) => {
+        //         this.onKeydown(ev);
+        //         console.log("AAA: ", ev);
+        //     });
+        // }, 1000)
     }
 
     setOption(props: any) {
@@ -81,6 +94,8 @@ export class FeatureTable extends React.Component<any, any> {
         this.onUncheck = props.onUncheck;
         this.onUncheckAll = props.onUncheckAll;
         this.onFocusChange = props.onFocusChange;
+        this.onKeydown = props.onKeydown;
+        this.offKeydown = props.offKeydown;
     }
 
     render(): JSX.Element {
@@ -112,6 +127,8 @@ export class FeatureTable extends React.Component<any, any> {
                         onUncheck={this.onUncheck}
                         onUncheckAll={this.onUncheckAll}
                         onFocusChange={this.onFocusChange}
+                        onKeydown={this.onKeydown}
+                        offKeydown={this.offKeydown}
                     />
                 </div>
             </ErrorBoundary>

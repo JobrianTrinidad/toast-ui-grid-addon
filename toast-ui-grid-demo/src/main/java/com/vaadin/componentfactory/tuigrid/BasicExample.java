@@ -28,8 +28,8 @@ public class BasicExample extends Div {
 
         Button addBtn = new Button("Add");
         addBtn.addClickListener(listener -> {
-            List<String> headers = List.of("name", "artist", "type", "genre", "release");
-            grid.addItem(List.of(new GuiItem(List.of("", "", "", "", ""), headers)));
+            List<String> headers = List.of("name", "artist", "type", "genre");
+            grid.addItem(List.of(new GuiItem(List.of("", "", "", ""), headers)));
 //            add(layout);
         });
 
@@ -47,7 +47,7 @@ public class BasicExample extends Div {
     private List<Item> getTableData() {
 
         List<Item> TableData = new ArrayList<>();
-        List<String> headers = List.of("name", "artist", "type", "genre", "release");
+        List<String> headers = List.of("name", "artist", "type", "genre");
 
         TableData.add(new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
         TableData.add(new GuiItem(List.of("X", "Ed Sheeran", "Deluxe;", "", "", "20000", "1900", "2005"), headers));
@@ -76,13 +76,12 @@ public class BasicExample extends Div {
         Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", ""),true, "input", 10);
         Column typeCol = new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", ""),true, "input", 10);
         Column genreCol = new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), true, "input", 10);
-        Column releaseCol = new Column(new ColumnBaseOption(4, "Release", "release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false));
+//        Column releaseCol = new Column(new ColumnBaseOption(4, "Release", "release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false));
         List<Column> columns = List.of(
                 nameCol,
                 artistCol,
                 typeCol,
-                genreCol,
-                releaseCol);
+                genreCol);
         return columns;
     }
 }

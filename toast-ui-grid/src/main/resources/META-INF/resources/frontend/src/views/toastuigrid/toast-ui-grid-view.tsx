@@ -29,12 +29,9 @@ window.toastuigrid = {
         let parsedOptions = JSON.parse(optionsJson);
         let editingRowKey = -1;
         let columns = this.getColumns(JSON.parse(parsedOptions.columns));
-        console.log("options: ", parsedOptions);
-        console.log("Items: ", parsedItems);
         // Implementation goes here
         const onSelection = (ev: any) => {
             console.log("selection: ", ev);
-            console.log("grid: ", container.grid);
         };
         const onCheck = (ev: any) => {
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
@@ -79,8 +76,6 @@ window.toastuigrid = {
                 }
                 return value;
             }));
-            console.log("ABCD: ", container.grid.gridRef.current.getInstance().getFocusedCell());
-            console.log("ABCD: ", ev);
             editingRowKey = container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'];
             // if(container.grid.gridRef.current.getInstance().getFocusedCell()['columnName'].equal(columns[0]))
             //     editingValue = container.grid.gridRef.current.getInstance().getFocusedCell()['value']
@@ -101,15 +96,20 @@ window.toastuigrid = {
         };
 
         const onFocusChange = (ev: any) => {
-            console.log("AAAA1: ", ev);
-            console.log("AAAA2: ", editingRowKey);
-            console.log("AAAA3: ", container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name));
             if (ev.prevRowKey !== ev.rowKey && editingRowKey !== -1)
                 if (container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === "" ||
                     container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === null) {
                     container.grid.gridRef.current.getInstance().removeRow(editingRowKey);
                     editingRowKey = -1;
                 }
+        };
+
+        const onKeydown = (ev: any) => {
+            // console.log("AAA: ", ev);
+        };
+
+        const offKeydown = (ev: any) => {
+            console.log("BBB: ", ev);
         };
 
         let gridTable: FeatureTable = new FeatureTable({
@@ -135,10 +135,20 @@ window.toastuigrid = {
             onUncheck: onUncheck,
             onUncheckAll: onUncheckAll,
             onFocusChange: onFocusChange,
+            onKeydown: onKeydown,
+            offKeydown: offKeydown,
         });
         container.grid = gridTable;
-
+        document.addEventListener("keydown", function (event) {
+            if (event.code === "Tab" &&
+                container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'] &&
+                container.grid.gridRef.current.getInstance().getFocusedCell()['columnName'] === columns[columns.length - 1].name) {
+                container.grid.gridRef.current.getInstance().appendRow();
+                container.grid.gridRef.current.getInstance().startEditingAt(container.grid.gridRef.current.getInstance().getRowCount() - 1, 0);
+            }
+        });
         this.updateGrid(container);
+
     },
     //This function is a wrapper around _createGrid that delays the execution using setTimeout.
     // It takes a container element, JSON data for items, and JSON data for options.
@@ -346,7 +356,6 @@ window.toastuigrid = {
             } else
                 tempColumns.push(column);
         }
-        console.log("tempColumns: ", tempColumns);
         return tempColumns;
     },
     //This function updates the options of an existing grid.
@@ -370,7 +379,6 @@ window.toastuigrid = {
     },
     //This function updates the grid by rendering the grid component using ReactDOM.render.
     updateGrid: function (container: any) {
-        console.log("Grid: ", container.grid);
         ReactDOM.render(container.grid.render(), container);
     }
 }
