@@ -52,11 +52,13 @@ public class TuiGridOption {
     public int tableHeight = 500;
     public List<String> rowHeaders = new ArrayList<>();
     public TreeOption treeOption;
+    public boolean autoSave = false;
 
     public String toJSON() {
         JsonObject js = Json.createObject();
         Optional.ofNullable(convertColumnsToJson()).ifPresent(v -> js.put("columns", "[" + v + "]"));
         Optional.ofNullable(convertHeaderToJson()).ifPresent(v -> js.put("header", v));
+        js.put("autoSave", autoSave);
         if (tableWidth > 0)
             js.put("width", tableWidth);
         js.put("bodyHeight", tableHeight);

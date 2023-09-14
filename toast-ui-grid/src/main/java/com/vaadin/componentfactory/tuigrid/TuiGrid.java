@@ -138,6 +138,11 @@ public class TuiGrid extends Div {
                             this, null);
     }
 
+    public void setAutoSave(boolean autoSave) {
+        tuiGridOption.autoSave = autoSave;
+        this.updateTuiGridOptions();
+    }
+
     /**
      * Sets the columns of the grid with the provided list of columns.
      *

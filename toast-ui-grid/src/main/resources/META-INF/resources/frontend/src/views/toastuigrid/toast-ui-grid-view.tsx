@@ -131,7 +131,7 @@ window.toastuigrid = {
         });
         container.grid = gridTable;
         document.addEventListener("keydown", function (event) {
-            if (event.code === "Tab" &&
+            if (parsedOptions.autoSave === true && event.code === "Tab" &&
                 container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'] === container.grid.gridRef.current.getInstance().getRowCount() - 1 &&
                 prevColumnName === columns[columns.length - 1].name) {
                 prevColumnName = columns[0].name;
