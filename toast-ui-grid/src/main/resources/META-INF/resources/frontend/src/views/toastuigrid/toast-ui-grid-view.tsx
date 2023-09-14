@@ -134,9 +134,22 @@ window.toastuigrid = {
             if (event.code === "Tab" &&
                 container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'] === container.grid.gridRef.current.getInstance().getRowCount() - 1 &&
                 prevColumnName === columns[columns.length - 1].name) {
+                prevColumnName = columns[0].name;
                 container.$server.addItem();
             }
             prevColumnName = container.grid.gridRef.current.getInstance().getFocusedCell()['columnName'];
+        });
+        document.addEventListener("mousedown", function (event) {
+            const targetElement = event.target as HTMLElement;
+            if (targetElement.tagName === "VAADIN-APP-LAYOUT" || targetElement.tagName === "DIV") {
+                container.grid.gridRef.current.getInstance().finishEditing(editingRowKey, prevColumnName);
+                if (container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === "" ||
+                    container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === null) {
+                    container.grid.gridRef.current.getInstance().removeRow(editingRowKey);
+                }
+            } else {
+                return;
+            }
         });
         this.updateGrid(container);
 
@@ -146,6 +159,7 @@ window.toastuigrid = {
     create(container: HTMLElement, itemsJson: any, optionsJson: any) {
         setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
     },
+
     //This function updates the table data of an existing grid. It takes a container element with a grid property,
     // and JSON data for the new data. The function updates the table data, and then updates the grid.
     setTableData(container: HTMLElement & { grid: FeatureTable }, data: any) {
