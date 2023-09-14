@@ -424,7 +424,7 @@ public class TuiGrid extends Div {
     /**
      * Refreshes the data in the grid by updating the value at the specified row and column.
      *
-     * @param row   the grid's row to be changed
+     * @param row    the grid's row to be changed
      * @param record the grid's value to be changed
      */
     private void refreshData(int row, JsonObject record) {
@@ -436,7 +436,9 @@ public class TuiGrid extends Div {
         for (Column colName :
                 this.columns) {
             tempRecord.set(temp.getHeaders().indexOf(colName.getColumnBaseOption().getName()),
-                    record.getString(colName.getColumnBaseOption().getName()));
+                    record.getString(colName.getColumnBaseOption().getName()) != null
+                            ? record.getString(colName.getColumnBaseOption().getName())
+                            : "");
         }
         tempItems.set(row, new GuiItem(tempRecord, temp.getHeaders()));
 //        this.items = new ArrayList<>();
