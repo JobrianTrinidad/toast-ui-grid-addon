@@ -18,6 +18,7 @@ public class BasicExample extends Div {
         grid.setColumns(this.getColumns());
         grid.setItems(this.getTableData());
         grid.setRowHeaders(List.of("checkbox"));
+        grid.setAutoSave(true);
         grid.setHeaderHeight(100);
 //        grid.setTableWidth(950);
         grid.setTableHeight(600);

@@ -31,7 +31,9 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
+import elemental.json.JsonNull;
 import elemental.json.JsonObject;
+import elemental.json.JsonValue;
 import elemental.json.impl.JreJsonArray;
 
 import java.util.ArrayList;
@@ -435,10 +437,20 @@ public class TuiGrid extends Div {
         tempRecord.addAll(temp.getRecordData());
         for (Column colName :
                 this.columns) {
-            tempRecord.set(temp.getHeaders().indexOf(colName.getColumnBaseOption().getName()),
-                    record.getString(colName.getColumnBaseOption().getName()) != null
-                            ? record.getString(colName.getColumnBaseOption().getName())
-                            : "");
+
+            String columnName = colName.getColumnBaseOption().getName();
+            String columnValue = "";
+
+            if (record.hasKey(columnName)) {
+                JsonValue jsonValue = record.get(columnName);
+                if (jsonValue == null || jsonValue instanceof JsonNull) {
+                    columnValue = "";
+                } else {
+                    columnValue = jsonValue.asString();
+                }
+            }
+
+            tempRecord.set(temp.getHeaders().indexOf(columnName), columnValue);
         }
         tempItems.set(row, new GuiItem(tempRecord, temp.getHeaders()));
 //        this.items = new ArrayList<>();
