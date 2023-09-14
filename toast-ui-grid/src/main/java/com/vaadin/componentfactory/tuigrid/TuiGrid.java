@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
 public class TuiGrid extends Div {
     private List<Item> items = new ArrayList<>();
     protected TuiGridOption tuiGridOption = new TuiGridOption();
-
+    private List<Column> columns = new ArrayList<>();
     private List<Integer> checkedItems = new ArrayList<>();
     String colName;
     String colValue;
@@ -149,6 +149,7 @@ public class TuiGrid extends Div {
      * @param columns the columns to be set
      */
     public void setColumns(List<Column> columns) {
+        this.columns = columns;
         tuiGridOption.columns.addAll(columns);
         this.updateTuiGridOptions();
     }
@@ -424,15 +425,19 @@ public class TuiGrid extends Div {
      * Refreshes the data in the grid by updating the value at the specified row and column.
      *
      * @param row   the grid's row to be changed
-     * @param value the grid's value to be changed
+     * @param record the grid's value to be changed
      */
-    private void refreshData(int row, String value) {
+    private void refreshData(int row, JsonObject record) {
         List<Item> tempItems = new ArrayList<>();
         tempItems.addAll(this.items);
         GuiItem temp = (GuiItem) this.items.get(row);
         List<String> tempRecord = new ArrayList<>();
         tempRecord.addAll(temp.getRecordData());
-        tempRecord.set(temp.getHeaders().indexOf(getColName()), value);
+        for (Column colName :
+                this.columns) {
+            tempRecord.set(temp.getHeaders().indexOf(colName.getColumnBaseOption().getName()),
+                    record.getString(colName.getColumnBaseOption().getName()));
+        }
         tempItems.set(row, new GuiItem(tempRecord, temp.getHeaders()));
 //        this.items = new ArrayList<>();
         this.items = tempItems;
@@ -534,7 +539,7 @@ public class TuiGrid extends Div {
             this.getElement()
                     .executeJs(
                             "toastuigrid.setTest($0, $1);",
-                            this, getColValue());
+                            this, eventData.getObject("record").getString("name"));
             ItemChangeEvent event = new ItemChangeEvent(
                     this, getColName(), eventData.getString("value"),
                     (int) eventData.getNumber("rowKey"), true);
@@ -547,7 +552,7 @@ public class TuiGrid extends Div {
                 }
                 this.items.add(new GuiItem(tempData, temp.getHeaders()));
             }
-            refreshData((int) eventData.getNumber("rowKey"), eventData.getString("value"));
+            refreshData((int) eventData.getNumber("rowKey"), eventData.getObject("record"));
 
             RuntimeException exception = null;
             try {

@@ -91,7 +91,14 @@ window.toastuigrid = {
                 }
                 return value;
             }));
-// Send the cleaned object to the server
+// Send the cleaned object to the server getRowSpanData
+
+            let record = {};
+            for (const column of columns) {
+                let key = column.name;
+                record = {...record, [key]: container.grid.gridRef.current.getInstance().getValue(editingRowKey, column.name)}
+            }
+            cleanedObject = {...cleanedObject, record: record};
             if (container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) !== "")
                 container.$server.onEditingFinish(cleanedObject);
         };
