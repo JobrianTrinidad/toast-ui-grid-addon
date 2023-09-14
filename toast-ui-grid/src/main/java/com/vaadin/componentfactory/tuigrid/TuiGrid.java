@@ -550,10 +550,6 @@ public class TuiGrid extends Div {
     @ClientCallable
     public void onEditingFinish(JsonObject eventData) {
         if (!getColValue().equals(eventData.getString("value"))) {
-            this.getElement()
-                    .executeJs(
-                            "toastuigrid.setTest($0, $1);",
-                            this, eventData.getObject("record").getString("name"));
             ItemChangeEvent event = new ItemChangeEvent(
                     this, getColName(), eventData.getString("value"),
                     (int) eventData.getNumber("rowKey"), true);
