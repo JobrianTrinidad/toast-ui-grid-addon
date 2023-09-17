@@ -20,11 +20,11 @@ button {
 }
 
 .tui-grid-cell-header {
-    background-color: #326f70;
-    border-color: #eee;
-    border-left-width: 0px;
-    border-right-width: 0px;
-    color: #fff;
+    background-color: #326f70 !important;
+    border-color: #eee !important;
+    border-left-width: 0px !important;
+    border-right-width: 0px !important;
+    color: #fff !important;
 }
 
 .tui-grid-cell-editable {
