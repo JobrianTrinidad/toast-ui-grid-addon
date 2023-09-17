@@ -37,6 +37,7 @@ import elemental.json.JsonValue;
 import elemental.json.impl.JreJsonArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,15 +46,22 @@ import java.util.stream.Collectors;
  * more at https://github.com/toast-ui-grid).
  */
 @SuppressWarnings("serial")
-@NpmPackage(value = "react", version = "^16.7.0")
-@NpmPackage(value = "react-dom", version = "^16.7.0")
-@NpmPackage(value = "@types/react", version = "^16.7.0")
-@NpmPackage(value = "@types/react-dom", version = "^16.7.0")
-@NpmPackage(value = "@toast-ui/react-grid", version = "^4.21.15")
+@NpmPackage(value = "react", version = "^18.2.0")
+@NpmPackage(value = "react-dom", version = "^18.2.0")
+//@NpmPackage(value = "@types/react", version = "^18.2.0")
+//@NpmPackage(value = "@types/react-dom", version = "^18.2.0")
+@NpmPackage(value = "@chakra-ui/react", version = "^2.8.0")
+@NpmPackage(value = "@chakra-ui/icons", version = "^2.1.0")
+@NpmPackage(value = "tui-grid", version = "lastest")
 @JsModule("./src/views/toastuigrid/toast-ui-grid-view.tsx")
 @JsModule("./src/views/components/Table/FeaturesTable.tsx")
+@JsModule("./src/views/components/Table/Grid.tsx")
 @JsModule("./src/views/components/Table/CustomeEditor.tsx")
+@JsModule("./src/views/components/input/ada-input.tsx")
 @CssImport("tui-grid/dist/tui-grid.css")
+@CssImport("tui-date-picker/dist/tui-date-picker.css")
+@CssImport("tui-time-picker/dist/tui-time-picker.css")
+@CssImport("./styles/styles.css")
 public class TuiGrid extends Div {
     private List<Item> items = new ArrayList<>();
     protected TuiGridOption tuiGridOption = new TuiGridOption();
@@ -319,8 +327,13 @@ public class TuiGrid extends Div {
         this.colValue = colValue;
     }
 
-    public List<Integer> getCheckedItems() {
-        return checkedItems;
+    public int[] getCheckedItems() {
+        int[] array = new int[checkedItems.size()];
+
+        for (int i = 0; i < checkedItems.size(); i++) {
+            array[i] = checkedItems.get(i);
+        }
+        return array;
     }
 
     /**
@@ -391,8 +404,10 @@ public class TuiGrid extends Div {
      *
      * @param rows the String value to be set
      */
-    public void deleteItems(List<Integer> rows) {
-        fireDeleteItemsEvent(rows, true);
+    @ClientCallable
+    public void deleteItems(int[] rows) {
+        List<Integer> rowList = Arrays.stream(rows).boxed().collect(Collectors.toList());
+        fireDeleteItemsEvent(rowList, true);
     }
 
     /**

@@ -1,0 +1,81 @@
+button {
+    border: none;
+}
+
+.tui-grid-layer-editing {
+    border-style: none !important;
+    padding: 0 !important;
+}
+
+.tui-grid-layer-selection {
+    background-color: #bd652f !important;
+}
+
+.tui-grid-layer-focus-border {
+    background-color: #326f70 !important;
+}
+
+.tui-grid-layer-focus-deactive .tui-grid-layer-focus-border {
+    background-color: #668788 !important;
+}
+
+.tui-grid-cell-header {
+    background-color: #326f70;
+    border-color: #eee;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    color: #fff;
+}
+
+.tui-grid-cell-editable {
+    background-color: #66878840 !important;
+}
+
+.tui-grid-cell {
+    border-color: #66878840 !important;
+}
+
+.DarkCyan {
+    --DarkCyan-100: #668788;
+    --DarkCyan-80: #668788CC;
+    --DarkCyan-60: #66878899;
+    --DarkCyan-40: #66878866;
+    --DarkCyan-20: #66878833;
+    --DarkCyan-0: #66878800;
+}
+
+.Sienna {
+    --Sienna-100: #7D443E;
+    --Sienna-80: #7D443ECC;
+    --Sienna-60: #7D443E99;
+    --Sienna-40: #7D443E66;
+    --Sienna-20: #7D443E33;
+    --Sienna-0: #7D443E00;
+}
+
+.Teal {
+    --Teal-100: #326f70;
+    --Teal-80: #326f70CC;
+    --Teal-60: #326f7099;
+    --Teal-40: #326f7066;
+    --Teal-20: #326f7033;
+    --Teal-0: #326f7000;
+}
+
+.Chocolate {
+    --Chocolate-100: #bd652f;
+    --Chocolate-80: #bd652fCC;
+    --Chocolate-60: #bd652f99;
+    --Chocolate-40: #bd652f66;
+    --Chocolate-20: #bd652f33;
+    --Chocolate-0: #bd652f00;
+}
+
+.SaddleBrown {
+    --SaddleBrown-100: #bd652f;
+    --SaddleBrown-80: #bd652fCC;
+    --SaddleBrown-60: #bd652f99;
+    --SaddleBrown-40: #bd652f66;
+    --SaddleBrown-20: #bd652f33;
+    --SaddleBrown-0: #bd652f00;
+}

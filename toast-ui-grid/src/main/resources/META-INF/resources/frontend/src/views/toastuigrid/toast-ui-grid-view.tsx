@@ -8,9 +8,9 @@ import "@vaadin/text-field";
 // import "tui-grid/dist/tui-grid.css";
 // import "tui-date-picker/dist/tui-date-picker.css";
 // import "tui-time-picker/dist/tui-time-picker.css";
-// import {createRoot} from "react-dom/client";
-import * as ReactDOM from "react-dom";
+import {createRoot} from 'react-dom/client';
 import CustomTextEditor from "../components/Table/CustomeEditor";
+import InputComponent from "../components/input/ada-input";
 import {FeatureTable} from "../components/Table/FeaturesTable";
 
 declare global {
@@ -30,6 +30,7 @@ window.toastuigrid = {
         let editingRowKey = -1;
         let columns = this.getColumns(JSON.parse(parsedOptions.columns));
         let prevColumnName = "";
+        let gridInst;
         // Implementation goes here
         const onSelection = (ev: any) => {
             console.log("selection: ", ev);
@@ -71,15 +72,19 @@ window.toastuigrid = {
             container.$server.onUncheckAll(cleanedObject);
         };
         const onEditingStart = (ev: any) => {
+            console.log("node is here: ");
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
                 if (value instanceof Node) {
                     return 'null'; // Remove the DOM node reference
                 }
                 return value;
             }));
-            editingRowKey = container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'];
-            // if(container.grid.gridRef.current.getInstance().getFocusedCell()['columnName'].equal(columns[0]))
-            //     editingValue = container.grid.gridRef.current.getInstance().getFocusedCell()['value']
+            console.log("node is ", cleanedObject);
+            if (gridInst) {
+                editingRowKey = gridInst.getFocusedCell()['rowKey'];
+            }
+            // if(gridInst.getFocusedCell()['columnName'].equal(columns[0]))
+            //     editingValue = gridInst.getFocusedCell()['value']
 
 // Send the cleaned object to the server
             container.$server.onEditingStart(cleanedObject);
@@ -91,23 +96,25 @@ window.toastuigrid = {
                 }
                 return value;
             }));
+            console.log("cleanedObject: ", cleanedObject);
 // Send the cleaned object to the server getRowSpanData
-
-            let record = {};
-            for (const column of columns) {
-                let key = column.name;
-                record = {...record, [key]: container.grid.gridRef.current.getInstance().getValue(editingRowKey, column.name)}
+            if (gridInst) {
+                let record = {};
+                for (const column of columns) {
+                    let key = column.name;
+                    record = {...record, [key]: gridInst.getValue(editingRowKey, column.name)}
+                }
+                cleanedObject = {...cleanedObject, record: record};
+                if (gridInst.getValue(editingRowKey, columns[0].name) !== "")
+                    container.$server.onEditingFinish(cleanedObject);
             }
-            cleanedObject = {...cleanedObject, record: record};
-            if (container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) !== "")
-                container.$server.onEditingFinish(cleanedObject);
         };
 
         const onFocusChange = (ev: any) => {
             if (ev.prevRowKey !== ev.rowKey && editingRowKey !== -1)
-                if (container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === "" ||
-                    container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === null) {
-                    container.grid.gridRef.current.getInstance().removeRow(editingRowKey);
+                if (gridInst.getValue(editingRowKey, columns[0].name) === "" ||
+                    gridInst.getValue(editingRowKey, columns[0].name) === null) {
+                    gridInst.removeRow(editingRowKey);
                     editingRowKey = -1;
                 }
         };
@@ -137,22 +144,33 @@ window.toastuigrid = {
             onFocusChange: onFocusChange,
         });
         container.grid = gridTable;
+        if (container.grid.gridRef && container.grid.gridRef.current) {
+            gridInst = container.grid.gridRef.current.getInstance();
+        }
         document.addEventListener("keydown", function (event) {
-            if (parsedOptions.autoSave === true && event.code === "Tab" &&
-                container.grid.gridRef.current.getInstance().getFocusedCell()['rowKey'] === container.grid.gridRef.current.getInstance().getRowCount() - 1 &&
-                prevColumnName === columns[columns.length - 1].name) {
+            gridInst = container.grid.gridRef.current.getInstance();
+            if (event.shiftKey === true && event.code === "Delete") {
+                container.$server.deleteItems(gridInst.getCheckedRowKeys());
+            }
+            if (event.shiftKey === true && event.code === "Insert") {
+                container.$server.addItem();
+            }
+            if (parsedOptions.autoSave === true && event.code === "Tab"
+                && gridInst.getFocusedCell()['rowKey'] === gridInst.getRowCount() - 1
+                && prevColumnName === columns[columns.length - 1].name) {
                 prevColumnName = columns[0].name;
                 container.$server.addItem();
             }
-            prevColumnName = container.grid.gridRef.current.getInstance().getFocusedCell()['columnName'];
+            prevColumnName = gridInst.getFocusedCell()['columnName'];
         });
         document.addEventListener("mousedown", function (event) {
+            gridInst = container.grid.gridRef.current.getInstance();
             const targetElement = event.target as HTMLElement;
             if (targetElement.tagName === "VAADIN-APP-LAYOUT" || targetElement.tagName === "DIV") {
-                container.grid.gridRef.current.getInstance().finishEditing(editingRowKey, prevColumnName);
-                if (container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === "" ||
-                    container.grid.gridRef.current.getInstance().getValue(editingRowKey, columns[0].name) === null) {
-                    container.grid.gridRef.current.getInstance().removeRow(editingRowKey);
+                gridInst.finishEditing(editingRowKey, prevColumnName);
+                if (gridInst.getValue(editingRowKey, columns[0].name) === "" ||
+                    gridInst.getValue(editingRowKey, columns[0].name) === null) {
+                    gridInst.removeRow(editingRowKey);
                 }
             } else {
                 return;
@@ -178,11 +196,9 @@ window.toastuigrid = {
     // It takes a container element with a grid property, and JSON data for the new data.
     // The function appends the new data to the existing table data, and then updates the grid.
     addTableData(container: HTMLElement & { grid: FeatureTable }, data: any) {
-        // let parsedItems = JSON.parse(data);
-        // // container.grid.TableData = [...container.grid.TableData, ...this.getTableData(parsedItems)];
-        // container.grid.setOption({TableData: [...container.grid.TableData, ...this.getTableData(parsedItems)]});
-        container.grid.gridRef.current.getInstance().appendRow();
-        container.grid.gridRef.current.getInstance().startEditingAt(container.grid.gridRef.current.getInstance().getRowCount() - 1, 0);
+        let gridInst = container.grid.gridRef.current.getInstance();
+        gridInst.appendRow();
+        gridInst.startEditingAt(gridInst.getRowCount() - 1, 0);
         // this.updateGrid(container);
     },
     //This internal function is used to set the column content based on a matched name.
@@ -318,7 +334,7 @@ window.toastuigrid = {
 
         for (let column of columns) {
             if (column.editor && column.editor.type == "input") {
-                column.editor.type = CustomTextEditor;
+                column.editor.type = InputComponent;
             }
 
             if (column.hasOwnProperty('editor') &&
@@ -384,13 +400,14 @@ window.toastuigrid = {
 
     removeRows: function (container: any, rowKeys: any) {
         const rows = JSON.parse(rowKeys);
-        // container.grid.gridRef.current.getInstance().reloadData();
+        // gridInst.reloadData();
         // for (let i = 0; i < rows.length; i++) {
-        container.grid.gridRef.current.getInstance().removeCheckedRows(true);
+        let gridInst = container.grid.gridRef.current.getInstance();
+        gridInst.removeCheckedRows(true);
         // }
     },
     //This function updates the grid by rendering the grid component using ReactDOM.render.
     updateGrid: function (container: any) {
-        ReactDOM.render(container.grid.render(), container);
+        createRoot(container).render(container.grid.render());
     }
 }
