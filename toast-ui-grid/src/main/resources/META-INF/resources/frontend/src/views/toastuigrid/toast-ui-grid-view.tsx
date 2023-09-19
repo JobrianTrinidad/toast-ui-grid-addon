@@ -161,6 +161,8 @@ window.toastuigrid = {
         document.addEventListener("keydown", function (event) {
             gridInst = container.grid.gridRef.current.getInstance();
             if (event.shiftKey === true && event.code === "Delete") {
+                // console.log("rowKeys: ", gridInst.getCheckedRowKeys());
+                // console.log("rows: ", gridInst.getCheckedRows());
                 container.$server.deleteItems(gridInst.getCheckedRowKeys());
             }
             if (parsedOptions.autoSave === true
