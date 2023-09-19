@@ -163,10 +163,13 @@ window.toastuigrid = {
             if (event.shiftKey === true && event.code === "Delete") {
                 container.$server.deleteItems(gridInst.getCheckedRowKeys());
             }
-            if (event.shiftKey === true && event.code === "Insert") {
+            if (parsedOptions.autoSave === true
+                && event.shiftKey === true
+                && event.code === "Insert") {
                 container.$server.addItem();
             }
-            if (parsedOptions.autoSave === true && event.code === "Tab"
+            if (parsedOptions.autoSave === true
+                && event.code === "Tab"
                 && gridInst.getFocusedCell()['rowKey'] === gridInst.getRowCount() - 1
                 && prevColumnName === columns[columns.length - 1].name) {
                 prevColumnName = columns[0].name;
