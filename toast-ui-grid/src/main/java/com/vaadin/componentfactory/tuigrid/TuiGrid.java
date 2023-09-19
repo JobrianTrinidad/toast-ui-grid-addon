@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 //@NpmPackage(value = "@types/react-dom", version = "^18.2.0")
 @NpmPackage(value = "@chakra-ui/react", version = "^2.8.0")
 @NpmPackage(value = "@chakra-ui/icons", version = "^2.1.0")
-@NpmPackage(value = "tui-grid", version = "lastest")
+@NpmPackage(value = "tui-grid", version = "^4.21.16")
 @JsModule("./src/views/toastuigrid/toast-ui-grid-view.tsx")
 @JsModule("./src/views/components/Table/FeaturesTable.tsx")
 @JsModule("./src/views/components/Table/Grid.tsx")
