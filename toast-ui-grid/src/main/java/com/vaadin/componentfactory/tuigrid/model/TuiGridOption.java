@@ -49,7 +49,7 @@ public class TuiGridOption {
     public boolean vScroll = false;
     public boolean hScroll = false;
     public int tableWidth = 0;
-    public int tableHeight = 500;
+    public int tableHeight = 0;
     public List<String> rowHeaders = new ArrayList<>();
     public TreeOption treeOption;
     public boolean autoSave = false;
@@ -61,7 +61,8 @@ public class TuiGridOption {
         js.put("autoSave", autoSave);
         if (tableWidth > 0)
             js.put("width", tableWidth);
-        js.put("bodyHeight", tableHeight);
+        if (tableHeight > 0)
+            js.put("bodyHeight", tableHeight);
         js.put("scrollX", vScroll);
         js.put("scrollY", hScroll);
         if (treeOption != null && treeOption.isTreeColumnOptions()) {

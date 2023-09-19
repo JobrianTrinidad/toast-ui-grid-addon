@@ -166,6 +166,7 @@ window.toastuigrid = {
             if (parsedOptions.autoSave === true
                 && event.shiftKey === true
                 && event.code === "Insert") {
+                event.preventDefault();
                 container.$server.addItem();
             }
             if (parsedOptions.autoSave === true
@@ -322,7 +323,10 @@ window.toastuigrid = {
                 item = {
                     type: 'checkbox',
                     header: `
-                              <label for="all-checkbox" class="checkbox">
+                              <label for="all-checkbox" class="checkbox" 
+                                    style="display: flex;
+                                    justify-content: center;"
+                               >
                                 <input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
                                 <span class="custom-input"></span>
                               </label>
@@ -443,7 +447,7 @@ window.toastuigrid = {
         // gridInst.reloadData();
         // for (let i = 0; i < rows.length; i++) {
         let gridInst = container.grid.gridRef.current.getInstance();
-        gridInst.removeCheckedRows(true);
+        gridInst.removeCheckedRows(false);
         // }
     },
     //This function updates the grid by rendering the grid component using ReactDOM.render.
