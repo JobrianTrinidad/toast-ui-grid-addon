@@ -3,6 +3,7 @@ package com.vaadin.componentfactory.tuigrid;
 import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.Route;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Route(value = "", layout = MainLayout.class)
 public class BasicExample extends Div {
+    Span sp = new Span("Here is :");
 
     public BasicExample() {
         // create items
@@ -36,13 +38,13 @@ public class BasicExample extends Div {
 
         Button delBtn = new Button("Delete");
         delBtn.addClickListener(listener -> {
+            sp.add("grid: " + grid.getCheckedItems().length);
             grid.deleteItems(grid.getCheckedItems());
 //            add(layout);
         });
 
 
-
-        add(addBtn, delBtn, layout);
+        add(sp, addBtn, delBtn, layout);
     }
 
     private List<Item> getTableData() {
@@ -73,9 +75,9 @@ public class BasicExample extends Div {
     }
 
     private List<Column> getColumns() {
-        Column nameCol = new Column(new ColumnBaseOption(0, "Name", "name", 0, "center", ""),true, "input", 10);
-        Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", ""),true, "input", 10);
-        Column typeCol = new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", ""),true, "input", 10);
+        Column nameCol = new Column(new ColumnBaseOption(0, "Name", "name", 0, "center", ""), true, "input", 10);
+        Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", ""), true, "input", 10);
+        Column typeCol = new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", ""), true, "input", 10);
         Column genreCol = new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), true, "input", 10);
 //        Column releaseCol = new Column(new ColumnBaseOption(4, "Release", "release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false));
         List<Column> columns = List.of(
