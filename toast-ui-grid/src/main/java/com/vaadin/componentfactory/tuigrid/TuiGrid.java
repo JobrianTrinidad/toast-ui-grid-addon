@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 @JsModule("./src/views/components/Table/FeaturesTable.tsx")
 @JsModule("./src/views/components/Table/Grid.tsx")
 @JsModule("./src/views/components/Table/CustomeEditor.tsx")
-@JsModule("./src/views/components/input/ada-input.tsx")
+@JsModule("./src/views/components/checkbox/ada-checkbox.tsx")
 @CssImport("tui-grid/dist/tui-grid.css")
 @CssImport("tui-date-picker/dist/tui-date-picker.css")
 @CssImport("tui-time-picker/dist/tui-time-picker.css")

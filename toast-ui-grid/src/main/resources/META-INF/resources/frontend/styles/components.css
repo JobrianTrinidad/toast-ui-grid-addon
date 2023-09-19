@@ -2,13 +2,76 @@ button {
     border: none;
 }
 
+select {
+    /* styling */
+    background-color: white;
+    border: thin solid blue;
+    display: inline-block;
+    font: inherit;
+    line-height: 1.5em;
+    padding: 0.5em 3.5em 0.5em 1em;
+
+    /* reset */
+
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image: linear-gradient(45deg, transparent 50%, #000 50%), linear-gradient(135deg, #000 50%, transparent 50%), linear-gradient(to right, #326f70, #326f70);
+    background-position: calc(100% - 15px) 0.8em, calc(100% - 8px) 0.8em, calc(100% - 2.5em) 0em;
+    background-size: 7px 7px, 7px 7px, 1px 100%;
+    background-repeat: no-repeat;
+}
+
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+
+.checkbox.tui-grid-row-header-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.custom-input {
+    position: relative;
+    display: flex;
+    height: 16px;
+    width: 16px;
+    background-color: #fff;
+    border: 2px solid #326f70; /* Set the desired border color when not checked */
+}
+
+.hidden-input:checked ~ .custom-input {
+    background-color: #326f70;
+    border: 2px solid #fff; /* Set the desired border color when checked */
+}
+
 .tui-grid-table {
     box-sizing: initial !important;
 }
 
+.tui-grid-body-area {
+    background-color: #66878840 !important;
+}
+
 .tui-grid-layer-editing {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-style: none !important;
     padding: 0 !important;
+    background-color: #D9E1E1 !important;
 }
 
 .tui-grid-layer-selection {
@@ -41,12 +104,25 @@ button {
     border-right: 2px solid #ffffff; /* Adjust the border styles as needed */
 }
 
+.tui-grid-cell-header:last-child::after {
+    border: none;
+}
+
+.tui-grid-cell-has-input.tui-grid-cell-row-header {
+    background-color: #66878800 !important;
+}
+
 .tui-grid-cell-editable {
-    background-color: #66878840 !important;
+    background-color: #66878800 !important;
 }
 
 .tui-grid-cell {
-    border-color: #66878840 !important;
+    border-style: none !important;
+}
+
+.tui-grid-cell .tui-grid-cell-content {
+    border-style: none !important;
+    color: #0000009A !important;
 }
 
 .DarkCyan {

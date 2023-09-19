@@ -11,6 +11,9 @@ import "@vaadin/text-field";
 import {createRoot} from 'react-dom/client';
 import CustomTextEditor from "../components/Table/CustomeEditor";
 import InputComponent from "../components/input/ada-input";
+import CheckboxComponent from "../components/checkbox/ada-checkbox";
+import {CheckboxRenderer, RowNumberRenderer} from '../renderer/renderer';
+import DropDown from "../components/dropdown/index";
 import {FeatureTable} from "../components/Table/FeaturesTable";
 
 declare global {
@@ -72,19 +75,19 @@ window.toastuigrid = {
             container.$server.onUncheckAll(cleanedObject);
         };
         const onEditingStart = (ev: any) => {
-            console.log("node is here: ");
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
                 if (value instanceof Node) {
                     return 'null'; // Remove the DOM node reference
                 }
                 return value;
             }));
-            console.log("node is ", cleanedObject);
+
             if (gridInst) {
                 editingRowKey = gridInst.getFocusedCell()['rowKey'];
             }
             // if(gridInst.getFocusedCell()['columnName'].equal(columns[0]))
             //     editingValue = gridInst.getFocusedCell()['value']
+            console.log("node is ", cleanedObject);
 
 // Send the cleaned object to the server
             container.$server.onEditingStart(cleanedObject);
@@ -96,6 +99,7 @@ window.toastuigrid = {
                 }
                 return value;
             }));
+            console.log("cleanedObject: ", cleanedObject);
             console.log("cleanedObject: ", cleanedObject);
 // Send the cleaned object to the server getRowSpanData
             if (gridInst) {
@@ -111,6 +115,13 @@ window.toastuigrid = {
         };
 
         const onFocusChange = (ev: any) => {
+            const firstCol = JSON.parse(parsedOptions.columns)[0];
+            if (firstCol.hasOwnProperty('editor') &&
+                firstCol.editor.hasOwnProperty('type') &&
+                firstCol.editor.type === 'select') {
+                editingRowKey = -1;
+                return;
+            }
             if (ev.prevRowKey !== ev.rowKey && editingRowKey !== -1)
                 if (gridInst.getValue(editingRowKey, columns[0].name) === "" ||
                     gridInst.getValue(editingRowKey, columns[0].name) === null) {
@@ -293,7 +304,33 @@ window.toastuigrid = {
     },
     //This function parses the JSON data for row headers and returns an array of trimmed row header names.
     getRowHeaders(parsedRowHeaders: any) {
-        return parsedRowHeaders.slice(1, -1).split(",").map((item: any) => item.trim());
+        return parsedRowHeaders.slice(1, -1).split(",").map((item: any) => {
+            item.trim();
+            if (item === 'rowNum') {
+                item = {
+                    type: 'rowNum',
+                    renderer: {
+                        type: RowNumberRenderer
+                    }
+                };
+            }
+
+            if (item === 'checkbox') {
+                item = {
+                    type: 'checkbox',
+                    header: `
+                              <label for="all-checkbox" class="checkbox">
+                                <input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
+                                <span class="custom-input"></span>
+                              </label>
+                            `,
+                    renderer: {
+                        type: CheckboxRenderer
+                    }
+                };
+            }
+            return item;
+        });
     },
     //This function parses the JSON data for complex columns and returns the parsed complex columns.
     // It also trims the child names.
@@ -363,7 +400,7 @@ window.toastuigrid = {
                     align: column.align,
                     formatter: "listItemText",
                     editor: {
-                        type: "select",
+                        type: DropDown,//"select"
                         options: {
                             listItems: column["depth0"] ? JSON.parse(column["depth0"]) : []
                         }

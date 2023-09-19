@@ -12,6 +12,7 @@ interface InputComponentProps extends InputProps, CellEditorProps {
     handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
     backgroundColor: string;
     width: number;
+    height: number;
     border: string;
     outline: string;
     butBackground: string;
@@ -47,6 +48,7 @@ class InputComponent implements CellEditor {
             backgroundColor,
             opacity,
             width,
+            height,
             size,
             border,
             options,
@@ -66,8 +68,8 @@ class InputComponent implements CellEditor {
                 style={{
                     backgroundColor: '#66878859',
                     opacity,
-                    // width,
-                    height: '100%',
+                    width: '90%',
+                    height: height,
                     border: '1px solid #326f70',
                     outline: "none",
                 }}
