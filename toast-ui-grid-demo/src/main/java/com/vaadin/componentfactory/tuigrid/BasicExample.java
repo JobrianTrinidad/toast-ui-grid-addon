@@ -13,6 +13,7 @@ import java.util.List;
 @Route(value = "", layout = MainLayout.class)
 public class BasicExample extends Div {
     Span sp = new Span("Here is :");
+    List<String> headers = List.of("name", "artist", "type", "genre");
 
     public BasicExample() {
         // create items
@@ -20,6 +21,7 @@ public class BasicExample extends Div {
         grid.setColumns(this.getColumns());
         grid.setItems(this.getTableData());
         grid.setRowHeaders(List.of("checkbox"));
+        grid.setHeaders(headers);
         grid.setAutoSave(true);
         grid.setHeaderHeight(100);
 //        grid.setTableWidth(950);
@@ -31,7 +33,6 @@ public class BasicExample extends Div {
 
         Button addBtn = new Button("Add");
         addBtn.addClickListener(listener -> {
-            List<String> headers = List.of("name", "artist", "type", "genre");
             grid.addItem(List.of(new GuiItem(List.of("", "", "", ""), headers)));
 //            add(layout);
         });
@@ -50,7 +51,6 @@ public class BasicExample extends Div {
     private List<Item> getTableData() {
 
         List<Item> TableData = new ArrayList<>();
-        List<String> headers = List.of("name", "artist", "type", "genre");
 
         TableData.add(new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
         TableData.add(new GuiItem(List.of("X", "Ed Sheeran", "Deluxe;", "", "", "20000", "1900", "2005"), headers));

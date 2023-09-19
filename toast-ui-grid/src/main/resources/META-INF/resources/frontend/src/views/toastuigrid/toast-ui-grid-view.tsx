@@ -99,8 +99,6 @@ window.toastuigrid = {
                 }
                 return value;
             }));
-            console.log("cleanedObject: ", cleanedObject);
-            console.log("cleanedObject: ", cleanedObject);
 // Send the cleaned object to the server getRowSpanData
             if (gridInst) {
                 let record = {};
@@ -353,10 +351,13 @@ window.toastuigrid = {
     //This function parses the JSON data for the summary and returns the parsed summary object.
     // It handles column content by calling _setColumnContentMatchedName to modify the column content based on its value.
     getSummary(parsedSummary: any) {
+        console.log('parsedSummary: ', parsedSummary);
         if (parsedSummary == undefined || !parsedSummary.hasOwnProperty('columnContent'))
             return null;
         let summaries: any = parsedSummary;
         let columnContents = JSON.parse(summaries.columnContent);
+        if (columnContents.length === 0)
+            return null;
         for (const columnContent of columnContents) {
             this._setColumnContentMatchedName(columnContent);
         }

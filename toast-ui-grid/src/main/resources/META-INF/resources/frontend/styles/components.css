@@ -124,6 +124,9 @@ select:-moz-focusring {
     border-style: none !important;
     color: #0000009A !important;
 }
+.tui-grid-cell-summary{
+    background-color:#66878840 !important;
+}
 
 .DarkCyan {
     --DarkCyan-100: #668788;

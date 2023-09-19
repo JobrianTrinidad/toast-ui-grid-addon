@@ -67,6 +67,7 @@ public class TuiGrid extends Div {
     protected TuiGridOption tuiGridOption = new TuiGridOption();
     private List<Column> columns = new ArrayList<>();
     private List<Integer> checkedItems = new ArrayList<>();
+    List<String> headers = new ArrayList<>();
     String colName;
     String colValue;
 
@@ -279,6 +280,14 @@ public class TuiGrid extends Div {
     public void setRowHeaders(List<String> rowHeaders) {
         tuiGridOption.rowHeaders = rowHeaders;
         this.updateTuiGridOptions();
+    }
+
+    public List<String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(List<String> headers) {
+        this.headers = headers;
     }
 
     /**
@@ -574,7 +583,13 @@ public class TuiGrid extends Div {
                     (int) eventData.getNumber("rowKey"), true);
 
             if ((int) eventData.getNumber("rowKey") >= this.items.size()) {
-                GuiItem temp = (GuiItem) this.items.get(0);
+//                GuiItem temp = (GuiItem) this.items.get(0);
+                List<String> itemData = new ArrayList<>();
+                for (int i = 0; i < headers.size(); i++) {
+                    itemData.add("");
+                }
+
+                GuiItem temp = new GuiItem(itemData, headers);
                 List<String> tempData = new ArrayList<>();
                 for (int i = 0; i < temp.getRecordData().size(); i++) {
                     tempData.add("");
