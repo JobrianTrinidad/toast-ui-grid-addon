@@ -8,13 +8,15 @@ import "@vaadin/text-field";
 // import "tui-grid/dist/tui-grid.css";
 // import "tui-date-picker/dist/tui-date-picker.css";
 // import "tui-time-picker/dist/tui-time-picker.css";
+import React, {useEffect, useRef} from 'react';
 import {createRoot} from 'react-dom/client';
 import CustomTextEditor from "../components/Table/CustomeEditor";
 import InputComponent from "../components/input/ada-input";
 import CheckboxComponent from "../components/checkbox/ada-checkbox";
 import {CheckboxRenderer, RowNumberRenderer} from '../renderer/renderer';
 import DropDown from "../components/dropdown/index";
-import {FeatureTable} from "../components/Table/FeaturesTable";
+import FeatureTable from "../components/Table/FeaturesTable";
+import TuiGrid, {GridEventName} from 'tui-grid';
 
 declare global {
     interface Window {
@@ -27,19 +29,24 @@ window.toastuigrid = {
     // It takes a container element, JSON data for items, JSON data for options, and an unused parameter _.
     // The function parses the JSON data, sets up event handlers, creates an instance of the FeatureTable component,
     // and updates the grid.
-    _createGrid: function (container: HTMLElement & { grid: any }, itemsJson: any, optionsJson: any, _: any) {
+    _createGrid: function (container: HTMLElement & {
+        grid: JSX.Element & { table: TuiGrid }
+    }, itemsJson: string, optionsJson: string): void {
         let parsedItems = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
-        let editingRowKey = -1;
+        let editingRowKey: number = -1;
         let columns = this.getColumns(JSON.parse(parsedOptions.columns));
-        let prevColumnName = "";
-        let gridInst;
+        let prevColumnName: string = "";
+        let gridInst: TuiGrid;
+        let rangeSelected: number[] = [-1, -1];
+        console.log("TableData: ", this.getTableData(parsedItems));
+        console.log("Column: ", columns);
         // Implementation goes here
-        const onSelection = (ev: any) => {
-            console.log("selection: ", ev);
+        const onSelection = (ev: Event): void => {
+            rangeSelected = ev.range.row;
         };
-        const onCheck = (ev: any) => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+        const onCheck = (ev: Event): void => {
+            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
                 }
@@ -47,8 +54,8 @@ window.toastuigrid = {
             }))
             container.$server.onCheck(cleanedObject);
         };
-        const onUncheck = (ev: any) => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+        const onUncheck = (ev: Event): void => {
+            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
                 }
@@ -56,8 +63,8 @@ window.toastuigrid = {
             }))
             container.$server.onUncheck(cleanedObject);
         };
-        const onCheckAll = (ev: any) => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+        const onCheckAll = (ev: Event): void => {
+            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
                 }
@@ -65,8 +72,8 @@ window.toastuigrid = {
             }))
             container.$server.onCheckAll(cleanedObject);
         };
-        const onUncheckAll = (ev: any) => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+        const onUncheckAll = (ev: Event): void => {
+            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
                 }
@@ -74,8 +81,8 @@ window.toastuigrid = {
             }))
             container.$server.onUncheckAll(cleanedObject);
         };
-        const onEditingStart = (ev: any) => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+        const onEditingStart = (ev: Event): void => {
+            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): string => {
                 if (value instanceof Node) {
                     return 'null'; // Remove the DOM node reference
                 }
@@ -92,8 +99,8 @@ window.toastuigrid = {
 // Send the cleaned object to the server
             container.$server.onEditingStart(cleanedObject);
         };
-        const onEditingFinish = (ev: any) => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key, value) => {
+        const onEditingFinish = (ev: Event): void => {
+            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
                 }
@@ -101,7 +108,7 @@ window.toastuigrid = {
             }));
 // Send the cleaned object to the server getRowSpanData
             if (gridInst) {
-                let record = {};
+                let record: {} = {};
                 for (const column of columns) {
                     let key = column.name;
                     record = {...record, [key]: gridInst.getValue(editingRowKey, column.name)}
@@ -111,8 +118,7 @@ window.toastuigrid = {
                     container.$server.onEditingFinish(cleanedObject);
             }
         };
-
-        const onFocusChange = (ev: any) => {
+        const onFocusChange = (ev: Event): void => {
             const firstCol = JSON.parse(parsedOptions.columns)[0];
             if (firstCol.hasOwnProperty('editor') &&
                 firstCol.editor.hasOwnProperty('type') &&
@@ -127,62 +133,68 @@ window.toastuigrid = {
                     editingRowKey = -1;
                 }
         };
-
-        let gridTable: FeatureTable = new FeatureTable({
-            el: document.getElementsByClassName("grid")[0],
-            TableData: this.getTableData(parsedItems),
-            columns: columns,
-            summary: this.getSummary(parsedOptions.summary),
-            columnOptions: parsedOptions.columnOptions,
-            header: this.getHeader(parsedOptions.header),
-            width: parsedOptions.width,
-            bodyHeight: parsedOptions.bodyHeight,
-            scrollX: parsedOptions.scrollX,
-            scrollY: parsedOptions.scrollY,
-            rowHeight: 40,
-            minBodyHeight: 120,
-            rowHeaders: parsedOptions.rowHeaders ? this.getRowHeaders(parsedOptions.rowHeaders) : null,
-            treeColumnOptions: parsedOptions.treeColumnOptions ? JSON.parse(parsedOptions.treeColumnOptions) : null,
-            onEditingStart: onEditingStart,
-            onEditingFinish: onEditingFinish,
-            onSelection: onSelection,
-            onCheck: onCheck,
-            onCheckAll: onCheckAll,
-            onUncheck: onUncheck,
-            onUncheckAll: onUncheckAll,
-            onFocusChange: onFocusChange,
-        });
-        container.grid = gridTable;
-        if (container.grid.gridRef && container.grid.gridRef.current) {
-            gridInst = container.grid.gridRef.current.getInstance();
+        const handleSearchResult = (result: any): void => {
+            console.log("result: ", result);
+            gridInst = container.grid.table;
+            gridInst.focusAt(result.row, result.column);
         }
-        document.addEventListener("keydown", function (event) {
-            gridInst = container.grid.gridRef.current.getInstance();
-            if (event.shiftKey === true && event.code === "Delete") {
-                // console.log("rowKeys: ", gridInst.getCheckedRowKeys());
-                // console.log("rows: ", gridInst.getCheckedRows());
+        const handleKeyDown = (event: KeyboardEvent): void => {
+            gridInst = container.grid.table;
+            if (event.shiftKey === false
+                && event.altKey === false
+                && event.ctrlKey === false
+                && (event.code === "ArrowDown"
+                    || event.code === "ArrowUp"
+                    || event.code === "ArrowLeft"
+                    || event.code === "ArrowRight"))
+                rangeSelected = [-1, -1];
+            else if (event.shiftKey === true
+                && event.code === "Delete") {
                 container.$server.deleteItems(gridInst.getCheckedRowKeys());
-            }
-            if (parsedOptions.autoSave === true
+            } else if (event.shiftKey === true
+                && event.code === "Space") {
+                event.preventDefault();
+                if (rangeSelected[0] === -1) {
+                    let selectedIndex = gridInst.getFocusedCell()["rowKey"];
+                    if (gridInst.getCheckedRowKeys().includes(selectedIndex))
+                        gridInst.uncheck(selectedIndex);
+                    else
+                        gridInst.check(selectedIndex);
+                } else {
+                    let bChecked: boolean = true;
+                    for (let i: number = rangeSelected[0]; i <= rangeSelected[1]; i++) {
+                        if (gridInst.getCheckedRowKeys().includes(i))
+                            bChecked = false;
+                    }
+                    if (bChecked)
+                        gridInst.checkBetween(rangeSelected[0], rangeSelected[1]);
+                    else {
+                        gridInst.uncheckBetween(rangeSelected[0], rangeSelected[1]);
+                    }
+                }
+            } else if (parsedOptions.autoSave === true
                 && event.shiftKey === true
                 && event.code === "Insert") {
                 event.preventDefault();
                 container.$server.addItem();
-            }
-            if (parsedOptions.autoSave === true
+            } else if (parsedOptions.autoSave === true
                 && event.code === "Tab"
                 && gridInst.getFocusedCell()['rowKey'] === gridInst.getRowCount() - 1
                 && prevColumnName === columns[columns.length - 1].name) {
                 prevColumnName = columns[0].name;
                 container.$server.addItem();
+            } else
+                prevColumnName = gridInst.getFocusedCell()['columnName'];
+        };
+        const handleMouseDown = (event: MouseEvent): void => {
+            gridInst = container.grid.table;
+            if (event.defaultPrevented === false) {
+                gridInst.restore();
             }
-            prevColumnName = gridInst.getFocusedCell()['columnName'];
-        });
-        document.addEventListener("mousedown", function (event) {
-            gridInst = container.grid.gridRef.current.getInstance();
-            const targetElement = event.target as HTMLElement;
+            const targetElement: HTMLElement = event.target as HTMLElement;
             if (targetElement.tagName === "VAADIN-APP-LAYOUT" || targetElement.tagName === "DIV") {
                 gridInst.finishEditing(editingRowKey, prevColumnName);
+
                 if (gridInst.getValue(editingRowKey, columns[0].name) === "" ||
                     gridInst.getValue(editingRowKey, columns[0].name) === null) {
                     gridInst.removeRow(editingRowKey);
@@ -190,19 +202,68 @@ window.toastuigrid = {
             } else {
                 return;
             }
-        });
-        this.updateGrid(container);
 
+            if (!event.shiftKey
+                && !event.target.className.includes('tui-grid-cell-header'))
+                rangeSelected = [-1, -1];
+        };
+        const handleGetGridInstance = (gridInstance: TuiGrid): void => {
+            gridInst = gridInstance;
+            if (Object.isExtensible(container.grid)) {
+                container.grid.table = gridInstance;
+            } else {
+                // If container.grid is not extensible, create a new object with the desired properties
+                container.grid = {
+                    ...container.grid,
+                    table: gridInstance,
+                };
+            }
+        };
+
+        let gridTable: JSX.Element = (
+            <FeatureTable
+                getGridInstance={handleGetGridInstance}
+                el={document.getElementsByClassName("grid")[0]}
+                TableData={this.getTableData(parsedItems)}
+                columns={columns}
+                summary={this.getSummary(parsedOptions.summary)}
+                columnOptions={parsedOptions.columnOptions}
+                header={this.getHeader(parsedOptions.header)}
+                width={parsedOptions.width}
+                bodyHeight={parsedOptions.bodyHeight}
+                scrollX={parsedOptions.scrollX}
+                scrollY={parsedOptions.scrollY}
+                rowHeight={40}
+                minBodyHeight={120}
+                rowHeaders={parsedOptions.rowHeaders ? this.getRowHeaders(parsedOptions.rowHeaders) : null}
+                treeColumnOptions={parsedOptions.treeColumnOptions ? JSON.parse(parsedOptions.treeColumnOptions) : null}
+                onEditingStart={onEditingStart}
+                onEditingFinish={onEditingFinish}
+                onSelection={onSelection}
+                onCheck={onCheck}
+                onCheckAll={onCheckAll}
+                onUncheck={onUncheck}
+                onUncheckAll={onUncheckAll}
+                onFocusChange={onFocusChange}
+                handleSearchResult={handleSearchResult}
+            ></FeatureTable>
+        );
+        container.grid = gridTable;
+
+        document.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("mousedown", handleMouseDown);
+
+        this.updateGrid(container);
     },
     //This function is a wrapper around _createGrid that delays the execution using setTimeout.
     // It takes a container element, JSON data for items, and JSON data for options.
-    create(container: HTMLElement, itemsJson: any, optionsJson: any) {
+    create(container: HTMLElement, itemsJson: string, optionsJson: string): void {
         setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
     },
 
     //This function updates the table data of an existing grid. It takes a container element with a grid property,
     // and JSON data for the new data. The function updates the table data, and then updates the grid.
-    setTableData(container: HTMLElement & { grid: FeatureTable }, data: any) {
+    setTableData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, data: string): void {
         let parsedItems = JSON.parse(data);
         container.grid.setOption({TableData: this.getTableData(parsedItems)});
         // this.updateGrid(container);
@@ -210,8 +271,8 @@ window.toastuigrid = {
     //This function adds new data to the existing table data of a grid.
     // It takes a container element with a grid property, and JSON data for the new data.
     // The function appends the new data to the existing table data, and then updates the grid.
-    addTableData(container: HTMLElement & { grid: FeatureTable }, data: any) {
-        let gridInst = container.grid.gridRef.current.getInstance();
+    addTableData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, data: string): void {
+        let gridInst: TuiGrid = container.grid.table;
         gridInst.appendRow();
         gridInst.startEditingAt(gridInst.getRowCount() - 1, 0);
         // this.updateGrid(container);
@@ -220,30 +281,30 @@ window.toastuigrid = {
     // It takes an object columnContent and modifies it based on its value.
     // The modified object is used for displaying summary information in the grid.
     _setColumnContentMatchedName(columnContent: any) {
-        const onSum = () => {
+        const onSum = (): { template: (valueMap: any) => string } => {
             return {
-                template: (valueMap: any) => {
+                template: (valueMap: any): string => {
                     return `Sum: ${valueMap.sum}`;
                 }
             }
         };
-        const onAvg = () => {
+        const onAvg = (): { template: (valueMap: any) => string } => {
             return {
-                template: (valueMap: any) => {
+                template: (valueMap: any): string => {
                     return `AVG: ${valueMap.avg.toFixed(2)}`;
                 }
             }
         };
-        const onMax = () => {
+        const onMax = (): { template: (valueMap: any) => string } => {
             return {
-                template: (valueMap: any) => {
+                template: (valueMap: any): string => {
                     return `MAX: ${valueMap.max}`;
                 }
             }
         };
-        const onMin = () => {
+        const onMin = (): { template: (valueMap: any) => string } => {
             return {
-                template: (valueMap: any) => {
+                template: (valueMap: any): string => {
                     return `MIN: ${valueMap.min}`;
                 }
             }
@@ -270,11 +331,14 @@ window.toastuigrid = {
     //This function parses the JSON data for the header and returns the header object.
     // If the header does not have complex columns, it returns null.
     // Otherwise, it constructs the header object with the specified height and complex columns.
-    getHeader(parsedHeader: any) {
+    getHeader(parsedHeader: { height?: number, complexColumns: any[] }): {
+        height?: number,
+        complexColumns: any[]
+    } | null {
         if (!parsedHeader.hasOwnProperty('complexColumns'))
             return null;
         else {
-            let header = parsedHeader.height != 0 ? {
+            let header: { height?: number, complexColumns: any[] } = parsedHeader.height != 0 ? {
                 height: parsedHeader.height,
                 complexColumns: this.getComplexColumns(parsedHeader.complexColumns)
             } : {
@@ -284,7 +348,7 @@ window.toastuigrid = {
         }
     },
     //This function retrieves the data from the grid and sends it to the server using the onGetData function.
-    getData(container: HTMLElement & { grid: FeatureTable }) {
+    getData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }) {
         let cleanedObject = JSON.parse(JSON.stringify(container.grid.TableData, (key, value) => {
             if (value instanceof Node) {
                 return null; // Remove the DOM node reference
@@ -351,7 +415,6 @@ window.toastuigrid = {
     //This function parses the JSON data for the summary and returns the parsed summary object.
     // It handles column content by calling _setColumnContentMatchedName to modify the column content based on its value.
     getSummary(parsedSummary: any) {
-        console.log('parsedSummary: ', parsedSummary);
         if (parsedSummary == undefined || !parsedSummary.hasOwnProperty('columnContent'))
             return null;
         let summaries: any = parsedSummary;
@@ -375,7 +438,7 @@ window.toastuigrid = {
     },
     //This function parses the JSON data for the columns and returns the parsed columns.
     // It handles special cases for input and select editors, and also handles depth0 and depth1 data for select editors.
-    getColumns(parsedColumn: any) {
+    getColumns(parsedColumn: any[]): any[] {
         let columns: any[] = parsedColumn;
         let tempColumns: any[] = [];
 
@@ -391,12 +454,12 @@ window.toastuigrid = {
                 column.editor.options = JSON.parse(column.editor.options);
                 if (column.editor.options.hasOwnProperty('fromYear') &&
                     parseInt(column.editor.options.fromYear) > 0) {
-                    let fromYear = parseInt(column.editor.options.fromYear);
-                    let fromMonth = parseInt(column.editor.options.fromMonth);
-                    let fromDay = parseInt(column.editor.options.fromDay);
-                    let toYear = parseInt(column.editor.options.toYear);
-                    let toMonth = parseInt(column.editor.options.toMonth);
-                    let toDay = parseInt(column.editor.options.toDay);
+                    let fromYear: number = parseInt(column.editor.options.fromYear);
+                    let fromMonth: number = parseInt(column.editor.options.fromMonth);
+                    let fromDay: number = parseInt(column.editor.options.fromDay);
+                    let toYear: number = parseInt(column.editor.options.toYear);
+                    let toMonth: number = parseInt(column.editor.options.toMonth);
+                    let toDay: number = parseInt(column.editor.options.toDay);
                     column.editor.options = {
                         selectableRanges: [[new Date(fromYear, fromMonth - 1, fromDay), new Date(toYear, toMonth - 1, toDay)]]
                     };
@@ -404,7 +467,7 @@ window.toastuigrid = {
             }
 
             if (column.editor && column.editor.type == "select") {
-                let tempColumn = {
+                const tempColumn = {
                     header: column.headerName,
                     name: column.name,
                     align: column.align,
@@ -436,25 +499,27 @@ window.toastuigrid = {
     //This function updates the options of an existing grid.
     // It takes a container element with a grid property, and JSON data for the new options.
     // The function updates the options, and then updates the grid.
-    setOptions: function (container: HTMLElement & { grid: FeatureTable }, optionsJson: any) {
+    setOptions: function (container: HTMLElement & {
+        grid: JSX.Element & { table: TuiGrid }
+    }, optionsJson: string): void {
         let parsedOptions = JSON.parse(optionsJson);
         container.grid.setOption(parsedOptions);
         // this.updateGrid(container);
     },
-    setTest: function (container: any, content: any) {
+    setTest: function (container: HTMLElement, content: any): void {
         console.log("Event Test: ", content);
     },
 
-    removeRows: function (container: any, rowKeys: any) {
+    removeRows: function (container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, rowKeys: string): void {
         const rows = JSON.parse(rowKeys);
         // gridInst.reloadData();
         // for (let i = 0; i < rows.length; i++) {
-        let gridInst = container.grid.gridRef.current.getInstance();
+        let gridInst: TuiGrid = container.grid.table;
         gridInst.removeCheckedRows(false);
         // }
     },
     //This function updates the grid by rendering the grid component using ReactDOM.render.
-    updateGrid: function (container: any) {
-        createRoot(container).render(container.grid.render());
+    updateGrid: function (container: HTMLElement | undefined): void {
+        createRoot(container).render(container.grid);
     }
 }
