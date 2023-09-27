@@ -55,7 +55,6 @@ import java.util.stream.Collectors;
 @NpmPackage(value = "tui-grid", version = "^4.21.17")
 @JsModule("./src/views/toastuigrid/toast-ui-grid-view.tsx")
 @JsModule("./src/views/components/Table/FeaturesTable.tsx")
-@JsModule("./src/views/components/Table/Grid.tsx")
 @JsModule("./src/views/components/Table/ExcelSheet.tsx")
 @JsModule("./src/views/components/Table/CustomeEditor.tsx")
 @JsModule("./src/views/components/checkbox/ada-checkbox.tsx")

@@ -63,9 +63,9 @@ const FeatureTable: React.FC<FeatureTableProps> = forwardRef(
         function loadRows(lengthOfLoaded: number) {
             const rows = [];
             let endPoint: number = lengthOfLoaded + 50 <= TableData.length ? lengthOfLoaded + 50 : TableData.length
-            for (let i = lengthOfLoaded; i < endPoint; i += 1) {
-                const row = {};
-                for (let j = 0; j < columns.length; j += 1) {
+            for (let i: number = lengthOfLoaded; i < endPoint; i += 1) {
+                const row: {} = {};
+                for (let j: number = 0; j < columns.length; j += 1) {
                     row[columns[j].name] = TableData[i][columns[j].name];
                 }
                 rows.push(row);
@@ -100,13 +100,13 @@ const FeatureTable: React.FC<FeatureTableProps> = forwardRef(
                 onFocusChange: onFocusChange,
             });
             gridInstanceRef.current = grid;
-            grid.on('scrollEnd', (event) => {
+            grid.on('scrollEnd', (): void => {
                 grid.appendRows(loadRows(grid.store.data.viewData.length));
             });
 
             getGridInstance(grid);
 
-            return () => {
+            return (): void => {
                 if (grid) {
                     grid.destroy();
                 }

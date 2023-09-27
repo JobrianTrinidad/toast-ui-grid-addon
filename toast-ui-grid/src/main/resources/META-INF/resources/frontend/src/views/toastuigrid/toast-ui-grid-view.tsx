@@ -92,9 +92,6 @@ window.toastuigrid = {
             if (gridInst) {
                 editingRowKey = gridInst.getFocusedCell()['rowKey'];
             }
-            // if(gridInst.getFocusedCell()['columnName'].equal(columns[0]))
-            //     editingValue = gridInst.getFocusedCell()['value']
-            console.log("node is ", cleanedObject);
 
 // Send the cleaned object to the server
             container.$server.onEditingStart(cleanedObject);
@@ -134,7 +131,6 @@ window.toastuigrid = {
                 }
         };
         const handleSearchResult = (result: any): void => {
-            console.log("result: ", result);
             gridInst = container.grid.table;
             gridInst.focusAt(result.row, result.column);
         }

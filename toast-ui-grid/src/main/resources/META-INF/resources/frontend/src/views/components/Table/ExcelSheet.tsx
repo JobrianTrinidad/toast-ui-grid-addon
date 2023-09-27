@@ -30,15 +30,15 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
                 event.preventDefault();
                 setShowSearchInput(true);
                 setSearchValue('');
-                setTimeout(() => {
+                setTimeout((): void => {
                     searchInputRef.current?.focus();
                 }, 0);
             } else if (event.altKey && event.key === 'ArrowDown') {
                 findNext(searchValue, currentSearchIndex, props.range);
-                props.onSearchResult(searchResult);
             } else if (event.altKey && event.key === 'ArrowUp') {
                 findBefore(searchValue, currentSearchIndex, props.range);
-                props.onSearchResult(searchResult);
+            } else {
+
             }
         };
 
@@ -89,6 +89,11 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
             for (let index: number = nextIndex; index < range.length * range[0].length; index++) {
                 const cell: Cell = getCellFromIndex(index, range);
                 if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                    props.onSearchResult({
+                        row: cell.row,
+                        column: props.range[cell.row][cell.column].column,
+                        value: cell.value
+                    });
                     setSearchResult(getCellFromIndex(index, range));
                     setCurrentSearchIndex(index);
                     return;
@@ -97,6 +102,11 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
             for (let index: number = 0; index < nextIndex; index++) {
                 const cell: Cell = getCellFromIndex(index, range);
                 if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                    props.onSearchResult({
+                        row: cell.row,
+                        column: props.range[cell.row][cell.column].column,
+                        value: cell.value
+                    });
                     setSearchResult(getCellFromIndex(index, range));
                     setCurrentSearchIndex(index);
                     return;
@@ -114,11 +124,17 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
             let beforeIndex: number = currentSearchIndex - 1;
 
             if (beforeIndex < 0) {
+                return;
                 beforeIndex = range.length * range[0].length - 1;
             }
             for (let index: number = beforeIndex; index >= 0; index--) {
                 const cell: Cell = getCellFromIndex(index, range);
                 if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                    props.onSearchResult({
+                        row: cell.row,
+                        column: props.range[cell.row][cell.column].column,
+                        value: cell.value
+                    });
                     setSearchResult(getCellFromIndex(index, range));
                     setCurrentSearchIndex(index);
                     return;
@@ -147,14 +163,6 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
                            ref={searchInputRef}/>
                     <button type="submit">Find</button>
                 </form>
-            )}
-
-            {searchResult ? (
-                <div>
-                    Value found at row {searchResult.row}, column {searchResult.column}
-                </div>
-            ) : (
-                <div>Value not found</div>
             )}
         </div>
     );
