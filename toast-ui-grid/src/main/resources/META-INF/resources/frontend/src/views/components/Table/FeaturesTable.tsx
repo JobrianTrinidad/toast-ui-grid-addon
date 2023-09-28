@@ -58,6 +58,7 @@ const FeatureTable: React.FC<FeatureTableProps> = forwardRef(
         ref
     ) => {
         const gridRef = useRef<HTMLDivElement>(null);
+        const excelRef = useRef<HTMLDivElement>(null);
         const gridInstanceRef = useRef<TuiGrid | null>(null);
 
         function loadRows(lengthOfLoaded: number) {
@@ -90,18 +91,43 @@ const FeatureTable: React.FC<FeatureTableProps> = forwardRef(
                 ...(treeColumnOptions && {treeColumnOptions}),
                 ...(rowHeight && {rowHeight}),
                 ...(minBodyHeight && {minBodyHeight}),
-                onEditingStart: onEditingStart,
-                onEditingFinish: onEditingFinish,
-                onSelection: onSelection,
-                onCheck: onCheck,
-                onCheckAll: onCheckAll,
-                onUncheck: onUncheck,
-                onUncheckAll: onUncheckAll,
-                onFocusChange: onFocusChange,
             });
             gridInstanceRef.current = grid;
+
             grid.on('scrollEnd', (): void => {
                 grid.appendRows(loadRows(grid.store.data.viewData.length));
+            });
+
+            grid.on('editingStart', (ev: Event): void => {
+                onEditingStart(ev);
+            });
+
+            grid.on('editingFinish', (ev: Event): void => {
+                onEditingFinish(ev);
+            });
+
+            grid.on('selection', (ev: Event): void => {
+                onSelection(ev);
+            });
+
+            grid.on('check', (ev: Event): void => {
+                onCheck(ev);
+            });
+
+            grid.on('uncheck', (ev: Event): void => {
+                onUncheck(ev);
+            });
+
+            grid.on('checkAll', (ev: Event): void => {
+                onCheckAll(ev);
+            });
+
+            grid.on('uncheckAll', (ev: Event): void => {
+                onUncheckAll(ev);
+            });
+
+            grid.on('onFocusChange', (ev: Event): void => {
+                onUncheckAll(ev);
             });
 
             getGridInstance(grid);
@@ -127,7 +153,10 @@ const FeatureTable: React.FC<FeatureTableProps> = forwardRef(
         return (
             <div>
                 <div ref={gridRef}></div>
-                <ExcelSheet range={range} onSearchResult={handleSearchResult}/>
+                <ExcelSheet
+                    ref={excelRef}
+                    range={range}
+                    onSearchResult={handleSearchResult}/>
             </div>
         );
     }

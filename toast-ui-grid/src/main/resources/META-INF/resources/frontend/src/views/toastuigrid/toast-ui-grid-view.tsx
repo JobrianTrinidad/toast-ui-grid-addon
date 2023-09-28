@@ -215,7 +215,6 @@ window.toastuigrid = {
                 };
             }
         };
-
         let gridTable: JSX.Element = (
             <FeatureTable
                 getGridInstance={handleGetGridInstance}

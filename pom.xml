@@ -13,7 +13,7 @@
     <description>toast-ui-grid component based on toast-ui-grid library</description>
 
     <properties>
-        <java.version>20</java.version>
+        <java.version>17</java.version>
         <vaadin.version>24.1.0</vaadin.version>
         <selenium.version>4.8.3</selenium.version>
         <!--        <maven.compiler.source>3.9.2</maven.compiler.source>-->

@@ -1,4 +1,6 @@
 import React, {useState, useEffect, forwardRef, useRef} from 'react';
+import ReactDOMServer from 'react-dom/server';
+import InputComponent from '../input/ada-input';
 
 interface Cell {
     row: number;
@@ -8,7 +10,7 @@ interface Cell {
 
 interface ExcelSheetProps {
     range: Cell[][];
-    onSearchResult;
+    onSearchResult: (result: Cell | null) => void;
 }
 
 const getCellFromIndex = (index: number, range: Cell[][]): Cell | null => {
@@ -24,15 +26,21 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
     const [currentSearchIndex, setCurrentSearchIndex] = useState(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
+    // const adaInput: InputComponent = new InputComponent({
+    //     value: searchValue,
+    //     handleChange: e => setSearchValue(e.target.value),
+    //     ref: searchInputRef
+    // });
+    //
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent): void => {
             if (event.ctrlKey && event.key === 'f') {
                 event.preventDefault();
                 setShowSearchInput(true);
                 setSearchValue('');
-                setTimeout((): void => {
-                    searchInputRef.current?.focus();
-                }, 0);
+                // setTimeout((): void => {
+                //     searchInputRef.current?.focus();
+                // }, 0);
             } else if (event.altKey && event.key === 'ArrowDown') {
                 findNext(searchValue, currentSearchIndex, props.range);
             } else if (event.altKey && event.key === 'ArrowUp') {
@@ -88,7 +96,7 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
 
             for (let index: number = nextIndex; index < range.length * range[0].length; index++) {
                 const cell: Cell = getCellFromIndex(index, range);
-                if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                if (cell && cell.value.toString().toLowerCase().includes(searchKey)) {
                     props.onSearchResult({
                         row: cell.row,
                         column: props.range[cell.row][cell.column].column,
@@ -101,7 +109,7 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
             }
             for (let index: number = 0; index < nextIndex; index++) {
                 const cell: Cell = getCellFromIndex(index, range);
-                if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                if (cell && cell.value.toString().toLowerCase().includes(searchKey)) {
                     props.onSearchResult({
                         row: cell.row,
                         column: props.range[cell.row][cell.column].column,
@@ -129,7 +137,7 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
             }
             for (let index: number = beforeIndex; index >= 0; index--) {
                 const cell: Cell = getCellFromIndex(index, range);
-                if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                if (cell && cell.value.toString().toLowerCase().includes(searchKey)) {
                     props.onSearchResult({
                         row: cell.row,
                         column: props.range[cell.row][cell.column].column,
@@ -142,7 +150,7 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
             }
             for (let index: number = range.length * range[0].length - 1; index >= beforeIndex; index--) {
                 const cell: Cell = getCellFromIndex(index, range);
-                if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                if (cell && cell.value.toString().toLowerCase().includes(searchKey)) {
                     setSearchResult(getCellFromIndex(index, range));
                     setCurrentSearchIndex(index);
                     return;
@@ -153,7 +161,20 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
         }
     }
 
+    const myInputComponent = new InputComponent({
+        // ref: searchInputRef,
+        value: searchValue,
+        handleChange: e => setSearchValue(e.target.value),
+    });
     return (
+        // <div ref={ref}>
+        //     {showSearchInput && (
+        //         <form onSubmit={handleSearch}>
+        //             {React.createElement(ReactDOMServer.renderToString(myInputComponent.render()))}
+        //             <button type="submit">Find</button>
+        //         </form>
+        //     )}
+        // </div>
         <div ref={ref}>
             {showSearchInput && (
                 <form onSubmit={handleSearch}>
