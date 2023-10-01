@@ -61,9 +61,9 @@ select:-moz-focusring {
     box-sizing: initial !important;
 }
 
-.tui-grid-body-area {
-    background-color: #66878840 !important;
-}
+/*.tui-grid-body-area {*/
+/*    background-color: #66878840 !important;*/
+/*}*/
 
 .tui-grid-layer-editing {
     display: flex;
@@ -71,7 +71,6 @@ select:-moz-focusring {
     align-items: center;
     border-style: none !important;
     padding: 0 !important;
-    background-color: #D9E1E1 !important;
 }
 
 .tui-grid-layer-selection {
