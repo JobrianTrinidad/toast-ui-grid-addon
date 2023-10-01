@@ -456,56 +456,7 @@ window.toastuigrid = {
 
         for (let column of columns) {
             if (column.editor && column.editor.type == "input") {
-                // const inputComponentProps: InputComponentProps = {
-                //     container: null, // Set the container value
-                //     options: {maxLength: 10}, // Set the options value
-                //     value: "", // Set the value
-                //     handleChange: (event) => {
-                //     }, // Set the handleChange function
-                //     backgroundColor: "#FFFFFF", // Set the backgroundColor
-                //     width: 200, // Set the width
-                //     height: 40, // Set the height
-                //     border: "1px solid #000000", // Set the border
-                //     outline: "none", // Set the outline
-                //     butBackground: "#FFFFFF", // Set the butBackground
-                //     opacity: 1, // Set the opacity
-                //     size: "md", // Set the size
-                //     grid: null, // Set the grid value
-                //     rowKey: "", // Set the rowKey value
-                //     columnInfo: null, // Set the columnInfo value
-                //     formattedValue: "", // Set the formattedValue value
-                // };
-
-                // const inputComponent: InputComponent = new InputComponent(inputComponentProps);
-
-// Set the editor type of the column to InputComponent
                 column.editor.type = InputComponent;
-// Set the editor options to the desired props
-                column.editor.maxLength =  10;
-                column.editor.backgroundColor =  '#66878858';
-                column.editor.opacity =  1;
-                column.editor.border =  '1px solid #326f70';
-                column.editor.outline =  'none';
-                column.editor.width =  '90%';
-//                 column.editor.options = {
-//                     container: null, // Set the container value
-//                     options: {maxLength: 10}, // Set the options value
-//                     value: "", // Set the value
-//                     handleChange: (event) => {
-//                     }, // Set the handleChange function
-//                     backgroundColor: "#FFFFFF", // Set the backgroundColor
-//                     width: 200, // Set the width
-//                     height: 40, // Set the height
-//                     border: "1px solid #000000", // Set the border
-//                     outline: "none", // Set the outline
-//                     butBackground: "#FFFFFF", // Set the butBackground
-//                     opacity: 1, // Set the opacity
-//                     size: "md", // Set the size
-//                     grid: null, // Set the grid value
-//                     rowKey: "", // Set the rowKey value
-//                     columnInfo: null, // Set the columnInfo value
-//                     formattedValue: "", // Set the formattedValue value
-//                 };
             }
 
             if (column.hasOwnProperty('editor') &&
@@ -515,12 +466,12 @@ window.toastuigrid = {
                 column.editor.options = JSON.parse(column.editor.options);
                 if (column.editor.options.hasOwnProperty('fromYear') &&
                     parseInt(column.editor.options.fromYear) > 0) {
-                    let fromYear: number = parseInt(column.editor.options.fromYear);
-                    let fromMonth: number = parseInt(column.editor.options.fromMonth);
-                    let fromDay: number = parseInt(column.editor.options.fromDay);
-                    let toYear: number = parseInt(column.editor.options.toYear);
-                    let toMonth: number = parseInt(column.editor.options.toMonth);
-                    let toDay: number = parseInt(column.editor.options.toDay);
+                    const fromYear: number = parseInt(column.editor.options.fromYear);
+                    const fromMonth: number = parseInt(column.editor.options.fromMonth);
+                    const fromDay: number = parseInt(column.editor.options.fromDay);
+                    const toYear: number = parseInt(column.editor.options.toYear);
+                    const toMonth: number = parseInt(column.editor.options.toMonth);
+                    const toDay: number = parseInt(column.editor.options.toDay);
                     column.editor.options = {
                         selectableRanges: [[new Date(fromYear, fromMonth - 1, fromDay), new Date(toYear, toMonth - 1, toDay)]]
                     };

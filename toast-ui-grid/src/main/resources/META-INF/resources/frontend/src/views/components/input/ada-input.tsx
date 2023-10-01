@@ -11,15 +11,17 @@ export interface InputComponentProps extends InputProps, CellEditorProps {
     handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
     columnInfo: {
         editor: {
-            maxLength?: number
-            backgroundColor: string,
-            opacity: number,
-            width: number | string;
-            height: number | string;
-            border: string;
-            outline: string;
-            butBackground: string;
-            size: any;
+            options: {
+                maxLength?: number
+                backgroundColor: string,
+                opacity: number,
+                width: number | string;
+                height: number | string;
+                border: string;
+                outline: string;
+                butBackground: string;
+                size: any;
+            }
         }
     },
 
@@ -52,15 +54,17 @@ class InputComponent implements CellEditor {
             handleChange,
             columnInfo: {
                 editor: {
-                    maxLength,
-                    backgroundColor,
-                    opacity,
-                    border,
-                    width,
-                    height,
-                    size,
-                    outline,
-                    butBackground
+                    options: {
+                        maxLength,
+                        backgroundColor,
+                        opacity,
+                        border,
+                        width,
+                        height,
+                        size,
+                        outline,
+                        butBackground
+                    }
                 }
             },
         } = this.props;

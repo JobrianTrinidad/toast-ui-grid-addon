@@ -80,10 +80,22 @@ public class BasicExample extends Div {
     }
 
     private List<Column> getColumns() {
-        Column nameCol = new Column(new ColumnBaseOption(0, "Name", "name", 0, "center", ""), true, "input", 10);
-        Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", ""), true, "input", 10);
-        Column typeCol = new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", ""), true, "input", 10);
-        Column genreCol = new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), true, "input", 10);
+        Theme inputTheme = new Theme();
+        inputTheme.setMaxLength(10);
+        inputTheme.setBorder("1px solid #326f70");
+        inputTheme.setBackgroundColor("#66878858");
+        inputTheme.setOutline("none");
+        inputTheme.setWidth("90%");
+        inputTheme.setHeight("100%");
+        inputTheme.setOpacity(1);
+        Column nameCol = new Column(new ColumnBaseOption(0, "Name", "name", 0, "center", ""), true, "input");
+        nameCol.setInputTheme(inputTheme);
+        Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", ""), true, "input");
+        artistCol.setInputTheme(inputTheme);
+        Column typeCol = new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", ""), true, "input");
+        typeCol.setInputTheme(inputTheme);
+        Column genreCol = new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), true, "input");
+        genreCol.setInputTheme(inputTheme);
 //        Column releaseCol = new Column(new ColumnBaseOption(4, "Release", "release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false));
         List<Column> columns = List.of(
                 nameCol,

@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Column {
-
     private ColumnBaseOption columnBaseOption;
     private boolean editable = false;
     private String type;
@@ -38,6 +37,7 @@ public class Column {
     private boolean root;
     private String sortingType;
     private boolean sortable;
+    private Theme inputTheme;
 
     public boolean isEditable() {
         return editable;
@@ -119,6 +119,14 @@ public class Column {
         this.target = target;
     }
 
+    public Theme getInputTheme() {
+        return inputTheme;
+    }
+
+    public void setInputTheme(Theme inputTheme) {
+        this.inputTheme = inputTheme;
+    }
+
     public String toJSON(boolean bResizable) {
         JsonObject js = columnBaseOption.toJSON();
         if (!bResizable)
@@ -131,9 +139,7 @@ public class Column {
             JsonObject editableJs = Json.createObject();
             Optional.ofNullable(getType()).ifPresent(v -> editableJs.put("type", String.valueOf(v)));
             if (getType() == "input") {
-                JsonObject optionsJs = Json.createObject();
-                Optional.ofNullable(getMaxLength()).ifPresent(v -> optionsJs.put("maxLength", v));
-                editableJs.put("options", optionsJs);
+                editableJs.put("options", this.inputTheme.toJSON());
             } else if (getType() == "select") {
                 this.toRelationJSON(js, this.relationOptions);
                 js.put("targetNames", this.getTarget());
@@ -201,7 +207,7 @@ public class Column {
      * @param columnBaseOption the ColumnBaseOption to be set
      */
     public Column(ColumnBaseOption columnBaseOption) {
-        this(columnBaseOption, false, "input", 0);
+        this(columnBaseOption, false, "input");
     }
 
     /**
@@ -210,10 +216,9 @@ public class Column {
      * @param columnBaseOption the ColumnBaseOption to be set
      * @param editable         the boolean value whether cell is edit enabled
      * @param type             the string value whether cell is type of input, or date...
-     * @param maxLength        the letter length to be set
      */
-    public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, int maxLength) {
-        this(columnBaseOption, editable, type, maxLength, null, "", false);
+    public Column(ColumnBaseOption columnBaseOption, boolean editable, String type) {
+        this(columnBaseOption, editable, type, null, "", false);
     }
 
     /**
@@ -225,7 +230,7 @@ public class Column {
      * @param option           the DateOption value when cell is type of date
      */
     public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, DateOption option) {
-        this(columnBaseOption, editable, type, 0, option, "", false);
+        this(columnBaseOption, editable, type, option, "", false);
     }
 
     /**
@@ -236,7 +241,7 @@ public class Column {
      * @param sortable         the boolean value whether cell is sortable
      */
     public Column(ColumnBaseOption columnBaseOption, String sortingType, boolean sortable) {
-        this(columnBaseOption, false, "", 0, null, sortingType, sortable);
+        this(columnBaseOption, false, "", null, sortingType, sortable);
     }
 
     /**
@@ -245,16 +250,15 @@ public class Column {
      * @param columnBaseOption the ColumnBaseOption to be set
      * @param editable         the boolean value whether cell is edit enabled
      * @param type             the string value whether cell is type of input, or date...
-     * @param maxLength        the letter length to be set
      * @param dateOption       the DateOption value when cell is type of date
      * @param sortingType      the string value whether is asc or dec
      * @param sortable         the boolean value whether cell is sortable
      */
-    public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, int maxLength, DateOption dateOption, String sortingType, boolean sortable) {
+    public Column(ColumnBaseOption columnBaseOption, boolean editable, String type, DateOption dateOption, String sortingType, boolean sortable) {
         this.columnBaseOption = columnBaseOption;
         this.editable = editable;
         this.type = type;
-        this.maxLength = maxLength;
+//        this.maxLength = maxLength;
         this.dateOption = dateOption;
         this.sortingType = sortingType;
         this.sortable = sortable;

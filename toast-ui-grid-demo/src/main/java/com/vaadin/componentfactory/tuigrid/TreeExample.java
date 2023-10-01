@@ -60,11 +60,13 @@ public class TreeExample extends Div {
     }
 
     private List<Column> getColumns() {
+        Theme inputTheme = new Theme();
+        inputTheme.setMaxLength(10);
         List<Column> columns = List.of(
                 new Column(new ColumnBaseOption(0, "Name", "name", 250, "center", "")),
-                new Column(new ColumnBaseOption(1, "Artist", "artist", 250, "center", ""), false, "input", 10),
-                new Column(new ColumnBaseOption(2, "Type", "type", 150, "center", ""), false, "input", 10),
-                new Column(new ColumnBaseOption(3, "Genre", "genre", 150, "center", ""), false, "input", 10),
+                new Column(new ColumnBaseOption(1, "Artist", "artist", 250, "center", ""), false, "input" ),
+                new Column(new ColumnBaseOption(2, "Type", "type", 150, "center", ""), false, "input"),
+                new Column(new ColumnBaseOption(3, "Genre", "genre", 150, "center", ""), false, "input"),
                 new Column(new ColumnBaseOption(4, "Release", "release", 150, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false))
         );
         return columns;
