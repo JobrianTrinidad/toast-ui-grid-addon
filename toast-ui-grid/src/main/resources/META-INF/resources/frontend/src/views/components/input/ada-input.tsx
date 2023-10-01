@@ -5,19 +5,24 @@ import {CellEditor, CellEditorProps} from 'tui-grid/types/editor';
 import {HTMLChakraProps} from "@chakra-ui/system";
 import {InputProps} from "@chakra-ui/input/dist/input";
 
-interface InputComponentProps extends InputProps, CellEditorProps {
+export interface InputComponentProps extends InputProps, CellEditorProps {
     container: any;
-    options?: { maxLength?: number };
     value: string;
     handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
-    backgroundColor: string;
-    width: number;
-    height: number;
-    border: string;
-    outline: string;
-    butBackground: string;
-    opacity: any;
-    size: any;
+    columnInfo: {
+        editor: {
+            maxLength?: number
+            backgroundColor: string,
+            opacity: number,
+            width: number | string;
+            height: number | string;
+            border: string;
+            outline: string;
+            butBackground: string;
+            size: any;
+        }
+    },
+
 }
 
 class InputComponent implements CellEditor {
@@ -29,59 +34,64 @@ class InputComponent implements CellEditor {
         this.el = this.renderInput();
     }
 
-    getElement() {
+    getElement(): ChildNode {
         return this.el;
     }
 
-    getValue() {
+    getValue(): string {
         return (this.el as HTMLInputElement).value;
     }
 
-    mounted() {
+    mounted(): void {
         (this.el as HTMLInputElement).select();
     }
 
-    renderInput() {
+    renderInput(): ChildNode {
         const {
             value,
             handleChange,
-            backgroundColor,
-            opacity,
-            width,
-            height,
-            size,
-            border,
-            options,
+            columnInfo: {
+                editor: {
+                    maxLength,
+                    backgroundColor,
+                    opacity,
+                    border,
+                    width,
+                    height,
+                    size,
+                    outline,
+                    butBackground
+                }
+            },
         } = this.props;
 
         const inputRef = createRef<HTMLInputElement>();
-
         const inputElement = (
             <Input
                 ref={inputRef}
                 defaultValue={value?.toString()}
                 type="text"
-                maxLength={options?.maxLength}
-                // value={value}
+                maxLength={maxLength}
                 onChange={handleChange}
                 size={size}
                 style={{
-                    backgroundColor: '#66878859',
-                    opacity,
-                    width: '90%',
+                    backgroundColor: backgroundColor,
+                    opacity: opacity ? opacity : 1,
+                    width: width,
                     height: height,
-                    border: '1px solid #326f70',
-                    outline: "none",
+                    border: border,
+                    outline: outline,
                 }}
                 _focusVisible={{outline: "none"}}
                 _hover={{outline: "none"}}
             />
         );
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(ReactDOMServer.renderToString(inputElement), 'text/html');
-        const parentElement = doc.body.firstChild.parentNode;
+        const parser: DOMParser = new DOMParser();
+        const doc: Document = parser.parseFromString(ReactDOMServer.renderToString(inputElement), 'text/html');
+        const parentElement: ParentNode = doc.body.firstChild.parentNode;
         return doc.body.firstChild;
     }
 }
 
 export default InputComponent;
+

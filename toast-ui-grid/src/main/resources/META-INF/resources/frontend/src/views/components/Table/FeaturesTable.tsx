@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, forwardRef} from 'react';
 import ExcelSheet from "./ExcelSheet";
 import TuiGrid from 'tui-grid';
+import {TuiGridEvent} from "tui-grid/types/event";
 
 interface FeatureTableProps {
     getGridInstance: (gridInstance: TuiGrid) => void;
@@ -28,7 +29,7 @@ interface FeatureTableProps {
     handleSearchResult?: any;
 }
 
-const FeatureTable: React.FC<FeatureTableProps> = forwardRef(
+const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElement, FeatureTableProps>(
     (
         {
             getGridInstance,
@@ -54,18 +55,18 @@ const FeatureTable: React.FC<FeatureTableProps> = forwardRef(
             onUncheckAll,
             onFocusChange,
             handleSearchResult,
-        },
-        ref
+        }: FeatureTableProps,
+        ref: React.Ref<HTMLDivElement>
     ) => {
         const gridRef = useRef<HTMLDivElement>(null);
         const excelRef = useRef<HTMLDivElement>(null);
         const gridInstanceRef = useRef<TuiGrid | null>(null);
 
         function loadRows(lengthOfLoaded: number) {
-            const rows = [];
+            const rows: { [key: string]: string }[] = [];
             let endPoint: number = lengthOfLoaded + 50 <= TableData.length ? lengthOfLoaded + 50 : TableData.length
             for (let i: number = lengthOfLoaded; i < endPoint; i += 1) {
-                const row: {} = {};
+                const row: { [key: string]: string } = {};
                 for (let j: number = 0; j < columns.length; j += 1) {
                     row[columns[j].name] = TableData[i][columns[j].name];
                 }
@@ -93,41 +94,41 @@ const FeatureTable: React.FC<FeatureTableProps> = forwardRef(
                 ...(minBodyHeight && {minBodyHeight}),
             });
             gridInstanceRef.current = grid;
-
             grid.on('scrollEnd', (): void => {
+                console.log("ScrollEnd");
                 grid.appendRows(loadRows(grid.store.data.viewData.length));
             });
 
-            grid.on('editingStart', (ev: Event): void => {
+            grid.on('editingStart', (ev: TuiGridEvent): void => {
                 onEditingStart(ev);
             });
 
-            grid.on('editingFinish', (ev: Event): void => {
+            grid.on('editingFinish', (ev: TuiGridEvent): void => {
                 onEditingFinish(ev);
             });
 
-            grid.on('selection', (ev: Event): void => {
+            grid.on('selection', (ev: TuiGridEvent): void => {
                 onSelection(ev);
             });
 
-            grid.on('check', (ev: Event): void => {
+            grid.on('check', (ev: TuiGridEvent): void => {
                 onCheck(ev);
             });
 
-            grid.on('uncheck', (ev: Event): void => {
+            grid.on('uncheck', (ev: TuiGridEvent): void => {
                 onUncheck(ev);
             });
 
-            grid.on('checkAll', (ev: Event): void => {
+            grid.on('checkAll', (ev: TuiGridEvent): void => {
                 onCheckAll(ev);
             });
 
-            grid.on('uncheckAll', (ev: Event): void => {
+            grid.on('uncheckAll', (ev: TuiGridEvent): void => {
                 onUncheckAll(ev);
             });
 
-            grid.on('onFocusChange', (ev: Event): void => {
-                onUncheckAll(ev);
+            grid.on('onFocusChange', (ev: TuiGridEvent): void => {
+                onFocusChange(ev);
             });
 
             getGridInstance(grid);
@@ -138,7 +139,6 @@ const FeatureTable: React.FC<FeatureTableProps> = forwardRef(
                 }
             };
         }, []);
-
 
         let range: any[] = [];
         for (let row: number = 0; row < TableData.length; row++) {
@@ -156,7 +156,8 @@ const FeatureTable: React.FC<FeatureTableProps> = forwardRef(
                 <ExcelSheet
                     ref={excelRef}
                     range={range}
-                    onSearchResult={handleSearchResult}/>
+                    onSearchResult={handleSearchResult}
+                />
             </div>
         );
     }
