@@ -71,6 +71,7 @@ public class TuiGrid extends Div {
     String colName;
     String colValue;
     Theme inputTheme;
+    Theme selectTheme;
 
     public TuiGrid() {
         setId("visualization" + this.hashCode());
@@ -160,6 +161,15 @@ public class TuiGrid extends Div {
         for (Column col :
                 tuiGridOption.columns) {
             col.setInputTheme(inputTheme);
+        }
+        this.updateTuiGridOptions();
+    }
+
+    public void setSelectTheme(Theme selectTheme) {
+        this.selectTheme = selectTheme;
+        for (Column col :
+                tuiGridOption.columns) {
+            col.setSelectTheme(selectTheme);
         }
         this.updateTuiGridOptions();
     }

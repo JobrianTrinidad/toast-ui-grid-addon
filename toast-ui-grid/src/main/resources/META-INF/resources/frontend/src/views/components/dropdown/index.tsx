@@ -5,18 +5,28 @@ import {Select} from "@chakra-ui/react";
 
 interface Option {
     value: string;
-    name: string;
+    text: string;
 }
 
 interface DropDownProps {
-    width: string;
-    height: any,
-    value: any,
+    height: string | number,
+    value: number,
     placeholder: string;
-    backgroundColor: string;
-    border: string;
-    outline: string;
-    columnInfo: { editor: { options: { listItems: any } } };
+    columnInfo: {
+        editor: {
+            options: {
+                listItems: Option[],
+                backgroundColor: string,
+                opacity: number,
+                width: number | string;
+                height: number | string;
+                border: string;
+                outline: string;
+                butBackground: string;
+                size: object;
+            }
+        }
+    };
 }
 
 class DropDown implements CellEditor {
@@ -32,17 +42,12 @@ class DropDown implements CellEditor {
         return this.el;
     }
 
-    getValue() {
+    getValue(): string {
         return (this.el as HTMLSelectElement).value;
     }
 
-    mounted() {
-        const selectElement = this.el as HTMLSelectElement;
-        const { columnInfo } = this.props;
-        const { listItems } = columnInfo.editor.options;
-
-        // Find the index of the item with the desired value
-        const selectedIndex = listItems.findIndex(item => item.value === selectElement.value);
+    mounted(): void {
+        const selectElement: HTMLSelectElement = this.el as HTMLSelectElement;
 
         // Set the selectedIndex to the desired value
         selectElement.selectedIndex = this.props.value;
@@ -50,49 +55,43 @@ class DropDown implements CellEditor {
 
     renderDropDown() {
         const {
-            width,
-            height,
             value: value,
+            height,
             placeholder,
-            backgroundColor,
-            border,
-            outline,
-            columnInfo,
+            columnInfo: {
+                editor: {
+                    options: {
+                        listItems,
+                        backgroundColor,
+                        opacity,
+                        width,
+                        // height,
+                        border,
+                        outline,
+                        butBackground,
+                    }
+                }
+            }
         } = this.props;
         const inputRef = createRef<HTMLSelectElement>();
         const inputElement = (
-                // <select
-                //     ref={inputRef}
-                //     placeholder={placeholder}
-                //     style={{
-                //         width: `50%`,
-                //         height: `100%`,
-                //         backgroundColor: `#66878859`,
-                //         border: '1px solid #326f70',
-                //         outline: `none`
-                //     }}
-                // >
-                //     {columnInfo.editor.options.listItems.map((item) => (
-                //         <option key={item.value} value={item.value}>{item.text}</option>
-                //     ))}
-                // </select>
-
                 <Select
                     ref={inputRef}
-                    placeholder=""
+                    placeholder={placeholder}
                     borderRadius={"5px"}
                     boxShadow={"none !important"}
                     style={{
-                        width: `90%`,
+                        width: width,
                         height: height,
-                        backgroundColor: `#66878859`,
-                        border: '1px solid #326f70',
-                        outline: `none`
+                        opacity: opacity,
+                        backgroundColor: backgroundColor,
+                        border: border,
+                        outline: outline,
+                        butBackground: butBackground
                     }}
-                    // margin={"0 0 8px"}
                 >
                     {
-                        columnInfo.editor.options.listItems.map((item) => (
+                        listItems.map((item: Option) => (
                             <option key={item.value} value={item.value}>
                                 {item.text}
                             </option>
@@ -101,9 +100,9 @@ class DropDown implements CellEditor {
                 </Select>
             )
         ;
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(ReactDOMServer.renderToString(inputElement), 'text/html');
-        const parentNode = doc.body.firstChild as HTMLElement;
+        const parser: DOMParser = new DOMParser();
+        const doc: Document = parser.parseFromString(ReactDOMServer.renderToString(inputElement), 'text/html');
+        const parentNode: HTMLElement = doc.body.firstChild as HTMLElement;
         parentNode.style.display = 'flex';
         return doc.body.firstChild.firstChild as HTMLElement;
     }

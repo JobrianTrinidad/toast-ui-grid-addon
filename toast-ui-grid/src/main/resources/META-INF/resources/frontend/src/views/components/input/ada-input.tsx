@@ -23,7 +23,7 @@ export interface InputComponentProps extends InputProps, CellEditorProps {
                 size: any;
             }
         }
-    },
+    };
 
 }
 
@@ -69,7 +69,6 @@ class InputComponent implements CellEditor {
             },
         } = this.props;
 
-        console.log("AAAAAA: ", this.props);
         const inputRef = createRef<HTMLInputElement>();
         const inputElement = (
             <Input
@@ -81,7 +80,7 @@ class InputComponent implements CellEditor {
                 size={size}
                 style={{
                     backgroundColor: backgroundColor,
-                    opacity: opacity ? opacity : 1,
+                    opacity: opacity,
                     width: width,
                     height: height,
                     border: border,
@@ -99,4 +98,3 @@ class InputComponent implements CellEditor {
 }
 
 export default InputComponent;
-

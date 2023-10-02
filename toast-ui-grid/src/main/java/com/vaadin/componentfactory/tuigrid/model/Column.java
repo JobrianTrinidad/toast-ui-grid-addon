@@ -38,6 +38,7 @@ public class Column {
     private String sortingType;
     private boolean sortable;
     private Theme inputTheme;
+    private Theme selectTheme;
 
     public boolean isEditable() {
         return editable;
@@ -127,6 +128,14 @@ public class Column {
         this.inputTheme = inputTheme;
     }
 
+    public Theme getSelectTheme() {
+        return selectTheme;
+    }
+
+    public void setSelectTheme(Theme selectTheme) {
+        this.selectTheme = selectTheme;
+    }
+
     public String toJSON(boolean bResizable) {
         JsonObject js = columnBaseOption.toJSON();
         if (!bResizable)
@@ -143,6 +152,7 @@ public class Column {
             } else if (getType() == "select") {
                 this.toRelationJSON(js, this.relationOptions);
                 js.put("targetNames", this.getTarget());
+                editableJs.put("options", this.selectTheme.toJSON());
             } else {
                 editableJs.put("options", dateOption.toJSON());
             }

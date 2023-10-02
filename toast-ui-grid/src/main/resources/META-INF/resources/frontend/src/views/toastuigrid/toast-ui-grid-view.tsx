@@ -5,19 +5,15 @@
 
 import "@vaadin/button";
 import "@vaadin/text-field";
-// import "tui-grid/dist/tui-grid.css";
-// import "tui-date-picker/dist/tui-date-picker.css";
-// import "tui-time-picker/dist/tui-time-picker.css";
 import React, {useEffect, useRef} from 'react';
 import type {JSX} from 'react';
 import {createRoot} from 'react-dom/client';
-import CustomTextEditor from "../components/Table/CustomeEditor";
-import InputComponent, {InputComponentProps} from "../components/input/ada-input";
+import InputComponent from "../components/input/ada-input";
 import CheckboxComponent from "../components/checkbox/ada-checkbox";
 import {CheckboxRenderer, RowNumberRenderer} from '../renderer/renderer';
 import DropDown from "../components/dropdown/index";
 import FeatureTable from "../components/Table/FeaturesTable";
-import TuiGrid, {GridEventName, Row, RowKey} from 'tui-grid';
+import TuiGrid, {RowKey} from 'tui-grid';
 import {TuiGridEvent} from "tui-grid/types/event";
 
 declare global {
@@ -197,9 +193,9 @@ window.toastuigrid = {
         };
         const handleMouseDown = (event: MouseEvent): void => {
             gridInst = container.grid.table;
-            if (event.defaultPrevented === false) {
-                gridInst.restore();
-            }
+            // if (event.defaultPrevented === false) {
+            //     gridInst.restore();
+            // }
             const targetElement: HTMLElement = event.target as HTMLElement;
             if (targetElement.tagName === "VAADIN-APP-LAYOUT" || targetElement.tagName === "DIV") {
                 gridInst.finishEditing(editingRowKey, prevColumnName);
@@ -487,6 +483,7 @@ window.toastuigrid = {
                     editor: {
                         type: DropDown,//"select"
                         options: {
+                            ...column.editor.options,
                             listItems: column["depth0"] ? JSON.parse(column["depth0"]) : []
                         }
                     },
@@ -518,7 +515,7 @@ window.toastuigrid = {
         container.grid.setOption(parsedOptions);
     },
     setTest: function (container: HTMLElement, content: any): void {
-        console.log("Event Test: ", content);
+        // console.log("Event Test: ", content);
     },
 
     removeRows: function (container: HTMLElement & {
@@ -534,7 +531,7 @@ window.toastuigrid = {
         const rowLength: number = rows.length;
         if (rowLength === 0)
             return;
-        let min: RowKey = 99999999999;
+        let min: RowKey = 999999999999;
         for (let i: number = 0; i < rowLength; i++) {
             if (Number(min) > Number(rows[i]))
                 min = rows[i];

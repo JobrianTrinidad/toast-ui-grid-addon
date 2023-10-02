@@ -12,11 +12,20 @@ public class RelationBetweenColumnsExample extends Div {
 
     public RelationBetweenColumnsExample() {
         Span sp = new Span("Clicked table!");
+        Theme selectTheme = new Theme();
+        selectTheme.setMaxLength(10);
+        selectTheme.setBorder("1px solid #326f70");
+        selectTheme.setBackgroundColor("#66878858");
+        selectTheme.setOutline("none");
+        selectTheme.setWidth("90%");
+        selectTheme.setHeight("100%");
+        selectTheme.setOpacity(1);
         // create items
         TuiGrid grid = new TuiGrid(null, this.getTableData(),
                 this.getColumns(), null);
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
+        grid.setSelectTheme(selectTheme);
         grid.addItemChangeListener(ev -> {
             sp.add(ev.getColName() + ": "+ ev.getColValue() + ": "+ ev.getRow());
         });

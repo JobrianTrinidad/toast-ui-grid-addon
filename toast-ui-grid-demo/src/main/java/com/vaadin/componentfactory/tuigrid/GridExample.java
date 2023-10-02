@@ -12,10 +12,19 @@ public class GridExample extends Div {
 
     public GridExample() {
         Span sp = new Span("Clicked table!");
+        Theme inputTheme = new Theme();
+        inputTheme.setMaxLength(10);
+        inputTheme.setBorder("1px solid #326f70");
+        inputTheme.setBackgroundColor("#66878858");
+        inputTheme.setOutline("none");
+        inputTheme.setWidth("90%");
+        inputTheme.setHeight("100%");
+        inputTheme.setOpacity(1);
         // create items
         TuiGrid grid = new TuiGrid();
 
         grid.setColumns(this.getColumns());
+        grid.setInputTheme(inputTheme);
         grid.setItems(this.getTableData());
         grid.setComplexColumns(this.getCustomHeader());
         grid.setSummaries(this.getSummaries());
