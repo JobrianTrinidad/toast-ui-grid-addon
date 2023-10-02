@@ -1,4 +1,5 @@
-import React, {useState, useEffect, forwardRef, useRef} from 'react';
+import React, {useState, useEffect, forwardRef, useRef, createRef} from 'react';
+import {Input} from "@chakra-ui/react";
 
 interface Cell {
     row: number;
@@ -23,7 +24,6 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
     const [showSearchInput, setShowSearchInput] = useState(false);
     const [currentSearchIndex, setCurrentSearchIndex] = useState(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
-
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent): void => {
             if (event.ctrlKey && event.key === 'f') {
@@ -157,10 +157,22 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
         <div ref={ref}>
             {showSearchInput && (
                 <form onSubmit={handleSearch}>
-                    <input type="text"
-                           value={searchValue}
-                           onChange={e => setSearchValue(e.target.value)}
-                           ref={searchInputRef}/>
+                    <Input
+                        ref={searchInputRef}
+                        defaultValue={searchValue}
+                        type="text"
+                        onChange={e => setSearchValue(e.target.value)}
+                        style={{
+                            backgroundColor: '#66878858',
+                            opacity: 1,
+                            width: '20em',
+                            height: '100%',
+                            border: '1px solid #326f70',
+                            outline: 'none',
+                        }}
+                        _focusVisible={{outline: "none"}}
+                        _hover={{outline: "none"}}
+                    />
                     <button type="submit">Find</button>
                 </form>
             )}
