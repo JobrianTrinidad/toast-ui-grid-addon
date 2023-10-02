@@ -41,4 +41,12 @@
   pointer-events: none;
   z-index: 1 !important;
   height: 50px;
-} 
+}
+#drawer {
+  background-color: #a9eda9;
+}
+
+[part='drawer']
+{
+  background-color: #a9eda9 !important;
+}

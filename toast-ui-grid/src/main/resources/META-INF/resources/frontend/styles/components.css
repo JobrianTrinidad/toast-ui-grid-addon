@@ -1,3 +1,10 @@
+:host(.timeline-items-style) {
+    /* Add your styles for the timeline-items-style theme here */
+    /* For example: */
+    background-color: red;
+    color: white;
+}
+
 button {
     border: none;
 }

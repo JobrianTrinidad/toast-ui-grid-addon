@@ -70,6 +70,7 @@ public class TuiGrid extends Div {
     List<String> headers = new ArrayList<>();
     String colName;
     String colValue;
+    Theme inputTheme;
 
     public TuiGrid() {
         setId("visualization" + this.hashCode());
@@ -151,6 +152,15 @@ public class TuiGrid extends Div {
 
     public void setAutoSave(boolean autoSave) {
         tuiGridOption.autoSave = autoSave;
+        this.updateTuiGridOptions();
+    }
+
+    public void setInputTheme(Theme inputTheme) {
+        this.inputTheme = inputTheme;
+        for (Column col :
+                tuiGridOption.columns) {
+            col.setInputTheme(inputTheme);
+        }
         this.updateTuiGridOptions();
     }
 

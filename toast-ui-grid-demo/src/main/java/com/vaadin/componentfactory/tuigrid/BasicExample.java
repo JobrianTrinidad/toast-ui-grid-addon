@@ -17,8 +17,18 @@ public class BasicExample extends Div {
 
     public BasicExample() {
         // create items
+        Theme inputTheme = new Theme();
+        inputTheme.setMaxLength(10);
+        inputTheme.setBorder("1px solid #326f70");
+        inputTheme.setBackgroundColor("#66878858");
+        inputTheme.setOutline("none");
+        inputTheme.setWidth("90%");
+        inputTheme.setHeight("100%");
+        inputTheme.setOpacity(1);
+
         TuiGrid grid = new TuiGrid();
         grid.setColumns(this.getColumns());
+        grid.setInputTheme(inputTheme);
         grid.setItems(this.getTableData());
         grid.setRowHeaders(List.of("checkbox"));
         grid.setHeaders(headers);
@@ -73,29 +83,17 @@ public class BasicExample extends Div {
             TableData.add(new GuiItem(List.of("This Is Acting", "Sia", "EP", "Pop", "2016-10-22", "20000", "11400", "5800"), headers));
             TableData.add(new GuiItem(List.of("Blurryface", "Twenty One Pilots", "EP", "Rock", "2015-05-19", "13000", "6010", "3020"), headers));
             TableData.add(new GuiItem(List.of("I am Not The Only One", "Sam Smith", "Single", "Pop,R&B", "", "", "", ""), headers));
-
         }
 
         return TableData;
     }
 
     private List<Column> getColumns() {
-        Theme inputTheme = new Theme();
-        inputTheme.setMaxLength(10);
-        inputTheme.setBorder("1px solid #326f70");
-        inputTheme.setBackgroundColor("#66878858");
-        inputTheme.setOutline("none");
-        inputTheme.setWidth("90%");
-        inputTheme.setHeight("100%");
-        inputTheme.setOpacity(1);
+
         Column nameCol = new Column(new ColumnBaseOption(0, "Name", "name", 0, "center", ""), true, "input");
-        nameCol.setInputTheme(inputTheme);
         Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", ""), true, "input");
-        artistCol.setInputTheme(inputTheme);
         Column typeCol = new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", ""), true, "input");
-        typeCol.setInputTheme(inputTheme);
         Column genreCol = new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), true, "input");
-        genreCol.setInputTheme(inputTheme);
 //        Column releaseCol = new Column(new ColumnBaseOption(4, "Release", "release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false));
         List<Column> columns = List.of(
                 nameCol,

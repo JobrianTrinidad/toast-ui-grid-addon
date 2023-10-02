@@ -1,5 +1,6 @@
 package com.vaadin.componentfactory.tuigrid;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
