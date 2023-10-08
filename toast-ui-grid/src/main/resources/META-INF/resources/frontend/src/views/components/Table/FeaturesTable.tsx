@@ -95,7 +95,6 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             });
             gridInstanceRef.current = grid;
             grid.on('scrollEnd', (): void => {
-                console.log("ScrollEnd");
                 grid.appendRows(loadRows(grid.store.data.viewData.length));
             });
 

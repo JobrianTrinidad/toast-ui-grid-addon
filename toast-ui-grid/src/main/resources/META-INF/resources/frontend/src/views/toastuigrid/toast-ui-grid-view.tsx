@@ -39,7 +39,7 @@ window.toastuigrid = {
         let gridInst: TuiGrid;
         let rangeSelected: number[] = [];
         console.log("TableData: ", this.getTableData(parsedItems));
-        console.log("Column: ", columns);
+        // console.log("Column: ", columns);
         // Implementation goes here
         const onSelection = (ev: TuiGridEvent): void => {
             rangeSelected = [];
@@ -539,7 +539,10 @@ window.toastuigrid = {
         const focusedRow: number = gridInst.getIndexOfRow(min);
         gridInst.removeCheckedRows(false);
         if (gridInst.getData().length > 0)
-            gridInst.focusAt(focusedRow, 0);
+            if (gridInst.getData().length > focusedRow)
+                gridInst.focusAt(focusedRow, 0);
+            else
+                gridInst.focusAt(gridInst.getData().length - 1, 0);
     }
     ,
     //This function updates the grid by rendering the grid component using ReactDOM.render.
