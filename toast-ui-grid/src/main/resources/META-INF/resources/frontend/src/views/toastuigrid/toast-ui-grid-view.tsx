@@ -476,7 +476,7 @@ window.toastuigrid = {
 
             if (column.editor && column.editor.type == "select") {
                 const tempColumn = {
-                    header: column.headerName,
+                    header: column.header,
                     name: column.name,
                     align: column.align,
                     formatter: "listItemText",
