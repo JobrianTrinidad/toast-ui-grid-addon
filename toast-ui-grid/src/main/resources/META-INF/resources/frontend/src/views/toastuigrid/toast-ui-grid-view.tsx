@@ -550,6 +550,7 @@ window.toastuigrid = {
         $server: any,
         grid: JSX.Element & { table: TuiGrid }
     }): void {
-        createRoot(container).render(container.grid);
+        const root = ReactDOM.unstable_createRoot(container);
+        root.render(container.grid);
     }
 }
