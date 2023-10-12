@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, forwardRef} from 'react';
 import ExcelSheet from "./ExcelSheet";
-import TuiGrid from 'tui-grid';
+import TuiGrid, {GridEventName} from 'tui-grid';
 import {TuiGridEvent} from "tui-grid/types/event";
 
 interface FeatureTableProps {
@@ -76,7 +76,7 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
         }
 
         useEffect(() => {
-            const grid = new TuiGrid({
+            const grid : TuiGrid= new TuiGrid({
                 el: gridRef.current!,
                 data: loadRows(0),
                 columns: columns,
@@ -94,39 +94,39 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 ...(minBodyHeight && {minBodyHeight}),
             });
             gridInstanceRef.current = grid;
-            grid.on('scrollEnd', (): void => {
+            grid.on('scrollEnd' as GridEventName, (): void => {
                 grid.appendRows(loadRows(grid.store.data.viewData.length));
             });
 
-            grid.on('editingStart', (ev: TuiGridEvent): void => {
+            grid.on('editingStart' as GridEventName, (ev: TuiGridEvent): void => {
                 onEditingStart(ev);
             });
 
-            grid.on('editingFinish', (ev: TuiGridEvent): void => {
+            grid.on('editingFinish' as GridEventName, (ev: TuiGridEvent): void => {
                 onEditingFinish(ev);
             });
 
-            grid.on('selection', (ev: TuiGridEvent): void => {
+            grid.on('selection' as GridEventName, (ev: TuiGridEvent): void => {
                 onSelection(ev);
             });
 
-            grid.on('check', (ev: TuiGridEvent): void => {
+            grid.on('check' as GridEventName, (ev: TuiGridEvent): void => {
                 onCheck(ev);
             });
 
-            grid.on('uncheck', (ev: TuiGridEvent): void => {
+            grid.on('uncheck' as GridEventName, (ev: TuiGridEvent): void => {
                 onUncheck(ev);
             });
 
-            grid.on('checkAll', (ev: TuiGridEvent): void => {
+            grid.on('checkAll' as GridEventName, (ev: TuiGridEvent): void => {
                 onCheckAll(ev);
             });
 
-            grid.on('uncheckAll', (ev: TuiGridEvent): void => {
+            grid.on('uncheckAll' as GridEventName, (ev: TuiGridEvent): void => {
                 onUncheckAll(ev);
             });
 
-            grid.on('onFocusChange', (ev: TuiGridEvent): void => {
+            grid.on('onFocusChange' as GridEventName, (ev: TuiGridEvent): void => {
                 onFocusChange(ev);
             });
 
