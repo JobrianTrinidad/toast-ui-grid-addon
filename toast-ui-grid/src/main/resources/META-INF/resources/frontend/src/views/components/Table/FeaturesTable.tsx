@@ -2,6 +2,8 @@ import React, {useEffect, useRef, forwardRef} from 'react';
 import ExcelSheet from "./ExcelSheet";
 import TuiGrid, {GridEventName} from 'tui-grid';
 import {TuiGridEvent} from "tui-grid/types/event";
+import {OptGrid} from "tui-grid/types/options";
+import {grid} from "@chakra-ui/react";
 
 interface FeatureTableProps {
     getGridInstance: (gridInstance: TuiGrid) => void;
@@ -76,7 +78,7 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
         }
 
         useEffect(() => {
-            const grid : TuiGrid= new TuiGrid({
+            const grid = new TuiGrid({
                 el: gridRef.current!,
                 data: loadRows(0),
                 columns: columns,
@@ -138,6 +140,37 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 }
             };
         }, []);
+
+        function setOption(option: OptGrid): void {
+            if (gridInstanceRef.current) {
+                if (option.data)
+                    gridInstanceRef.current.resetData(option.data);
+                if (option.width)
+                    gridInstanceRef.current.setWidth(option.width || 0);
+                if (option.bodyHeight)
+                    gridInstanceRef.current.setBodyHeight(option.bodyHeight || 0);
+                if (option.scrollX)
+                    gridInstanceRef.current.setScrollX(option.scrollX || false);
+                if (option.scrollY)
+                    gridInstanceRef.current.setScrollY(option.scrollY || false);
+                if (option.rowHeaders)
+                    gridInstanceRef.current.setRowHeaders(option.rowHeaders || []);
+                if (option.summary)
+                    gridInstanceRef.current.setSummaryColumnContent(option.summary || {});
+                if (option.header)
+                    gridInstanceRef.current.setHeader(option.header || {});
+                if (option.treeColumnOptions)
+                    gridInstanceRef.current.setTreeColumnOptions(option.treeColumnOptions || {});
+                if (option.rowHeight)
+                    gridInstanceRef.current.setRowHeight(option.rowHeight || 0);
+                if (option.minBodyHeight)
+                    gridInstanceRef.current.setMinBodyHeight(option.minBodyHeight || 0);
+            } else {
+                const grid = new TuiGrid(option);
+                gridInstanceRef.current = grid;
+                getGridInstance(grid);
+            }
+        }
 
         let range: any[] = [];
         for (let row: number = 0; row < TableData.length; row++) {
