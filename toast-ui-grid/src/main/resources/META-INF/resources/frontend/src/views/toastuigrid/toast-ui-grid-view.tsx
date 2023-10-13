@@ -39,6 +39,8 @@ window.toastuigrid = {
         let gridInst: TuiGrid;
         let rangeSelected: number[] = [];
         console.log("TableData: ", this.getTableData(parsedItems));
+        if(container && container.grid)
+            return;
         // console.log("Column: ", columns);
         // Implementation goes here
         const onSelection = (ev: TuiGridEvent): void => {
