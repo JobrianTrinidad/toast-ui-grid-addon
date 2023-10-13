@@ -117,12 +117,12 @@ public class TuiGrid extends Div {
      */
     public void setItems(List<Item> items) {
         this.items = items;
-        if (this.getElement().getNode().isAttached()) {
-            this.getElement()
-                    .executeJs(
-                            "toastuigrid.setTableData($0, $1);",
-                            this, "[" + convertItemsToJson(items) + "]");
-        }
+        // if (this.getElement().getNode().isAttached()) {
+        //     this.getElement()
+        //             .executeJs(
+        //                     "toastuigrid.setTableData($0, $1);",
+        //                     this, "[" + convertItemsToJson(items) + "]");
+        // }
     }
 
     public List<Item> getItems() {
