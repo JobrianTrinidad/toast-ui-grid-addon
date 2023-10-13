@@ -271,8 +271,10 @@ window.toastuigrid = {
     // and JSON data for the new data. The function updates the table data, and then updates the grid.
     setTableData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, data: string): void {
         let parsedItems = JSON.parse(data);
-        if (container && container.grid && container.grid.table)
+        if (container && container.grid && container.grid.table){
+            console.log("here is: ", parsedItems);
             container.grid.table.resetData(this.getTableData(parsedItems));
+        }
         // this.updateGrid(container);
     },
     //This function adds new data to the existing table data of a grid.
