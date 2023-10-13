@@ -189,7 +189,7 @@ window.toastuigrid = {
                 prevColumnName = columns[0].name;
                 container.$server.addItem();
             } else
-                if(gridInst.getFocusedCell())
+                if(gridInst)
                     prevColumnName = gridInst.getFocusedCell()['columnName'];
         };
         const handleMouseDown = (event: MouseEvent): void => {
