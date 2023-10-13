@@ -555,6 +555,10 @@ window.toastuigrid = {
         grid: JSX.Element & { table: TuiGrid }
         $root?: Root
     }): void {
-        createRoot(container).render(container.grid);
+        if (container.$root) {
+            container.$root.render(container.grid);
+        } else {
+            createRoot(container).render(container.grid);
+        }
     }
 }
