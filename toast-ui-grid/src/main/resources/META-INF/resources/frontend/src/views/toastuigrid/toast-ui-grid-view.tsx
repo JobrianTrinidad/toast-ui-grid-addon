@@ -7,7 +7,7 @@ import "@vaadin/button";
 import "@vaadin/text-field";
 import React, {useEffect, useRef} from 'react';
 import type {JSX} from 'react';
-import {createRoot} from 'react-dom/client';
+import {createRoot, Root} from 'react-dom/client';
 import InputComponent from "../components/input/ada-input";
 import CheckboxComponent from "../components/checkbox/ada-checkbox";
 import {CheckboxRenderer, RowNumberRenderer} from '../renderer/renderer';
@@ -551,6 +551,7 @@ window.toastuigrid = {
     updateGrid: function (container: HTMLElement & {
         $server: any,
         grid: JSX.Element & { table: TuiGrid }
+        $root?: Root
     }): void {
         if (!container.$root) {
             container.$root = createRoot(container);
