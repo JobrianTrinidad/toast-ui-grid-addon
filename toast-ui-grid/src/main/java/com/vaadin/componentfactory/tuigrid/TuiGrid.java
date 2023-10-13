@@ -116,7 +116,7 @@ public class TuiGrid extends Div {
      * @param items the items to be set
      */
     public void setItems(List<Item> items) {
-        // this.items = items;
+        this.items = items;
         if (this.getElement().getNode().isAttached()) {
             this.getElement()
                     .executeJs(
