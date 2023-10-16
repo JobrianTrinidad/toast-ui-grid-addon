@@ -46,8 +46,8 @@ import java.util.stream.Collectors;
  * more at https://github.com/toast-ui-grid).
  */
 @SuppressWarnings("serial")
-@NpmPackage(value = "react", version = "^18.16.1")
-@NpmPackage(value = "react-dom", version = "^18.16.1")
+@NpmPackage(value = "react", version = "^18.2.0")
+@NpmPackage(value = "react-dom", version = "^18.2.0")
 //@NpmPackage(value = "@types/react", version = "^18.2.0")
 //@NpmPackage(value = "@types/react-dom", version = "^18.2.0")
 @NpmPackage(value = "@chakra-ui/react", version = "^2.8.0")
