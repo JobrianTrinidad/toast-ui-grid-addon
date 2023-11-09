@@ -13,7 +13,7 @@ public class GridExample extends Div {
     public GridExample() {
         Span sp = new Span("Clicked table!");
         Theme inputTheme = new Theme();
-        inputTheme.setMaxLength(10);
+//        inputTheme.setMaxLength(10);
         inputTheme.setBorder("1px solid #326f70");
         inputTheme.setBackgroundColor("#66878858");
         inputTheme.setOutline("none");

@@ -84,7 +84,7 @@ public class RelationOption {
 
     public String toJSON() {
         return this.children != null
-                ? this.children.stream().map(child -> child.toSelfJSON()).collect(Collectors.joining(","))
+                ? this.children.stream().map(RelationOption::toSelfJSON).collect(Collectors.joining(","))
                 : "";
     }
 }

@@ -23,12 +23,13 @@ import elemental.json.Json;
 import elemental.json.JsonObject;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Column {
     private ColumnBaseOption columnBaseOption;
-    private boolean editable = false;
+    private boolean editable;
     private String type;
     private int maxLength;
     private DateOption dateOption;
@@ -140,16 +141,16 @@ public class Column {
         JsonObject js = columnBaseOption.toJSON();
         if (!bResizable)
             js.put("resizable", false);
-        if (getSortingType() != "") {
+        if (!Objects.equals(getSortingType(), "")) {
             Optional.ofNullable(getSortingType()).ifPresent(v -> js.put("sortingType", v));
-            Optional.ofNullable(isSortable()).ifPresent(v -> js.put("sortable", v));
+            Optional.of(isSortable()).ifPresent(v -> js.put("sortable", v));
         }
         if (this.isEditable()) {
             JsonObject editableJs = Json.createObject();
-            Optional.ofNullable(getType()).ifPresent(v -> editableJs.put("type", String.valueOf(v)));
-            if (getType() == "input") {
+            Optional.ofNullable(getType()).ifPresent(v -> editableJs.put("type", v));
+            if (Objects.equals(getType(), "input")) {
                 editableJs.put("options", this.inputTheme.toJSON());
-            } else if (getType() == "select") {
+            } else if (Objects.equals(getType(), "select")) {
                 this.toRelationJSON(js, this.relationOptions);
                 js.put("targetNames", this.getTarget());
                 editableJs.put("options", this.selectTheme.toJSON());
@@ -165,11 +166,11 @@ public class Column {
     String toRelationJSON(JsonObject js, List<RelationOption> relationOptions) {
         RelationOption select = new RelationOption("Select", "");
 //        if (relationOptions.get(0).getChildren().size() > 0) {
-        if (relationOptions.get(0).getChildren().size() > 0) {
+        if (!relationOptions.get(0).getChildren().isEmpty()) {
             JsonObject tempJs = Json.createObject();
 
             for (RelationOption relationOption : relationOptions) {
-                if (relationOption.getName() != "Select")
+                if (!Objects.equals(relationOption.getName(), "Select"))
                     tempJs.put(relationOption.getValue(), "[" + select.toSelfJSON() + "," + relationOption.toJSON() + "]");
             }
 
@@ -188,7 +189,7 @@ public class Column {
 
     private String convertRelationOptionsToJson() {
         return this.relationOptions != null
-                ? this.relationOptions.stream().map(relationOption -> relationOption.toSelfJSON()).collect(Collectors.joining(","))
+                ? this.relationOptions.stream().map(RelationOption::toSelfJSON).collect(Collectors.joining(","))
                 : "";
     }
 

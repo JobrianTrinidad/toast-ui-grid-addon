@@ -68,7 +68,7 @@ public class TuiGridOption {
         if (treeOption != null && treeOption.isTreeColumnOptions()) {
             js.put("treeColumnOptions", treeOption.toJSON());
         }
-        if (rowHeaders.size() > 0)
+        if (!rowHeaders.isEmpty())
 //            js.put("rowHeaders", rowHeaders.toString());
             Optional.ofNullable(convertRowHeadersToJson()).ifPresent(v -> js.put("rowHeaders", "[" + v + "]"));
         if (header != null) {
@@ -119,19 +119,19 @@ public class TuiGridOption {
 
     private String convertHeaderToJson() {
         return this.header != null
-                ? this.header.stream().map(header -> header.toJSON()).collect(Collectors.joining(","))
+                ? this.header.stream().map(ComplexColumn::toJSON).collect(Collectors.joining(","))
                 : "";
     }
 
     private String convertSummaryToJson() {
         return this.summaryList != null
-                ? this.summaryList.stream().map(header -> header.toJSON()).collect(Collectors.joining(","))
+                ? this.summaryList.stream().map(Summary::toJSON).collect(Collectors.joining(","))
                 : "";
     }
 
     private String convertRowHeadersToJson() {
         return this.rowHeaders != null
-                ? this.rowHeaders.stream().collect(Collectors.joining(","))
+                ? String.join(",", this.rowHeaders)
                 : "";
     }
 }

@@ -22,9 +22,7 @@ package com.vaadin.componentfactory.tuigrid.model;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class Theme {
     private int maxLength;
@@ -39,9 +37,11 @@ public class Theme {
 
     public String toJSON() {
         JsonObject js = Json.createObject();
-        Optional.ofNullable(getMaxLength()).ifPresent(v -> js.put("maxLength", getMaxLength()));
+        if (getMaxLength() != 0) {
+            js.put("maxLength", getMaxLength());
+        }
         Optional.ofNullable(getBackgroundColor()).ifPresent(v -> js.put("backgroundColor", getBackgroundColor()));
-        Optional.ofNullable(getOpacity()).ifPresent(v -> js.put("opacity", getOpacity()));
+        Optional.of(getOpacity()).ifPresent(v -> js.put("opacity", getOpacity()));
         Optional.ofNullable(getWidth()).ifPresent(v -> js.put("width", getWidth()));
         Optional.ofNullable(getHeight()).ifPresent(v -> js.put("height", getHeight()));
         Optional.ofNullable(getSize()).ifPresent(v -> js.put("size", getSize()));
