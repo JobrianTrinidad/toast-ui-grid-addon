@@ -68,8 +68,6 @@ public class TuiGrid extends Div {
     private List<Column> columns = new ArrayList<>();
     private List<Integer> checkedItems = new ArrayList<>();
     List<String> headers = new ArrayList<>();
-    String colName;
-    String colValue;
     Theme inputTheme;
     Theme selectTheme;
 
@@ -328,34 +326,6 @@ public class TuiGrid extends Div {
         tuiGridOption.resizable = resizable;
     }
 
-    /**
-     * Returns the current column name.
-     */
-    private String getColName() {
-        return colName;
-    }
-
-    /**
-     * Sets the column name.
-     */
-    private void setColName(String colName) {
-        this.colName = colName;
-    }
-
-    /**
-     * Returns the current column value.
-     */
-    private String getColValue() {
-        return colValue;
-    }
-
-    /**
-     * Sets the column value.
-     */
-    private void setColValue(String colValue) {
-        this.colValue = colValue;
-    }
-
     public int[] getCheckedItems() {
         int[] array = new int[checkedItems.size()];
 
@@ -574,57 +544,40 @@ public class TuiGrid extends Div {
 //                        this, "uncheckall");
     }
 
-    /**
-     * Handles the editing start event in the grid.
-     */
-    @ClientCallable
-    public void onEditingStart(JsonObject eventData) {
-        try {
-            colName = eventData.getString("columnName");
-            colValue = eventData.getString("value");
-            this.getElement()
-                    .executeJs(
-                            "toastuigrid.setTest($0, $1);",
-                            this, colName);
-        } catch (Exception e) {
-            colValue = "";
-        }
-
-    }
 
     /**
      * Handles the editing finish event in the grid.
      */
     @ClientCallable
     public void onEditingFinish(JsonObject eventData) {
-        if (!getColValue().equals(eventData.getString("value"))) {
-            ItemChangeEvent event = new ItemChangeEvent(
-                    this, getColName(), eventData.getString("value"),
-                    (int) eventData.getNumber("rowKey"), true);
+        JsonObject itemChanged = eventData.getArray("changes").get(0);
 
-            if ((int) eventData.getNumber("rowKey") >= this.items.size()) {
+        ItemChangeEvent event = new ItemChangeEvent(
+                this, itemChanged.getString("columnName"), itemChanged.getString("value"),
+                (int) itemChanged.getNumber("rowKey"), true);
+
+        if ((int) itemChanged.getNumber("rowKey") >= this.items.size()) {
 //                GuiItem temp = (GuiItem) this.items.get(0);
-                List<String> itemData = new ArrayList<>();
-                for (int i = 0; i < headers.size(); i++) {
-                    itemData.add("");
-                }
-
-                GuiItem temp = new GuiItem(itemData, headers);
-                List<String> tempData = new ArrayList<>();
-                for (int i = 0; i < temp.getRecordData().size(); i++) {
-                    tempData.add("");
-                }
-                this.items.add(new GuiItem(tempData, temp.getHeaders()));
+            List<String> itemData = new ArrayList<>();
+            for (int i = 0; i < headers.size(); i++) {
+                itemData.add("");
             }
-            refreshData((int) eventData.getNumber("rowKey"), eventData.getObject("record"));
 
-            RuntimeException exception = null;
-            try {
-                fireEvent(event);
-            } catch (RuntimeException e) {
-                exception = e;
-                event.setCancelled(true);
+            GuiItem temp = new GuiItem(itemData, headers);
+            List<String> tempData = new ArrayList<>();
+            for (int i = 0; i < temp.getRecordData().size(); i++) {
+                tempData.add("");
             }
+            this.items.add(new GuiItem(tempData, temp.getHeaders()));
+        }
+        refreshData((int) itemChanged.getNumber("rowKey"), eventData.getObject("record"));
+
+        RuntimeException exception = null;
+        try {
+            fireEvent(event);
+        } catch (RuntimeException e) {
+            exception = e;
+            event.setCancelled(true);
         }
     }
 
@@ -634,8 +587,7 @@ public class TuiGrid extends Div {
     @ClientCallable
     public void onGetData(JreJsonArray data) {
         JsonObject temp = data.getObject(0);
-        List<String> headers = new ArrayList<>();
-        headers.addAll(List.of(temp.keys()));
+        List<String> headers = new ArrayList<>(List.of(temp.keys()));
         for (int i = 0; i < data.length(); i++) {
             List<String> recordData = new ArrayList<>();
             JsonObject jsonValue = data.getObject(i);

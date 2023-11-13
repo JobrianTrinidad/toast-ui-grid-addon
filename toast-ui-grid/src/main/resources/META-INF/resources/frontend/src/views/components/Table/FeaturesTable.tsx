@@ -28,6 +28,7 @@ interface FeatureTableProps {
     onUncheck?: any;
     onUncheckAll?: any;
     onFocusChange?: any;
+    onAfterChange?: any;
     handleSearchResult?: any;
 }
 
@@ -48,14 +49,13 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             treeColumnOptions,
             rowHeight,
             minBodyHeight,
-            onEditingStart,
-            onEditingFinish,
             onSelection,
             onCheck,
             onCheckAll,
             onUncheck,
             onUncheckAll,
             onFocusChange,
+            onAfterChange,
             handleSearchResult,
         }: FeatureTableProps,
         ref: React.Ref<HTMLDivElement>
@@ -101,11 +101,11 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             });
 
             grid.on('editingStart' as GridEventName, (ev: TuiGridEvent): void => {
-                onEditingStart(ev);
+                // onEditingStart(ev);
             });
 
             grid.on('editingFinish' as GridEventName, (ev: TuiGridEvent): void => {
-                onEditingFinish(ev);
+                // onEditingFinish(ev);
             });
 
             grid.on('selection' as GridEventName, (ev: TuiGridEvent): void => {
@@ -128,9 +128,10 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 onUncheckAll(ev);
             });
 
-            grid.on('onFocusChange' as GridEventName, (ev: TuiGridEvent): void => {
-                onFocusChange(ev);
+            grid.on('afterChange' as GridEventName, (ev: TuiGridEvent): void => {
+                onAfterChange(ev);
             });
+
 
             getGridInstance(grid);
 

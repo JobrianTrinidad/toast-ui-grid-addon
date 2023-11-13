@@ -13,7 +13,7 @@ import CheckboxComponent from "../components/checkbox/ada-checkbox";
 import {CheckboxRenderer, RowNumberRenderer} from '../renderer/renderer';
 import DropDown from "../components/dropdown/index";
 import FeatureTable from "../components/Table/FeaturesTable";
-import TuiGrid, {RowKey} from 'tui-grid';
+import TuiGrid, {RowKey, Row} from 'tui-grid';
 import {TuiGridEvent} from "tui-grid/types/event";
 
 declare global {
@@ -38,8 +38,7 @@ window.toastuigrid = {
         let prevColumnName: string = "";
         let gridInst: TuiGrid;
         let rangeSelected: number[] = [];
-        console.log("TableData: ", this.getTableData(parsedItems));
-        if(container && container.grid)
+        if (container && container.grid)
             return;
         // console.log("Column: ", columns);
         // Implementation goes here
@@ -87,22 +86,7 @@ window.toastuigrid = {
             }))
             container.$server.onUncheckAll(cleanedObject);
         };
-        const onEditingStart = (ev: TuiGridEvent): void => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): string => {
-                if (value instanceof Node) {
-                    return 'null'; // Remove the DOM node reference
-                }
-                return value;
-            }));
-
-            if (gridInst) {
-                editingRowKey = gridInst.getFocusedCell()['rowKey'];
-            }
-
-// Send the cleaned object to the server
-            container.$server.onEditingStart(cleanedObject);
-        };
-        const onEditingFinish = (ev: TuiGridEvent): void => {
+        const onAfterChange = (ev: TuiGridEvent): void => {
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
@@ -113,7 +97,7 @@ window.toastuigrid = {
             if (gridInst) {
                 let record: {} = {};
                 for (const column of columns) {
-                    let key = column.name;
+                    let key: string = column.name;
                     record = {...record, [key]: gridInst.getValue(editingRowKey, column.name)}
                 }
                 cleanedObject = {...cleanedObject, record: record};
@@ -189,13 +173,19 @@ window.toastuigrid = {
                 && gridInst.getFocusedCell()['rowKey'] === gridInst.getRowCount() - 1
                 && prevColumnName === columns[columns.length - 1].name) {
                 prevColumnName = columns[0].name;
-                container.$server.addItem();
-            } else
-                if(gridInst)
-                    prevColumnName = gridInst.getFocusedCell()['columnName'];
+                let row: Row = gridInst.getRow(gridInst.getFocusedCell()['rowKey']);
+                for (const column of columns) {
+                    if (!(row[column.name] === "" || row[column.name] === null)) {
+                        container.$server.addItem();
+                        break;
+                    }
+                }
+            } else if (gridInst)
+                prevColumnName = gridInst.getFocusedCell()['columnName'];
         };
         const handleMouseDown = (event: MouseEvent): void => {
             gridInst = container.grid.table;
+            editingRowKey = gridInst.getFocusedCell()['rowKey'];
             // if (event.defaultPrevented === false) {
             //     gridInst.restore();
             // }
@@ -203,9 +193,11 @@ window.toastuigrid = {
             if (targetElement.tagName === "VAADIN-APP-LAYOUT" || targetElement.tagName === "DIV") {
                 gridInst.finishEditing(editingRowKey, prevColumnName);
 
+
                 if (gridInst.getValue(editingRowKey, columns[0].name) === "" ||
                     gridInst.getValue(editingRowKey, columns[0].name) === null) {
                     gridInst.removeRow(editingRowKey);
+                    editingRowKey = -1;
                 }
             } else {
                 return;
@@ -244,8 +236,7 @@ window.toastuigrid = {
                 minBodyHeight={120}
                 rowHeaders={parsedOptions.rowHeaders ? this.getRowHeaders(parsedOptions.rowHeaders) : null}
                 treeColumnOptions={parsedOptions.treeColumnOptions ? JSON.parse(parsedOptions.treeColumnOptions) : null}
-                onEditingStart={onEditingStart}
-                onEditingFinish={onEditingFinish}
+                onAfterChange={onAfterChange}
                 onSelection={onSelection}
                 onCheck={onCheck}
                 onCheckAll={onCheckAll}
@@ -273,8 +264,7 @@ window.toastuigrid = {
     // and JSON data for the new data. The function updates the table data, and then updates the grid.
     setTableData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, data: string): void {
         let parsedItems = JSON.parse(data);
-        if (container && container.grid && container.grid.table){
-            console.log("here is: ", parsedItems);
+        if (container && container.grid && container.grid.table) {
             container.grid.table.resetData(this.getTableData(parsedItems));
         }
         // this.updateGrid(container);
@@ -363,7 +353,7 @@ window.toastuigrid = {
     },
     //This function retrieves the data from the grid and sends it to the server using the onGetData function.
     getData(container: HTMLElement & { $server: any, grid: JSX.Element & { table: TuiGrid } }): void {
-        let cleanedObject = JSON.parse(JSON.stringify(container.grid.TableData, (key, value) => {
+        let cleanedObject = JSON.parse(JSON.stringify(container.grid.table, (key, value) => {
             if (value instanceof Node) {
                 return null; // Remove the DOM node reference
             }
