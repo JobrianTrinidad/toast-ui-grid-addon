@@ -35,6 +35,10 @@ public class BasicExample extends Div {
         grid.sethScroll(true);
         grid.setAutoSave(true);
         grid.setHeaderHeight(100);
+
+        grid.addColumnResizeListener(e -> {
+            sp.add(e.getColName() + e.getColWidth());
+        });
 //        grid.setTableWidth(950);
 //        grid.setTableHeight(600);
 

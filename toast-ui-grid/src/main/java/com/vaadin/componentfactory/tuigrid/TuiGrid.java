@@ -20,6 +20,7 @@
 
 package com.vaadin.componentfactory.tuigrid;
 
+import com.vaadin.componentfactory.tuigrid.event.ColumnResizeEvent;
 import com.vaadin.componentfactory.tuigrid.event.ItemChangeEvent;
 import com.vaadin.componentfactory.tuigrid.event.ItemDeleteEvent;
 import com.vaadin.componentfactory.tuigrid.event.SelectionEvent;
@@ -435,6 +436,31 @@ public class TuiGrid extends Div {
     }//
 
     /**
+     * Sets the selected item in the grid based on the provided column name.
+     *
+     * @param colName the String value to be set
+     * @param colWidth the int value to be set
+     */
+    @ClientCallable
+    public void resizeColumn(String colName, int colWidth) {
+        fireColumnResizeEvent(colName, colWidth, true);
+    }
+
+    /**
+     * Fires an item select event with the provided column name and client information.
+     */
+    protected void fireColumnResizeEvent(
+            String colName, int colWidth, boolean fromClient) {
+        ColumnResizeEvent event = new ColumnResizeEvent(this, colName, colWidth, fromClient);
+
+        try {
+            fireEvent(event);
+        } catch (RuntimeException e) {
+            event.setCancelled(true);
+        }
+    }//
+
+    /**
      * Returns the list of items in the grid.
      */
     public List<Item> getData() {
@@ -608,6 +634,15 @@ public class TuiGrid extends Div {
      */
     public void addItemChangeListener(ComponentEventListener<ItemChangeEvent> listener) {
         addListener(ItemChangeEvent.class, listener);
+    }
+
+    /**
+     * Adds a listener for {@link ItemChangeEvent} to the component.
+     *
+     * @param listener the listener to be added
+     */
+    public void addColumnResizeListener(ComponentEventListener<ColumnResizeEvent> listener) {
+        addListener(ColumnResizeEvent.class, listener);
     }
 
     /**

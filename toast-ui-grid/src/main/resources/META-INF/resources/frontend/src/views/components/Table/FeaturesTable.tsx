@@ -29,6 +29,7 @@ interface FeatureTableProps {
     onUncheckAll?: any;
     onFocusChange?: any;
     onAfterChange?: any;
+    onColumnResize?: any;
     handleSearchResult?: any;
 }
 
@@ -56,6 +57,7 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             onUncheckAll,
             onFocusChange,
             onAfterChange,
+            onColumnResize,
             handleSearchResult,
         }: FeatureTableProps,
         ref: React.Ref<HTMLDivElement>
@@ -132,6 +134,9 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 onAfterChange(ev);
             });
 
+            grid.on('columnResize' as GridEventName, (ev: TuiGridEvent): void => {
+                onColumnResize(ev);
+            });
 
             getGridInstance(grid);
 

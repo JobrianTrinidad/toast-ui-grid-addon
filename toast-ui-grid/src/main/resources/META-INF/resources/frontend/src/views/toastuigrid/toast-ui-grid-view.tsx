@@ -38,6 +38,7 @@ window.toastuigrid = {
         let prevColumnName: string = "";
         let gridInst: TuiGrid;
         let rangeSelected: number[] = [];
+        let resizedColumn: { columnName: string, width: number } | null = null;
         if (container && container.grid)
             return;
         // console.log("Column: ", columns);
@@ -104,6 +105,9 @@ window.toastuigrid = {
                 if (gridInst.getValue(editingRowKey, columns[0].name) !== "")
                     container.$server.onEditingFinish(cleanedObject);
             }
+        };
+        const onColumnResize = (ev: TuiGridEvent): void => {
+            resizedColumn = ev.resizedColumns[0];
         };
         const onFocusChange = (ev: TuiGridEvent): void => {
             const firstCol = JSON.parse(parsedOptions.columns)[0];
@@ -207,6 +211,12 @@ window.toastuigrid = {
                 && !targetElement.className.includes('tui-grid-cell-header'))
                 rangeSelected = [];
         };
+        const handleMouseUp = (event: MouseEvent): void => {
+            if (resizedColumn !== null) {
+                container.$server.resizeColumn(resizedColumn.columnName, resizedColumn.width);
+                resizedColumn = null;
+            }
+        }
         const handleGetGridInstance = (gridInstance: TuiGrid): void => {
             gridInst = gridInstance;
             if (Object.isExtensible(container.grid)) {
@@ -237,6 +247,7 @@ window.toastuigrid = {
                 rowHeaders={parsedOptions.rowHeaders ? this.getRowHeaders(parsedOptions.rowHeaders) : null}
                 treeColumnOptions={parsedOptions.treeColumnOptions ? JSON.parse(parsedOptions.treeColumnOptions) : null}
                 onAfterChange={onAfterChange}
+                onColumnResize={onColumnResize}
                 onSelection={onSelection}
                 onCheck={onCheck}
                 onCheckAll={onCheckAll}
@@ -250,6 +261,7 @@ window.toastuigrid = {
 
         document.addEventListener("keydown", handleKeyDown);
         document.addEventListener("mousedown", handleMouseDown);
+        document.addEventListener("mouseup", handleMouseUp);
 
         this.updateGrid(container);
     },
