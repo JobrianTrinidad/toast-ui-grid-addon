@@ -165,8 +165,7 @@ public class Column {
 
     String toRelationJSON(JsonObject js, List<RelationOption> relationOptions) {
         RelationOption select = new RelationOption("Select", "");
-//        if (relationOptions.get(0).getChildren().size() > 0) {
-        if (!relationOptions.get(0).getChildren().isEmpty()) {
+        if (!relationOptions.isEmpty() && !relationOptions.get(0).getChildren().isEmpty()) {
             JsonObject tempJs = Json.createObject();
 
             for (RelationOption relationOption : relationOptions) {
