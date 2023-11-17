@@ -139,8 +139,7 @@ public class Column {
 
     public String toJSON(boolean bResizable) {
         JsonObject js = columnBaseOption.toJSON();
-        if (!bResizable)
-            js.put("resizable", false);
+        if (!bResizable) js.put("resizable", false);
         if (!Objects.equals(getSortingType(), "")) {
             Optional.ofNullable(getSortingType()).ifPresent(v -> js.put("sortingType", v));
             Optional.of(isSortable()).ifPresent(v -> js.put("sortable", v));
@@ -178,18 +177,14 @@ public class Column {
             js.put("depth1", "[]");
         }
 
-        if (isRoot())
-            js.put("depth0", "[" + select.toSelfJSON() + "," + this.convertRelationOptionsToJson() + "]");
-        else
-            js.put("depth0", "[]");
+        if (isRoot()) js.put("depth0", "[" + select.toSelfJSON() + "," + this.convertRelationOptionsToJson() + "]");
+        else js.put("depth0", "[]");
 
         return js.toJson();
     }
 
     private String convertRelationOptionsToJson() {
-        return this.relationOptions != null
-                ? this.relationOptions.stream().map(RelationOption::toSelfJSON).collect(Collectors.joining(","))
-                : "";
+        return this.relationOptions != null ? this.relationOptions.stream().map(RelationOption::toSelfJSON).filter(Objects::nonNull).collect(Collectors.joining(",")) : "";
     }
 
     /**

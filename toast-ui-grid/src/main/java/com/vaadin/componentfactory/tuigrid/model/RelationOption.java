@@ -25,6 +25,7 @@ import elemental.json.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -76,16 +77,19 @@ public class RelationOption {
     }
 
     public String toSelfJSON() {
-        JsonObject js = Json.createObject();
-        Optional.ofNullable(getName()).ifPresent(v -> js.put("text", v));
-        if (this.getName() != null)
+        if (this.getName() != null) {
+            JsonObject js = Json.createObject();
+            Optional.ofNullable(getName()).ifPresent(v -> js.put("text", v));
+
             Optional.ofNullable(getValue()).ifPresent(v -> js.put("value", v));
-        return js.toJson();
+            return js.toJson();
+        }
+        return null;
     }
 
     public String toJSON() {
         return this.children != null
-                ? this.children.stream().map(RelationOption::toSelfJSON).collect(Collectors.joining(","))
+                ? this.children.stream().map(RelationOption::toSelfJSON).filter(Objects::nonNull).collect(Collectors.joining(","))
                 : "";
     }
 }
