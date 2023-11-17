@@ -78,6 +78,9 @@ public class RelationOption {
     public String toSelfJSON() {
         JsonObject js = Json.createObject();
         Optional.ofNullable(getName()).ifPresent(v -> js.put("text", v));
+        if (this.getName() == null) {
+            js.put("text", "");
+        }
         Optional.ofNullable(getValue()).ifPresent(v -> js.put("value", v));
         return js.toJson();
     }
