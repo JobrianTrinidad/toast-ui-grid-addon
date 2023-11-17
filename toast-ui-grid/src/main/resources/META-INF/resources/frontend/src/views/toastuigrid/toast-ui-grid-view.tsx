@@ -13,7 +13,7 @@ import CheckboxComponent from "../components/checkbox/ada-checkbox";
 import {CheckboxRenderer, RowNumberRenderer} from '../renderer/renderer';
 import DropDown from "../components/dropdown/index";
 import FeatureTable from "../components/Table/FeaturesTable";
-import TuiGrid, {RowKey, Row} from 'tui-grid';
+import TuiGrid, {RowKey, Row, InvalidRow} from 'tui-grid';
 import {TuiGridEvent} from "tui-grid/types/event";
 
 declare global {
@@ -99,11 +99,11 @@ window.toastuigrid = {
                 let record: {} = {};
                 for (const column of columns) {
                     let key: string = column.name;
-                    record = {...record, [key]: gridInst.getValue(editingRowKey, column.name)}
+                    record = {...record, [key]: gridInst.getValue(ev.changes[0]['rowKey'], column.name)}
                 }
                 cleanedObject = {...cleanedObject, record: record};
-                if (gridInst.getValue(editingRowKey, columns[0].name) !== "")
-                    container.$server.onEditingFinish(cleanedObject);
+                // if (gridInst.getValue(editingRowKey, columns[0].name) !== "")
+                container.$server.onEditingFinish(cleanedObject);
             }
         };
         const onColumnResize = (ev: TuiGridEvent): void => {
@@ -196,15 +196,14 @@ window.toastuigrid = {
             const targetElement: HTMLElement = event.target as HTMLElement;
             if (targetElement.tagName === "VAADIN-APP-LAYOUT" || targetElement.tagName === "DIV") {
                 gridInst.finishEditing(editingRowKey, prevColumnName);
-
-
-                if (gridInst.getValue(editingRowKey, columns[0].name) === "" ||
-                    gridInst.getValue(editingRowKey, columns[0].name) === null) {
-                    gridInst.removeRow(editingRowKey);
-                    editingRowKey = -1;
+                for (const column of columns) {
+                    if (!(gridInst.getValue(editingRowKey, column.name) === "" ||
+                        gridInst.getValue(editingRowKey, column.name) === null)) {
+                        return
+                    }
                 }
-            } else {
-                return;
+                gridInst.removeRow(editingRowKey);
+                editingRowKey = -1;
             }
 
             if (!event.shiftKey
