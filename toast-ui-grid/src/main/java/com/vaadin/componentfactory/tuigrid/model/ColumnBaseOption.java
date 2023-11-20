@@ -47,7 +47,8 @@ public class ColumnBaseOption {
         Optional.ofNullable(getId()).ifPresent(v -> js.put("id", v));
         Optional.ofNullable(getName()).ifPresent(v -> js.put("name", v));
         Optional.ofNullable(getHeaderName()).ifPresent(v -> js.put("header", v));
-        Optional.ofNullable(getWidth() > 0).ifPresent(v -> js.put("width", v));
+        if(getWidth() > 0)
+            js.put("width", getWidth());
         Optional.ofNullable(getAlign()).ifPresent(v -> js.put("align", v));
         Optional.ofNullable(getClassName()).ifPresent(v -> js.put("className", v));
         return js;

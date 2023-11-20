@@ -95,6 +95,7 @@ window.toastuigrid = {
                 return value;
             }));
 // Send the cleaned object to the server getRowSpanData
+            console.log("onAfterChange: ", ev);
             if (gridInst) {
                 let record: {} = {};
                 for (const column of columns) {
@@ -117,12 +118,16 @@ window.toastuigrid = {
                 editingRowKey = -1;
                 return;
             }
-            if (ev.prevRowKey !== ev.rowKey && editingRowKey !== -1)
-                if (gridInst.getValue(editingRowKey, columns[0].name) === "" ||
-                    gridInst.getValue(editingRowKey, columns[0].name) === null) {
-                    gridInst.removeRow(editingRowKey);
-                    editingRowKey = -1;
+            if (ev.prevRowKey !== ev.rowKey && editingRowKey !== -1) {
+                for (const column of columns) {
+                    if (!(gridInst.getValue(editingRowKey, column.name) === "" ||
+                        gridInst.getValue(editingRowKey, column.name) === null)) {
+                        return;
+                    }
                 }
+                gridInst.removeRow(editingRowKey);
+                editingRowKey = -1;
+            }
         };
         const handleSearchResult = (result: any): void => {
             gridInst = container.grid.table;
