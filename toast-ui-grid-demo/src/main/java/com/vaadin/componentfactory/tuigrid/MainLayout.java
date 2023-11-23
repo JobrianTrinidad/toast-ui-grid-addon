@@ -3,13 +3,23 @@ package com.vaadin.componentfactory.tuigrid;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
+
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class MainLayout extends AppLayout {
 
     public MainLayout() {
         final DrawerToggle drawerToggle = new DrawerToggle();
+        drawerToggle.addClickListener(event -> {
+            EventBus.getInstance().post("DrawerToggleClicked");
+        });
 
         final RouterLink basicExample =
                 new RouterLink("1. Basic", BasicExample.class);

@@ -5,15 +5,14 @@
 
 import "@vaadin/button";
 import "@vaadin/text-field";
-import React, {useEffect, useRef} from 'react';
 import type {JSX} from 'react';
+import React from 'react';
 import {createRoot, Root} from 'react-dom/client';
 import InputComponent from "../components/input/ada-input";
-import CheckboxComponent from "../components/checkbox/ada-checkbox";
 import {CheckboxRenderer, RowNumberRenderer} from '../renderer/renderer';
 import DropDown from "../components/dropdown/index";
 import FeatureTable from "../components/Table/FeaturesTable";
-import TuiGrid, {RowKey, Row, InvalidRow} from 'tui-grid';
+import TuiGrid, {Row, RowKey} from 'tui-grid';
 import {TuiGridEvent} from "tui-grid/types/event";
 
 declare global {
@@ -233,7 +232,7 @@ window.toastuigrid = {
                 };
             }
         };
-        let gridTable: JSX.Element = (
+        container.grid = (
             <FeatureTable
                 getGridInstance={handleGetGridInstance}
                 el={document.getElementsByClassName("grid")[0]}
@@ -261,7 +260,6 @@ window.toastuigrid = {
                 handleSearchResult={handleSearchResult}
             ></FeatureTable>
         );
-        container.grid = gridTable;
 
         document.addEventListener("keydown", handleKeyDown);
         document.addEventListener("mousedown", handleMouseDown);
@@ -293,6 +291,11 @@ window.toastuigrid = {
         gridInst.appendRow();
         gridInst.startEditingAt(gridInst.getRowCount() - 1, 0);
         // this.updateGrid(container);
+    },
+
+    refreshLayout(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
+        let gridInst: TuiGrid = container.grid.table;
+        gridInst.refreshLayout();
     },
     //This internal function is used to set the column content based on a matched name.
     // It takes an object columnContent and modifies it based on its value.
@@ -358,13 +361,12 @@ window.toastuigrid = {
         if (!parsedHeader.hasOwnProperty('complexColumns'))
             return null;
         else {
-            let header: { height?: number, complexColumns: any[] } = parsedHeader.height != 0 ? {
+            return parsedHeader.height != 0 ? {
                 height: parsedHeader.height,
                 complexColumns: this.getComplexColumns(parsedHeader.complexColumns)
             } : {
                 complexColumns: this.getComplexColumns(parsedHeader.complexColumns)
             };
-            return header;
         }
     },
     //This function retrieves the data from the grid and sends it to the server using the onGetData function.
@@ -533,10 +535,7 @@ window.toastuigrid = {
     removeRows: function (container: HTMLElement & {
         $server: any
         grid: JSX.Element & { table: TuiGrid }
-    }, rowKeys: string): void {
-        // const rows = JSON.parse(rowKeys);
-        // gridInst.reloadData();
-        // for (let i = 0; i < rows.length; i++) {
+    }): void {
 
         let gridInst: TuiGrid = container.grid.table;
         const rows: RowKey[] = gridInst.getCheckedRowKeys();

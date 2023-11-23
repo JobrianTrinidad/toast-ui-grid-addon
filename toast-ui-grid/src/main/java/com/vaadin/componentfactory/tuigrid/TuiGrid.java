@@ -38,7 +38,6 @@ import elemental.json.JsonValue;
 import elemental.json.impl.JreJsonArray;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,8 +136,8 @@ public class TuiGrid extends Div {
         if (this.getElement().getNode().isAttached())
             this.getElement()
                     .executeJs(
-                            "toastuigrid.addTableData($0, $1);",
-                            this, "[" + convertItemsToJson(items) + "]");
+                            "toastuigrid.addTableData($0);",
+                            this);
     }
 
     @ClientCallable
@@ -146,8 +145,8 @@ public class TuiGrid extends Div {
         if (this.getElement().getNode().isAttached())
             this.getElement()
                     .executeJs(
-                            "toastuigrid.addTableData($0, $1);",
-                            this, null);
+                            "toastuigrid.addTableData($0);",
+                            this);
     }
 
     public void setAutoSave(boolean autoSave) {
@@ -361,7 +360,7 @@ public class TuiGrid extends Div {
      */
     private String convertItemsToJson() {
         return this.items != null
-                ? this.items.stream().map(item -> item.toJSON()).collect(Collectors.joining(","))
+                ? this.items.stream().map(Item::toJSON).collect(Collectors.joining(","))
                 : "";
     }
 
@@ -370,7 +369,7 @@ public class TuiGrid extends Div {
      */
     private String convertItemsToJson(List<Item> items) {
         return items != null
-                ? items.stream().map(item -> item.toJSON()).collect(Collectors.joining(","))
+                ? items.stream().map(Item::toJSON).collect(Collectors.joining(","))
                 : "";
     }
 
@@ -408,7 +407,7 @@ public class TuiGrid extends Div {
     public void deleteItems(int[] rows) {
         checkedItems = new ArrayList<>();
         for (int num : rows) {
-            checkedItems.add(Integer.valueOf(num));
+            checkedItems.add(num);
         }
 
         fireDeleteItemsEvent(checkedItems, true);
@@ -423,9 +422,8 @@ public class TuiGrid extends Div {
         RuntimeException exception = null;
         this.getElement()
                 .executeJs(
-                        "toastuigrid.removeRows($0, $1);",
-                        this, rows.toString());
-//        checkedItems = new ArrayList<>();
+                        "toastuigrid.removeRows($0);",
+                        this);
 
         try {
             fireEvent(event);
@@ -474,11 +472,9 @@ public class TuiGrid extends Div {
      * @param record the grid's value to be changed
      */
     private void refreshData(int row, JsonObject record) {
-        List<Item> tempItems = new ArrayList<>();
-        tempItems.addAll(this.items);
+        List<Item> tempItems = new ArrayList<>(this.items);
         GuiItem temp = (GuiItem) this.items.get(row);
-        List<String> tempRecord = new ArrayList<>();
-        tempRecord.addAll(temp.getRecordData());
+        List<String> tempRecord = new ArrayList<>(temp.getRecordData());
         for (Column colName :
                 this.columns) {
 
@@ -501,6 +497,12 @@ public class TuiGrid extends Div {
         this.items = tempItems;
     }
 
+    public void refreshGrid(){
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.refreshLayout($0);",
+                        this);
+    }
     /**
      * Handles the click event in the grid for the specified column name and row.
      */
@@ -517,14 +519,6 @@ public class TuiGrid extends Div {
      */
     @ClientCallable
     public void onCheck(JsonObject eventData) {
-//        if (eventData.hasKey("rowKey")) {
-//            int rowChecked = (int) eventData.getNumber("rowKey");
-//            checkedItems.add(rowChecked);
-//            this.getElement()
-//                    .executeJs(
-//                            "toastuigrid.setTest($0, $1);",
-//                            this, rowChecked);
-//        }
     }
 
     /**
@@ -532,16 +526,6 @@ public class TuiGrid extends Div {
      */
     @ClientCallable
     public void onUncheck(JsonObject eventData) {
-//        if (eventData.hasKey("rowKey")) {
-//            int rowUnChecked = (int) eventData.getNumber("rowKey");
-//            checkedItems = checkedItems.stream()
-//                    .filter(item -> item != rowUnChecked)
-//                    .collect(Collectors.toList());
-//            this.getElement()
-//                    .executeJs(
-//                            "toastuigrid.setTest($0, $1);",
-//                            this, rowUnChecked);
-//        }
     }
 
     /**
@@ -549,13 +533,6 @@ public class TuiGrid extends Div {
      */
     @ClientCallable
     public void onCheckAll(JsonObject eventData) {
-//        for (int i = 0; i < items.size(); i++) {
-//            checkedItems.add(i);
-//        }
-//        this.getElement()
-//                .executeJs(
-//                        "toastuigrid.setTest($0, $1);",
-//                        this, "checkall");
     }
 
     /**
@@ -563,11 +540,6 @@ public class TuiGrid extends Div {
      */
     @ClientCallable
     public void onUncheckAll(JsonObject eventData) {
-//        checkedItems = new ArrayList<>();
-//        this.getElement()
-//                .executeJs(
-//                        "toastuigrid.setTest($0, $1);",
-//                        this, "uncheckall");
     }
 
 

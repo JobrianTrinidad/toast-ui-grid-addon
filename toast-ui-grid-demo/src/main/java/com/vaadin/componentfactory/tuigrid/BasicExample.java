@@ -1,9 +1,12 @@
 package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.model.*;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.Route;
 
@@ -16,6 +19,7 @@ public class BasicExample extends Div {
     List<String> headers = List.of("name", "artist", "type", "genre");
 
     public BasicExample() {
+
         // create items
         Theme inputTheme = new Theme();
         inputTheme.setMaxLength(10);
@@ -39,6 +43,7 @@ public class BasicExample extends Div {
         grid.addColumnResizeListener(e -> {
             sp.add(e.getColName() + e.getColWidth());
         });
+        grid.setSizeFull();
 //        grid.setTableWidth(950);
 //        grid.setTableHeight(600);
 
@@ -48,8 +53,9 @@ public class BasicExample extends Div {
 
         Button addBtn = new Button("Add");
         addBtn.addClickListener(listener -> {
-            grid.addItem(List.of(new GuiItem(List.of("", "", "", ""), headers)));
+//            grid.addItem(List.of(new GuiItem(List.of("", "", "", ""), headers)));
 //            add(layout);
+            grid.refreshGrid();
         });
 
         Button delBtn = new Button("Delete");
@@ -61,6 +67,14 @@ public class BasicExample extends Div {
 
 
         add(sp, addBtn, delBtn, layout);
+
+        EventBus.getInstance().register(event -> {
+            if ("DrawerToggleClicked".equals(event)) {
+                // Handle the event
+                grid.setWidthFull();
+                getUI().ifPresent(ui -> ui.access(() -> Notification.show("Toggle Clicked")));
+            }
+        });
     }
 
     private List<Item> getTableData() {
