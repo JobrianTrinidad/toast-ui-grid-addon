@@ -40,7 +40,15 @@ window.toastuigrid = {
         let resizedColumn: { columnName: string, width: number } | null = null;
         if (container && container.grid)
             return;
-        // console.log("Column: ", columns);
+
+        let hostElement: Element | null = document.querySelector('vaadin-app-layout');
+        let shadowRoot: ShadowRoot | null = hostElement!.shadowRoot;
+        let contentElement: Element | null = shadowRoot!.querySelector('[content]');
+        let toolbars: HTMLCollectionOf<Element> = document.getElementsByClassName("aat-toolbar");
+        let bodyHeight: number = contentElement!.getBoundingClientRect().height;
+        for (const toolbar of toolbars) {
+            bodyHeight -= toolbar.getBoundingClientRect().height;
+        }
         // Implementation goes here
         const onSelection = (ev: TuiGridEvent): void => {
             rangeSelected = [];
@@ -94,7 +102,6 @@ window.toastuigrid = {
                 return value;
             }));
 // Send the cleaned object to the server getRowSpanData
-            console.log("onAfterChange: ", ev);
             if (gridInst) {
                 let record: {} = {};
                 for (const column of columns) {
@@ -242,7 +249,9 @@ window.toastuigrid = {
                 columnOptions={parsedOptions.columnOptions}
                 header={this.getHeader(parsedOptions.header)}
                 width={parsedOptions.width}
-                bodyHeight={parsedOptions.bodyHeight}
+                bodyHeight={(parsedOptions.header.height && parsedOptions.header.height > 0)
+                    ? bodyHeight - parsedOptions.header.height
+                    : bodyHeight - 100}
                 scrollX={parsedOptions.scrollX}
                 scrollY={parsedOptions.scrollY}
                 rowHeight={40}
@@ -269,37 +278,6 @@ window.toastuigrid = {
     },
     //This function is a wrapper around _createGrid that delays the execution using setTimeout.
     // It takes a container element, JSON data for items, and JSON data for options.
-    create
-    (container: HTMLElement, itemsJson: string, optionsJson: string): void {
-        setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
-    },
-
-    //This function updates the table data of an existing grid. It takes a container element with a grid property,
-    // and JSON data for the new data. The function updates the table data, and then updates the grid.
-    setTableData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, data: string): void {
-        let parsedItems = JSON.parse(data);
-        if (container && container.grid && container.grid.table) {
-            container.grid.table.resetData(this.getTableData(parsedItems));
-        }
-        // this.updateGrid(container);
-    },
-    //This function adds new data to the existing table data of a grid.
-    // It takes a container element with a grid property, and JSON data for the new data.
-    // The function appends the new data to the existing table data, and then updates the grid.
-    addTableData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, data: string): void {
-        let gridInst: TuiGrid = container.grid.table;
-        gridInst.appendRow();
-        gridInst.startEditingAt(gridInst.getRowCount() - 1, 0);
-        // this.updateGrid(container);
-    },
-
-    refreshLayout(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
-        let gridInst: TuiGrid = container.grid.table;
-        gridInst.refreshLayout();
-    },
-    //This internal function is used to set the column content based on a matched name.
-    // It takes an object columnContent and modifies it based on its value.
-    // The modified object is used for displaying summary information in the grid.
     _setColumnContentMatchedName(columnContent: any): void {
         const onSum = (): { template: (valueMap: any) => string } => {
             return {
@@ -348,118 +326,23 @@ window.toastuigrid = {
                 break;
         }
     },
-    //This function parses the JSON data for the header and returns the header object.
-    // If the header does not have complex columns, it returns null.
-    // Otherwise, it constructs the header object with the specified height and complex columns.
-    getHeader(parsedHeader: {
-        height?: number,
-        complexColumns: any[]
-    }): {
-        height?: number,
-        complexColumns: any[]
-    } | null {
-        if (!parsedHeader.hasOwnProperty('complexColumns'))
-            return null;
-        else {
-            return parsedHeader.height != 0 ? {
-                height: parsedHeader.height,
-                complexColumns: this.getComplexColumns(parsedHeader.complexColumns)
-            } : {
-                complexColumns: this.getComplexColumns(parsedHeader.complexColumns)
-            };
-        }
-    },
-    //This function retrieves the data from the grid and sends it to the server using the onGetData function.
-    getData(container: HTMLElement & { $server: any, grid: JSX.Element & { table: TuiGrid } }): void {
-        let cleanedObject = JSON.parse(JSON.stringify(container.grid.table, (key, value) => {
-            if (value instanceof Node) {
-                return null; // Remove the DOM node reference
-            }
-            return value;
-        }))
-        container.$server.onGetData(cleanedObject);
-    },
-    //This function recursively parses the JSON data for the table data and returns the parsed data.
-    // It handles nested data structures by recursively calling itself.
-    getTableData(parsedData: any) {
-        let listData = parsedData;
-        for (const data of listData) {
 
-            if (data.hasOwnProperty('_attributes') &&
-                data.hasOwnProperty('_children')) {
-                data._children = this.getTableData(JSON.parse(data._children));
-            }
-        }
-        return listData;
+    //This function updates the table data of an existing grid. It takes a container element with a grid property,
+    // and JSON data for the new data. The function updates the table data, and then updates the grid.
+    addTableData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, data: string): void {
+        let gridInst: TuiGrid = container.grid.table;
+        gridInst.appendRow();
+        gridInst.startEditingAt(gridInst.getRowCount() - 1, 0);
+        // this.updateGrid(container);
     },
-    //This function parses the JSON data for row headers and returns an array of trimmed row header names.
-    getRowHeaders(parsedRowHeaders: any) {
-        return parsedRowHeaders.slice(1, -1).split(",").map((item: any) => {
-            item.trim();
-            if (item === 'rowNum') {
-                item = {
-                    type: 'rowNum',
-                    renderer: {
-                        type: RowNumberRenderer
-                    }
-                };
-            }
+    //This function adds new data to the existing table data of a grid.
+    // It takes a container element with a grid property, and JSON data for the new data.
+    // The function appends the new data to the existing table data, and then updates the grid.
+    create
+    (container: HTMLElement, itemsJson: string, optionsJson: string): void {
+        setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
+    },
 
-            if (item === 'checkbox') {
-                item = {
-                    type: 'checkbox',
-                    header: `
-                              <label for="all-checkbox" class="checkbox" 
-                                    style="display: flex;
-                                    justify-content: center;"
-                               >
-                                <input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
-                                <span class="custom-input"></span>
-                              </label>
-                            `,
-                    renderer: {
-                        type: CheckboxRenderer
-                    }
-                };
-            }
-            return item;
-        });
-    },
-    //This function parses the JSON data for complex columns and returns the parsed complex columns.
-    // It also trims the child names.
-    getComplexColumns(parsedColumnContent: any) {
-        let complexColumns = JSON.parse(parsedColumnContent);
-        for (const complexColumn of complexColumns) {
-            complexColumn.childNames = complexColumn.childNames.slice(1, -1).split(", ").map((item: any) => item.trim());
-        }
-        return complexColumns;
-    },
-    //This function parses the JSON data for the summary and returns the parsed summary object.
-    // It handles column content by calling _setColumnContentMatchedName to modify the column content based on its value.
-    getSummary(parsedSummary: any) {
-        if (parsedSummary == undefined || !parsedSummary.hasOwnProperty('columnContent'))
-            return null;
-        let summaries: any = parsedSummary;
-        let columnContents = JSON.parse(summaries.columnContent);
-        if (columnContents.length === 0)
-            return null;
-        for (const columnContent of columnContents) {
-            this._setColumnContentMatchedName(columnContent);
-        }
-
-        return summaries = {
-            height: summaries.height ? summaries.height : 40,
-            position: summaries.position,
-            columnContent: columnContents.reduce((acc: any, obj: any) => {
-                const key: string = Object.keys(obj)[0];
-                const value = obj[key];
-                acc[key] = value;
-                return acc;
-            }, {})
-        }
-    },
-    //This function parses the JSON data for the columns and returns the parsed columns.
-    // It handles special cases for input and select editors, and also handles depth0 and depth1 data for select editors.
     getColumns(parsedColumn: any[]): any[] {
         let columns: any[] = parsedColumn;
         let tempColumns: any[] = [];
@@ -519,19 +402,125 @@ window.toastuigrid = {
         }
         return tempColumns;
     },
-    //This function updates the options of an existing grid.
-    // It takes a container element with a grid property, and JSON data for the new options.
-    // The function updates the options, and then updates the grid.
-    setOptions: function (container: HTMLElement & {
-        grid: JSX.Element & { table: TuiGrid }
-    }, optionsJson: string): void {
-        let parsedOptions = JSON.parse(optionsJson);
-        container.grid.setOption(parsedOptions);
+    //This internal function is used to set the column content based on a matched name.
+    // It takes an object columnContent and modifies it based on its value.
+    // The modified object is used for displaying summary information in the grid.
+    getComplexColumns(parsedColumnContent: any) {
+        let complexColumns = JSON.parse(parsedColumnContent);
+        for (const complexColumn of complexColumns) {
+            complexColumn.childNames = complexColumn.childNames.slice(1, -1).split(", ").map((item: any) => item.trim());
+        }
+        return complexColumns;
     },
-    setTest: function (container: HTMLElement, content: any): void {
-        // console.log("Event Test: ", content);
+    //This function parses the JSON data for the header and returns the header object.
+    // If the header does not have complex columns, it returns null.
+    // Otherwise, it constructs the header object with the specified height and complex columns.
+    getData(container: HTMLElement & { $server: any, grid: JSX.Element & { table: TuiGrid } }): void {
+        let cleanedObject = JSON.parse(JSON.stringify(container.grid.table, (key, value) => {
+            if (value instanceof Node) {
+                return null; // Remove the DOM node reference
+            }
+            return value;
+        }))
+        container.$server.onGetData(cleanedObject);
     },
+    //This function retrieves the data from the grid and sends it to the server using the onGetData function.
+    getHeader(parsedHeader: {
+        height?: number,
+        complexColumns: any[]
+    }): {
+        height?: number,
+        complexColumns: any[]
+    } | null {
+        if (!parsedHeader.hasOwnProperty('complexColumns'))
+            return null;
+        else {
+            return parsedHeader.height != 0 ? {
+                height: parsedHeader.height,
+                complexColumns: this.getComplexColumns(parsedHeader.complexColumns)
+            } : {
+                complexColumns: this.getComplexColumns(parsedHeader.complexColumns)
+            };
+        }
+    },
+    //This function recursively parses the JSON data for the table data and returns the parsed data.
+    // It handles nested data structures by recursively calling itself.
+    getRowHeaders(parsedRowHeaders: any) {
+        return parsedRowHeaders.slice(1, -1).split(",").map((item: any) => {
+            item.trim();
+            if (item === 'rowNum') {
+                item = {
+                    type: 'rowNum',
+                    renderer: {
+                        type: RowNumberRenderer
+                    }
+                };
+            }
 
+            if (item === 'checkbox') {
+                item = {
+                    type: 'checkbox',
+                    header: `
+                              <label for="all-checkbox" class="checkbox" 
+                                    style="display: flex;
+                                    justify-content: center;"
+                               >
+                                <input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
+                                <span class="custom-input"></span>
+                              </label>
+                            `,
+                    renderer: {
+                        type: CheckboxRenderer
+                    }
+                };
+            }
+            return item;
+        });
+    },
+    //This function parses the JSON data for row headers and returns an array of trimmed row header names.
+    getSummary(parsedSummary: any) {
+        if (parsedSummary == undefined || !parsedSummary.hasOwnProperty('columnContent'))
+            return null;
+        let summaries: any = parsedSummary;
+        let columnContents = JSON.parse(summaries.columnContent);
+        if (columnContents.length === 0)
+            return null;
+        for (const columnContent of columnContents) {
+            this._setColumnContentMatchedName(columnContent);
+        }
+
+        return summaries = {
+            height: summaries.height ? summaries.height : 40,
+            position: summaries.position,
+            columnContent: columnContents.reduce((acc: any, obj: any) => {
+                const key: string = Object.keys(obj)[0];
+                const value = obj[key];
+                acc[key] = value;
+                return acc;
+            }, {})
+        }
+    },
+    //This function parses the JSON data for complex columns and returns the parsed complex columns.
+    // It also trims the child names.
+    getTableData(parsedData: any) {
+        let listData = parsedData;
+        for (const data of listData) {
+
+            if (data.hasOwnProperty('_attributes') &&
+                data.hasOwnProperty('_children')) {
+                data._children = this.getTableData(JSON.parse(data._children));
+            }
+        }
+        return listData;
+    },
+    //This function parses the JSON data for the summary and returns the parsed summary object.
+    // It handles column content by calling _setColumnContentMatchedName to modify the column content based on its value.
+    refreshLayout(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
+        let gridInst: TuiGrid = container.grid.table;
+        gridInst.refreshLayout();
+    },
+    //This function parses the JSON data for the columns and returns the parsed columns.
+    // It handles special cases for input and select editors, and also handles depth0 and depth1 data for select editors.
     removeRows: function (container: HTMLElement & {
         $server: any
         grid: JSX.Element & { table: TuiGrid }
@@ -554,6 +543,26 @@ window.toastuigrid = {
                 gridInst.focusAt(focusedRow, 0);
             else
                 gridInst.focusAt(gridInst.getData().length - 1, 0);
+    },
+    //This function updates the options of an existing grid.
+    // It takes a container element with a grid property, and JSON data for the new options.
+    // The function updates the options, and then updates the grid.
+    setOptions: function (container: HTMLElement & {
+        grid: JSX.Element & { table: TuiGrid }
+    }, optionsJson: string): void {
+        let parsedOptions = JSON.parse(optionsJson);
+        container.grid.setOption(parsedOptions);
+    },
+    setTableData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, data: string): void {
+        let parsedItems = JSON.parse(data);
+        if (container && container.grid && container.grid.table) {
+            container.grid.table.resetData(this.getTableData(parsedItems));
+        }
+        // this.updateGrid(container);
+    },
+
+    setTest: function (container: HTMLElement, content: any): void {
+        // console.log("Event Test: ", content);
     }
     ,
     //This function updates the grid by rendering the grid component using ReactDOM.render.

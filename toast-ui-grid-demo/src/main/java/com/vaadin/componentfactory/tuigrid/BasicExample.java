@@ -1,12 +1,14 @@
 package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.model.*;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.Route;
 
@@ -64,17 +66,32 @@ public class BasicExample extends Div {
             grid.deleteItems(grid.getCheckedItems());
 //            add(layout);
         });
+        HorizontalLayout btnLayout = new HorizontalLayout(sp, addBtn, delBtn);
+        btnLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        btnLayout.setClassName("aat-toolbar");
+//        int toolbarHeight = btnLayout.getElement().executeJs("return this.getBoundingClientRect().height").asDouble();
 
 
-        add(sp, addBtn, delBtn, layout);
+        add(btnLayout, layout);
+//        this.getElement().getStyle().set("overflow-x", "hidden");
 
-        EventBus.getInstance().register(event -> {
-            if ("DrawerToggleClicked".equals(event)) {
-                // Handle the event
-                grid.setWidthFull();
-                getUI().ifPresent(ui -> ui.access(() -> Notification.show("Toggle Clicked")));
-            }
-        });
+//        EventBus.getInstance().register(event -> {
+//            // Handle the event
+//            if ("DrawerToggleClicked".equals(event)) getUI().ifPresent(ui -> ui.access(grid::refreshGrid));
+//        });
+
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+
+        // Apply CSS to hide scrollbar
+        UI.getCurrent().getPage().executeJs(
+                "let hostElement = document.querySelector('vaadin-app-layout');\n" +
+                        "let shadowRoot = hostElement.shadowRoot;\n" +
+                        "let contentElement = shadowRoot.querySelector('[content]');" +
+                        "contentElement.style.overflow = 'hidden';");
     }
 
     private List<Item> getTableData() {

@@ -89,7 +89,7 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 ...(columnOptions && {columnOptions}),
                 ...(header && {header}),
                 ...(width && {width}),
-                bodyHeight: 500,
+                ...(bodyHeight && {bodyHeight}),
                 scrollX: scrollX,
                 scrollY: scrollY,
                 ...(rowHeaders && {rowHeaders}),

@@ -16,6 +16,15 @@ vaadin-scroller[slot='drawer'] {
   display: none;
 }
 
+.scrollable-container {
+  overflow: auto !important;
+  scrollbar-width: none !important; /* For Firefox */
+}
+
+.scrollable-container::-webkit-scrollbar {
+  display: none !important; /* For Chrome, Safari and Opera */
+}
+
 .navicon {
   --mask-repeat: no-repeat;
   --mask-position: 50%;
