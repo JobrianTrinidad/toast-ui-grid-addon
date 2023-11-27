@@ -256,7 +256,7 @@ window.toastuigrid = {
         const contextMenu = ({rowKey, columnName}: ContextMenuParams) => {
             console.log("rowKey: ", rowKey, " columnName: ", columnName);
             const column: OptColumn | undefined = columns.find(
-                (col: OptColumn) => col.name === columnName && col.hasOwnProperty("relations")
+                (col: OptColumn) => col.name === columnName && col.hasOwnProperty("formatter") && col.formatter === "listItemText"
             );
 
             if (column) {
@@ -290,7 +290,6 @@ window.toastuigrid = {
                             },
                         });
                 });
-
                 return [[{name: 'filter', label: 'filter', subMenu}]];
             }
             return [

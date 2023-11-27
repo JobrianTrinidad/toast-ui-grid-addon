@@ -87,7 +87,7 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 el: gridRef.current!,
                 data: loadRows(0),
                 columns: columns,
-                contextMenu: contextMenu,
+                ...(contextMenu && {contextMenu}),
                 className: 'table-center',
                 ...(summary && {summary}),
                 ...(columnOptions && {columnOptions}),
