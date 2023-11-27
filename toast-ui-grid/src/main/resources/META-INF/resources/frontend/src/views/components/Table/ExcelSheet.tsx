@@ -1,15 +1,15 @@
-import React, {useState, useEffect, forwardRef, useRef, createRef} from 'react';
+import React, {forwardRef, useEffect, useRef, useState} from 'react';
 import {Input} from "@chakra-ui/react";
 
-interface Cell {
+export interface Cell {
     row: number;
     column: number;
-    value: any;
+    value: string | number;
 }
 
 interface ExcelSheetProps {
     range: Cell[][];
-    onSearchResult;
+    onSearchResult: (result: Cell) => void;
 }
 
 const getCellFromIndex = (index: number, range: Cell[][]): Cell | null => {
@@ -18,7 +18,7 @@ const getCellFromIndex = (index: number, range: Cell[][]): Cell | null => {
     return range[row][column];
 };
 
-const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
+const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props: ExcelSheetProps, ref: HTMLDivElement) => {
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState(null);
     const [showSearchInput, setShowSearchInput] = useState(false);
@@ -87,8 +87,8 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
             }
 
             for (let index: number = nextIndex; index < range.length * range[0].length; index++) {
-                const cell: Cell = getCellFromIndex(index, range);
-                if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                const cell = getCellFromIndex(index, range);
+                if (cell?.value.toString().toLowerCase().includes(searchKey)) {
                     props.onSearchResult({
                         row: cell.row,
                         column: props.range[cell.row][cell.column].column,
@@ -100,8 +100,8 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
                 }
             }
             for (let index: number = 0; index < nextIndex; index++) {
-                const cell: Cell = getCellFromIndex(index, range);
-                if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                const cell = getCellFromIndex(index, range);
+                if (cell?.value.toString().toLowerCase().includes(searchKey)) {
                     props.onSearchResult({
                         row: cell.row,
                         column: props.range[cell.row][cell.column].column,
@@ -128,8 +128,8 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
                 beforeIndex = range.length * range[0].length - 1;
             }
             for (let index: number = beforeIndex; index >= 0; index--) {
-                const cell: Cell = getCellFromIndex(index, range);
-                if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                const cell = getCellFromIndex(index, range);
+                if (cell?.value.toString().toLowerCase().includes(searchKey)) {
                     props.onSearchResult({
                         row: cell.row,
                         column: props.range[cell.row][cell.column].column,
@@ -141,8 +141,8 @@ const ExcelSheet = forwardRef<HTMLDivElement, ExcelSheetProps>((props, ref) => {
                 }
             }
             for (let index: number = range.length * range[0].length - 1; index >= beforeIndex; index--) {
-                const cell: Cell = getCellFromIndex(index, range);
-                if (cell.value.toString().toLowerCase().includes(searchKey)) {
+                const cell = getCellFromIndex(index, range);
+                if (cell?.value.toString().toLowerCase().includes(searchKey)) {
                     setSearchResult(getCellFromIndex(index, range));
                     setCurrentSearchIndex(index);
                     return;

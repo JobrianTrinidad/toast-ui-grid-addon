@@ -1,36 +1,38 @@
-import React, {useEffect, useRef, forwardRef} from 'react';
-import ExcelSheet from "./ExcelSheet";
+import React, {useEffect, useRef} from 'react';
+import ExcelSheet, {Cell} from "./ExcelSheet";
 import TuiGrid, {GridEventName} from 'tui-grid';
 import {TuiGridEvent} from "tui-grid/types/event";
-import {OptGrid} from "tui-grid/types/options";
-import {grid} from "@chakra-ui/react";
+import {OptColumn, OptGrid, OptHeader, OptRow, OptRowHeader, OptSummaryData, OptTree} from "tui-grid/types/options";
+import {CreateMenuGroups} from "tui-grid/types/store";
+import {ColumnOptions} from "tui-grid/types/store/column";
 
 interface FeatureTableProps {
     getGridInstance: (gridInstance: TuiGrid) => void;
-    TableData: any;
-    columns: any;
-    summary?: any;
-    columnOptions?: any;
-    header?: any;
-    width?: any;
-    bodyHeight?: any;
-    scrollX?: any;
-    scrollY?: any;
-    rowHeaders?: any;
-    treeColumnOptions?: any;
-    rowHeight?: any;
-    minBodyHeight?: any;
-    onEditingStart?: any;
-    onEditingFinish?: any;
-    onSelection?: any;
-    onCheck?: any;
-    onCheckAll?: any;
-    onUncheck?: any;
-    onUncheckAll?: any;
-    onFocusChange?: any;
-    onAfterChange?: any;
-    onColumnResize?: any;
-    handleSearchResult?: any;
+    TableData: OptRow[];
+    columns: OptColumn[];
+    contextMenu?: CreateMenuGroups;
+    summary?: OptSummaryData;
+    columnOptions?: ColumnOptions;
+    header?: OptHeader;
+    width?: number | 'auto';
+    bodyHeight?: number | 'fitToParent' | 'auto';
+    scrollX?: boolean;
+    scrollY?: boolean;
+    rowHeaders?: OptRowHeader[];
+    treeColumnOptions?: OptTree;
+    rowHeight?: number | 'auto';
+    minBodyHeight?: number;
+    onEditingStart?: (ev: TuiGridEvent) => void;
+    onEditingFinish?: (ev: TuiGridEvent) => void;
+    onSelection?: (ev: TuiGridEvent) => void;
+    onCheck?: (ev: TuiGridEvent) => void;
+    onCheckAll?: (ev: TuiGridEvent) => void;
+    onUncheck?: (ev: TuiGridEvent) => void;
+    onUncheckAll?: (ev: TuiGridEvent) => void;
+    onFocusChange?: (ev: TuiGridEvent) => void;
+    onAfterChange?: (ev: TuiGridEvent) => void;
+    onColumnResize?: (ev: TuiGridEvent) => void;
+    handleSearchResult?: (result: Cell) => void;
 }
 
 const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElement, FeatureTableProps>(
@@ -39,6 +41,7 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             getGridInstance,
             TableData,
             columns,
+            contextMenu,
             summary,
             columnOptions,
             header,
@@ -66,11 +69,11 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
         const excelRef = useRef<HTMLDivElement>(null);
         const gridInstanceRef = useRef<TuiGrid | null>(null);
 
-        function loadRows(lengthOfLoaded: number) {
-            const rows: { [key: string]: string }[] = [];
+        function loadRows(lengthOfLoaded: number): OptRow[] {
+            const rows: OptRow[] = [];
             let endPoint: number = lengthOfLoaded + 50 <= TableData.length ? lengthOfLoaded + 50 : TableData.length
             for (let i: number = lengthOfLoaded; i < endPoint; i += 1) {
-                const row: { [key: string]: string } = {};
+                const row: OptRow = {};
                 for (let j: number = 0; j < columns.length; j += 1) {
                     row[columns[j].name] = TableData[i][columns[j].name];
                 }
@@ -84,6 +87,7 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 el: gridRef.current!,
                 data: loadRows(0),
                 columns: columns,
+                contextMenu: contextMenu,
                 className: 'table-center',
                 ...(summary && {summary}),
                 ...(columnOptions && {columnOptions}),
@@ -111,31 +115,45 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             });
 
             grid.on('selection' as GridEventName, (ev: TuiGridEvent): void => {
-                onSelection(ev);
+                if (onSelection) {
+                    onSelection(ev);
+                }
             });
 
             grid.on('check' as GridEventName, (ev: TuiGridEvent): void => {
-                onCheck(ev);
+                if (onCheck) {
+                    onCheck(ev);
+                }
             });
 
             grid.on('uncheck' as GridEventName, (ev: TuiGridEvent): void => {
-                onUncheck(ev);
+                if (onUncheck) {
+                    onUncheck(ev);
+                }
             });
 
             grid.on('checkAll' as GridEventName, (ev: TuiGridEvent): void => {
-                onCheckAll(ev);
+                if (onCheckAll) {
+                    onCheckAll(ev);
+                }
             });
 
             grid.on('uncheckAll' as GridEventName, (ev: TuiGridEvent): void => {
-                onUncheckAll(ev);
+                if (onUncheckAll) {
+                    onUncheckAll(ev);
+                }
             });
 
             grid.on('afterChange' as GridEventName, (ev: TuiGridEvent): void => {
-                onAfterChange(ev);
+                if (onAfterChange) {
+                    onAfterChange(ev);
+                }
             });
 
             grid.on('columnResize' as GridEventName, (ev: TuiGridEvent): void => {
-                onColumnResize(ev);
+                if (onColumnResize) {
+                    onColumnResize(ev);
+                }
             });
 
             getGridInstance(grid);
@@ -178,15 +196,21 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             }
         }
 
-        let range: any[] = [];
-        for (let row: number = 0; row < TableData.length; row++) {
-            let temp: any[] = [];
-            for (let col: number = 0; col < Object.keys(TableData[row]).length; col++) {
-                const cellValue = TableData[row][Object.keys(TableData[row])[col]];
-                temp.push({row: row, column: col, value: cellValue});
-            }
-            range.push(temp);
-        }
+        // let range: any[] = [];
+        // for (let row: number = 0; row < TableData.length; row++) {
+        //     let temp: any[] = [];
+        //     for (let col: number = 0; col < Object.keys(TableData[row]).length; col++) {
+        //         const cellValue = TableData[row][Object.keys(TableData[row])[col]];
+        //         temp.push({row: row, column: col, value: cellValue});
+        //     }
+        //     range.push(temp);
+        // }
+
+        let range: Cell[][] = TableData.map((row: OptRow, rowIndex: number) => {
+            return Object.keys(row).map((key: string, colIndex: number): Cell => {
+                return {row: rowIndex, column: colIndex, value: row[key as keyof OptRow]};
+            });
+        });
 
         return (
             <div>
