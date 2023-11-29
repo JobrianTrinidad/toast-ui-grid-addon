@@ -58,7 +58,6 @@ window.toastuigrid = {
         grid: JSX.Element & {
             table: TuiGrid
         },
-        bData: boolean
     }, itemsJson: string, optionsJson: string): void {
         let parsedItems: OptRow[] = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
@@ -404,8 +403,6 @@ window.toastuigrid = {
                 handleSearchResult={handleSearchResult}
             ></FeatureTable>
         );
-
-        container.bData = parsedItems.length > 0;
 
         document.addEventListener("keydown", handleKeyDown);
         document.addEventListener("mousedown", handleMouseDown);
@@ -778,7 +775,6 @@ window.toastuigrid = {
         grid: JSX.Element & {
             table: TuiGrid
         },
-        bData: boolean
     }): void {
 
         let gridInst: TuiGrid = container.grid.table;
@@ -793,16 +789,13 @@ window.toastuigrid = {
         }
         const focusedRow: number = gridInst.getIndexOfRow(min);
         gridInst.removeCheckedRows(false);
-        gridInst.restore();
         if (gridInst.getData().length > 0)
             if (gridInst.getData().length > focusedRow)
                 gridInst.focusAt(focusedRow, 0);
             else {
-                container.bData = false;
                 gridInst.focusAt(gridInst.getData().length - 1, 0);
             }
-    }
-    ,
+    },
 //This function updates the options of an existing grid.
 // It takes a container element with a grid property, and JSON data for the new options.
 // The function updates the options, and then updates the grid.
