@@ -583,6 +583,7 @@ public class TuiGrid extends Div {
 
         item.setHeaders(headers);
         item.setRecordData(record);
+        this.items.add(item);
 
         ItemAddEvent addEvent = new ItemAddEvent(this, item, true);
 
