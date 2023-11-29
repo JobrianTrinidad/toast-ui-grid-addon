@@ -576,7 +576,7 @@ public class TuiGrid extends Div {
             String colName = column.getColumnBaseOption().getName();
             if (eventData.hasKey(colName)
                     && !eventData.get(colName).toString().equals("All"))
-                record.add(eventData.get(colName));
+                record.add(eventData.get(colName).asString());
             else
                 record.add("");
         }
