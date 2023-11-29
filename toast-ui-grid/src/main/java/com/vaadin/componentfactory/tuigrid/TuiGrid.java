@@ -581,8 +581,14 @@ public class TuiGrid extends Div {
                 record.add("");
         }
 
+
         item.setHeaders(headers);
         item.setRecordData(record);
+
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setTest($0, $1);",
+                        this, record.get(0));
 
         ItemAddEvent addEvent = new ItemAddEvent(this, item, true);
 
