@@ -20,15 +20,11 @@
 
 package com.vaadin.componentfactory.tuigrid;
 
-import com.vaadin.componentfactory.tuigrid.event.ColumnResizeEvent;
-import com.vaadin.componentfactory.tuigrid.event.ItemChangeEvent;
-import com.vaadin.componentfactory.tuigrid.event.ItemDeleteEvent;
-import com.vaadin.componentfactory.tuigrid.event.SelectionEvent;
+import com.vaadin.componentfactory.tuigrid.event.*;
 import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
@@ -53,13 +49,15 @@ import java.util.stream.Collectors;
 //@NpmPackage(value = "@types/react-dom", version = "^18.2.0")
 @NpmPackage(value = "@chakra-ui/react", version = "^2.8.0")
 @NpmPackage(value = "@chakra-ui/icons", version = "^2.1.0")
-@NpmPackage(value = "tui-grid", version = "^4.21.17")
+@NpmPackage(value = "tui-grid", version = "^4.21.19")
+@NpmPackage(value = "tui-context-menu", version = "^2.1.9")
 @JsModule("./src/views/toastuigrid/toast-ui-grid-view.tsx")
 @JsModule("./src/views/components/Table/FeaturesTable.tsx")
 @JsModule("./src/views/components/Table/ExcelSheet.tsx")
 @JsModule("./src/views/components/Table/CustomeEditor.tsx")
 @JsModule("./src/views/components/checkbox/ada-checkbox.tsx")
 @CssImport("tui-grid/dist/tui-grid.css")
+@CssImport("tui-context-menu/dist/tui-context-menu.css")
 @CssImport("tui-date-picker/dist/tui-date-picker.css")
 @CssImport("tui-time-picker/dist/tui-time-picker.css")
 @CssImport("./styles/styles.css")
@@ -491,7 +489,6 @@ public class TuiGrid extends Div {
                     columnValue = jsonValue.asString();
                 }
             }
-
             tempRecord.set(temp.getHeaders().indexOf(columnName), columnValue);
         }
         tempItems.set(row, new GuiItem(tempRecord, temp.getHeaders()));
@@ -549,28 +546,16 @@ public class TuiGrid extends Div {
      * Handles the editing finish event in the grid.
      */
     @ClientCallable
-    public void onEditingFinish(JsonObject eventData) {
+    public void onUpdateData(JsonObject eventData) {
         JsonObject itemChanged = eventData.getArray("changes").get(0);
 
         ItemChangeEvent event = new ItemChangeEvent(
-                this, itemChanged.getString("columnName"), itemChanged.getString("value"),
+                this, itemChanged.getString("columnName"),
+                itemChanged.getString("value"),
                 (int) itemChanged.getNumber("rowKey"), true);
 
-        if ((int) itemChanged.getNumber("rowKey") >= this.items.size()) {
-//                GuiItem temp = (GuiItem) this.items.get(0);
-            List<String> itemData = new ArrayList<>();
-            for (int i = 0; i < headers.size(); i++) {
-                itemData.add("");
-            }
-
-            GuiItem temp = new GuiItem(itemData, headers);
-            List<String> tempData = new ArrayList<>();
-            for (int i = 0; i < temp.getRecordData().size(); i++) {
-                tempData.add("");
-            }
-            this.items.add(new GuiItem(tempData, temp.getHeaders()));
-        }
-        refreshData((int) itemChanged.getNumber("rowKey"), eventData.getObject("record"));
+        //        updateData((int) itemChanged.getNumber("rowKey"),
+//                eventData.getObject("record"));
 
         RuntimeException exception = null;
         try {
@@ -580,6 +565,57 @@ public class TuiGrid extends Div {
             event.setCancelled(true);
         }
     }
+
+    @ClientCallable
+    public void onAddRecord(JsonObject eventData) {
+        GuiItem item = new GuiItem();
+        List<String> record = new ArrayList<>();
+
+        for (Column column :
+                this.tuiGridOption.columns) {
+            String colName = column.getColumnBaseOption().getName();
+            if (eventData.hasKey(colName)
+                    && !eventData.get(colName).toString().equals("All"))
+                record.add(eventData.get(colName).toString());
+            else
+                record.add("");
+        }
+
+        item.setHeaders(headers);
+        item.setRecordData(record);
+
+        ItemAddEvent addEvent = new ItemAddEvent(this, item, true);
+
+        RuntimeException exception = null;
+        try {
+            fireEvent(addEvent);
+        } catch (RuntimeException e) {
+            exception = e;
+            addEvent.setCancelled(true);
+        }
+
+    }
+
+//    private void updateData(int nRow, JsonObject record) {
+//        if (nRow >= this.items.size()) {
+////                GuiItem temp = (GuiItem) this.items.get(0);
+//            List<String> itemData = new ArrayList<>();
+//            for (int i = 0; i < headers.size(); i++) {
+//                itemData.add("");
+//            }
+//
+//            GuiItem temp = new GuiItem(itemData, headers);
+//            List<String> tempData = new ArrayList<>();
+//            for (int i = 0; i < temp.getRecordData().size(); i++) {
+//                tempData.add("");
+//            }
+//            List<Item> mutableItems = new ArrayList<>(this.items);
+//            mutableItems.add(new GuiItem(tempData, temp.getHeaders()));
+//            this.items = mutableItems;
+//        }
+//        refreshData(nRow, record);
+//
+//    }
 
     /**
      * Handles the event to get data from the grid.
@@ -608,6 +644,15 @@ public class TuiGrid extends Div {
      */
     public void addItemChangeListener(ComponentEventListener<ItemChangeEvent> listener) {
         addListener(ItemChangeEvent.class, listener);
+    }
+
+    /**
+     * Adds a listener for {@link ItemAddEvent} to the component.
+     *
+     * @param listener the listener to be added
+     */
+    public void addItemAddListener(ComponentEventListener<ItemAddEvent> listener) {
+        addListener(ItemAddEvent.class, listener);
     }
 
     /**

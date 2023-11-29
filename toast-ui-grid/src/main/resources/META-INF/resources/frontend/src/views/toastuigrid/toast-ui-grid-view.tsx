@@ -12,7 +12,9 @@ import InputComponent from "../components/input/ada-input";
 import {CheckboxRenderer, RowNumberRenderer} from '../renderer/renderer';
 import DropDown from "../components/dropdown/index";
 import FeatureTable from "../components/Table/FeaturesTable";
-import TuiGrid, {OptColumn, OptRow, Row, RowKey} from 'tui-grid';
+import TuiGrid, {FilterState, Row, RowKey} from 'tui-grid';
+import ContextMenu from 'tui-context-menu';
+import {OptColumn, OptRow} from 'tui-grid/types/options';
 import {TuiGridEvent} from "tui-grid/types/event";
 import {Cell} from "../components/Table/ExcelSheet";
 
@@ -22,10 +24,23 @@ declare global {
     }
 }
 
-type ContextMenuParams = {
-    rowKey: number;
-    columnName: string;
+type MenuItem = {
+    title: string;
+    command?: string;
+    menu?: MenuItem[];
+    separator?: boolean;
+    disable?: boolean;
 };
+
+type ContextMenuDic = {
+    colName: string;
+    items: MenuItem[];
+}
+
+type FilterValue = {
+    colName: string;
+    filter: string;
+}
 
 type SelectParams = {
     text: string;
@@ -40,12 +55,17 @@ window.toastuigrid = {
     // and updates the grid.
     _createGrid: function (container: HTMLElement & {
         $server: any,
-        grid: JSX.Element & { table: TuiGrid }
+        grid: JSX.Element & {
+            table: TuiGrid
+        },
+        bData: boolean
     }, itemsJson: string, optionsJson: string): void {
         let parsedItems: OptRow[] = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
         let editingRowKey: string | number = -1;
-        let columns = this.getColumns(JSON.parse(parsedOptions.columns));
+        let columns: OptColumn[] = this.getColumns(JSON.parse(parsedOptions.columns)).columns;
+        let contextMenus: ContextMenuDic[] = this.getColumns(JSON.parse(parsedOptions.columns)).contextMenus;
+        let filterValues: FilterValue[] = this.getColumns(JSON.parse(parsedOptions.columns)).filterValues;
         let prevColumnName: string = "";
         let gridInst: TuiGrid;
         let rangeSelected: number[] = [];
@@ -58,6 +78,7 @@ window.toastuigrid = {
         let contentElement: Element | null = shadowRoot!.querySelector('[content]');
         let toolbars: HTMLCollectionOf<Element> = document.getElementsByClassName("aat-toolbar");
         let bodyHeight: number = contentElement!.getBoundingClientRect().height;
+        let contextMenu: ContextMenu;
         for (const toolbar of toolbars) {
             bodyHeight -= toolbar.getBoundingClientRect().height;
         }
@@ -120,9 +141,12 @@ window.toastuigrid = {
                     let key: string = column.name;
                     record = {...record, [key]: gridInst.getValue(ev.changes[0]['rowKey'], column.name)}
                 }
+                console.log("record: ", record);
+                console.log("record0: ", columns);
+                console.log("record1: ", gridInst.getValue(ev.changes[0]['rowKey']));
                 cleanedObject = {...cleanedObject, record: record};
                 // if (gridInst.getValue(editingRowKey, columns[0].name) !== "")
-                container.$server.onEditingFinish(cleanedObject);
+                container.$server.onUpdateData(cleanedObject);
             }
         };
         const onColumnResize = (ev: TuiGridEvent): void => {
@@ -144,6 +168,7 @@ window.toastuigrid = {
                     }
                 }
                 gridInst.removeRow(editingRowKey);
+                gridInst.restore();
                 editingRowKey = -1;
             }
         };
@@ -190,11 +215,10 @@ window.toastuigrid = {
                         }
                     }
                 }
-            } else if (parsedOptions.autoSave === true
-                && event.shiftKey === true
+            } else if (event.shiftKey === true
                 && event.code === "Insert") {
                 event.preventDefault();
-                container.$server.addItem();
+                this.addTableData(container, filterValues);
             } else if (parsedOptions.autoSave === true
                 && event.code === "Tab"
                 && gridInst.getFocusedCell()['rowKey'] === gridInst.getRowCount() - 1
@@ -210,7 +234,26 @@ window.toastuigrid = {
             } else if (gridInst)
                 prevColumnName = gridInst.getFocusedCell()['columnName'];
         };
+
         const handleMouseDown = (event: MouseEvent): void => {
+
+            if (event.button === 2) {
+                for (const contextMenu1 of contextMenus) {
+
+                    let element: Element | null = document.querySelector(`[data-column-name="${contextMenu1.colName}"]`);
+                    if (element !== null) {
+                        let rect: DOMRect = element.getBoundingClientRect();
+
+                        // let top: number = rect.top + window.scrollY;
+                        let left: number = rect.left + window.scrollX;
+
+                        if (event.clientX >= left && event.clientX < rect.right)
+                            contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._processContextMenu(e, cmd, filterValues, container), contextMenu1.items);
+                    }
+                }
+                return;
+            }
+
             gridInst = container.grid.table;
             editingRowKey = gridInst.getFocusedCell()['rowKey'];
             // if (event.defaultPrevented === false) {
@@ -219,6 +262,7 @@ window.toastuigrid = {
             const targetElement: HTMLElement = event.target as HTMLElement;
             if (targetElement.tagName === "VAADIN-APP-LAYOUT" || targetElement.tagName === "DIV") {
                 gridInst.finishEditing(editingRowKey, prevColumnName);
+
                 for (const column of columns) {
                     if (!(gridInst.getValue(editingRowKey, column.name) === "" ||
                         gridInst.getValue(editingRowKey, column.name) === null)) {
@@ -233,6 +277,7 @@ window.toastuigrid = {
                 && !targetElement.className.includes('tui-grid-cell-header'))
                 rangeSelected = [];
         };
+
         const handleMouseUp = (event: MouseEvent): void => {
             if (resizedColumn !== null) {
                 container.$server.resizeColumn(resizedColumn.columnName, resizedColumn.width);
@@ -253,57 +298,83 @@ window.toastuigrid = {
         };
 
         console.log("Columns: ", columns);
-        const contextMenu = ({rowKey, columnName}: ContextMenuParams) => {
-            console.log("rowKey: ", rowKey, " columnName: ", columnName);
-            const column: OptColumn | undefined = columns.find(
-                (col: OptColumn) => col.name === columnName && col.hasOwnProperty("formatter") && col.formatter === "listItemText"
-            );
 
-            if (column) {
-                const subMenu = column.editor.options.listItems.map((item: SelectParams, index: number) => {
-                    if (index === 0) {
-                        return ({
-                            name: "all",
-                            label: "All",
-                            action: () => {
-                                container.grid.table.resetData(this.getTableData(parsedItems));
-                            },
-                        });
-                    } else
-                        return ({
-                            name: item.text,
-                            label: item.text,
-                            action: () => {
-                                // column.editor.options.listItems = [];
-                                // column.editor.options.listItems[0] = item;
-                                let tempColumns: OptColumn[] = [];
-                                tempColumns[0] = column;
-                                container.grid.columns = tempColumns;
-                                let tempData: OptRow[] = [];
-                                for (const row of this.getTableData(parsedItems)) {
-                                    if (row[columnName] === item.value)
-                                        tempData.push(row);
-                                }
-                                container.grid.table.resetData(tempData);
-                                // this.refreshLayout(container);
-                                console.log(["AAA: ", "BBB: ", "CCC: "][index], this.getTableData(parsedItems))
-                            },
-                        });
-                });
-                return [[{name: 'filter', label: 'filter', subMenu}]];
-            }
-            return [
-                [
-                    {
-                        name: 'filter',
-                        label: 'filter',
-                        action: () => {
-                            console.log("Clicked contextmenu!!!", rowKey, " :", columnName);
-                        }
-                    },
-                ],
-            ]
-        };
+        // const contextMenu = ({rowKey, columnName}: ContextMenuParams) => {
+        //     console.log("rowKey: ", rowKey, " columnName: ", columnName);
+        //     let selIndex: number = -1;
+        //     const column: OptColumn | undefined = columns.find(
+        //         (col: OptColumn, index: number) => {
+        //             selIndex = index
+        //             return col.name === columnName && col.hasOwnProperty("formatter") && col.formatter === "listItemText"
+        //         }
+        //     );
+        //     if (column) {
+        //         const subMenu = column.editor.options.listItems.map((item: SelectParams, index: number) => {
+        //             if (index === 0) {
+        //                 return ({
+        //                     name: "all",
+        //                     label: "All",
+        //                     action: (): void => {
+        //                         console.log("data: ", this.getTableData(parsedItems));
+        //                         container.grid.table.resetData(this.getTableData(parsedItems));
+        //                     },
+        //                 });
+        //             } else
+        //                 return ({
+        //                     name: item.text,
+        //                     label: item.text,
+        //                     action: (): void => {
+        //                         container.grid.table.setFilter(columnName, "select");
+        //                         let filterState: FilterState = {
+        //                             code: "eq",
+        //                             value: item.text
+        //                         };
+        //                         container.grid.table.filter(columnName, [filterState]);
+        //
+        //                         // container.grid.table.resetData(this.getTableData(parsedItems), {
+        //                         //     filterState: {
+        //                         //         columnName,
+        //                         //         columnFilterState: {
+        //                         //             code: "eq",
+        //                         //             value: item.value
+        //                         //         }
+        //                         //     }
+        //                         // });
+        //                         let tempColumns: OptColumn[] = columns;
+        //                         let tempColumn: OptColumn = column;
+        //                         tempColumn.editor.options.listItems = [];
+        //                         tempColumn.editor.options.listItems[0] = {text: item.text, value: item.value};
+        //                         tempColumns[selIndex] = tempColumn;
+        //                         console.log("temColumn: ", tempColumns);
+        //                         container.grid.table.setColumns(tempColumns);
+        //                         let tempData: OptRow[] = [];
+        //                         for (const row of this.getTableData(parsedItems)) {
+        //                             if (row[columnName] === item.value)
+        //                                 tempData.push(row);
+        //                         }
+        //                         container.grid.table.resetData(tempData);
+        //                         if (tempData.length === 0) {
+        //                             let row: OptRow = {[column.name]: item.value};
+        //                             container.grid.table.prependRow(row, {focus: true});
+        //                             console.log("I amd : ", container.grid.table.getData())
+        //                         }
+        //                         // this.refreshLayout(container);
+        //                         console.log(["AAA: ", "BBB: ", "CCC: "][index], this.getTableData(parsedItems))
+        //                     },
+        //                 });
+        //         });
+        //         return [[{name: 'filter', label: 'filter', subMenu}]];
+        //     }
+        //     return [[{name: "copy", label: "Copy", action: 'copy'},
+        //         {name: "copyColumns", label: "CopyColumns", action: 'copyColumns'},
+        //         {name: "copyRows", label: "CopyRows", action: 'copyRows'},
+        //         {
+        //             name: "export", label: "Export", subMenu: [
+        //                 {name: "csvExport", label: "CsvExport", action: 'csvExport'},
+        //                 {name: "excelExport", label: "ExcelExport", action: 'excelExport'},
+        //                 {name: "txtExport", label: "TxtExport", action: 'txtExport'},]
+        //         }]];
+        // };
 
         container.grid = (
             <FeatureTable
@@ -311,7 +382,7 @@ window.toastuigrid = {
                 el={document.getElementsByClassName("grid")[0]}
                 TableData={this.getTableData(parsedItems)}
                 columns={columns}
-                contextMenu={contextMenu}
+                // contextMenu={contextMenu}
                 summary={this.getSummary(parsedOptions.summary)}
                 columnOptions={parsedOptions.columnOptions}
                 header={this.getHeader(parsedOptions.header)}
@@ -337,11 +408,16 @@ window.toastuigrid = {
             ></FeatureTable>
         );
 
+        container.bData = parsedItems.length > 0;
+
         document.addEventListener("keydown", handleKeyDown);
         document.addEventListener("mousedown", handleMouseDown);
         document.addEventListener("mouseup", handleMouseUp);
 
         this.updateGrid(container);
+        setTimeout(() => {
+            contextMenu = this.createContextMenu();
+        });
     },
 //This function is a wrapper around _createGrid that delays the execution using setTimeout.
 // It takes a container element, JSON data for items, and JSON data for options.
@@ -375,26 +451,17 @@ window.toastuigrid = {
             }
         };
 
-        switch (columnContent[Object.keys(columnContent)[0]]
-            ) {
-            case
-            "sum"
-            :
+        switch (columnContent[Object.keys(columnContent)[0]]) {
+            case "sum" :
                 columnContent[Object.keys(columnContent)[0]] = onSum();
                 break;
-            case
-            "avg"
-            :
+            case "avg" :
                 columnContent[Object.keys(columnContent)[0]] = onAvg();
                 break;
-            case
-            "max"
-            :
+            case "max" :
                 columnContent[Object.keys(columnContent)[0]] = onMax();
                 break;
-            case
-            "min"
-            :
+            case "min" :
                 columnContent[Object.keys(columnContent)[0]] = onMin();
                 break;
             default:
@@ -403,13 +470,93 @@ window.toastuigrid = {
         }
     },
 
+    _processContextMenu(e: PointerEvent, cmd: string, filterValues: FilterValue[]
+        , container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
+        let strArrayTemp: string[] = cmd.split("-");
+        let tempFilterValues: FilterValue[] = filterValues;
+
+        container.grid.table.setFilter(strArrayTemp[0], "select");
+        let filterState: FilterState = {
+            code: strArrayTemp[1] !== "Select" ? "eq" : "ne",
+            value: strArrayTemp[1]
+        };
+
+        for (const tempFilterValue of tempFilterValues) {
+            if (tempFilterValue.colName === strArrayTemp[0])
+                tempFilterValue.filter = strArrayTemp[2];
+        }
+        filterValues = tempFilterValues;
+        container.grid.table.filter(strArrayTemp[0], [filterState]);
+
+        this.validateColumn(container, filterValues);
+    },
+
+    createContextMenu(): ContextMenu {
+        let contextMenu: ContextMenu = new ContextMenu(document.querySelector("#container"));
+        // contextMenu.container = document.querySelector("#container");
+        contextMenu.register("#target", this._processContextMenu, [
+            {title: 'New Folder'},
+            {
+                title: 'New File',
+                menu: [
+                    {title: '20170101.xls'},
+                    {title: 'image.png', command: 'export-to-png'},
+                    {title: 'image.jpg', command: 'export-to-jpg'}
+                ]
+            },
+            {separator: true},
+            {title: 'Rename'},
+            {title: 'Delete'},
+            {title: 'Copy', disable: true},
+            {title: 'Paste', disable: true}
+        ]);
+
+
+        return contextMenu;
+    },
+
 //This function updates the table data of an existing grid. It takes a container element with a grid property,
 // and JSON data for the new data. The function updates the table data, and then updates the grid.
-    addTableData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, data: string): void {
+    addTableData(container: HTMLElement & {
+                     $server: any,
+                     grid: JSX.Element & { table: TuiGrid }
+                 },
+                 filterValues: FilterValue[]): void {
         let gridInst: TuiGrid = container.grid.table;
-        gridInst.appendRow();
-        gridInst.startEditingAt(gridInst.getRowCount() - 1, 0);
+        let row: OptRow = {};
+        for (const filterValue of filterValues) {
+            row = {...row, [filterValue.colName]: filterValue.filter};
+        }
+
+        this.validateColumn(container, filterValues);
+        gridInst.appendRow(row);
+        let record: {} = {};
+        for (const column of gridInst.getColumns()) {
+            let key: string = column.name;
+            record = {...record, [key]: gridInst.getValue(gridInst.getRowCount() - 1, column.name)}
+        }
+
+        gridInst.startEditingAt(gridInst.getFilteredData().length - 1, 0);
+        container.$server.onAddRecord(row);
 // this.updateGrid(container);
+    },
+
+    validateColumn(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } },
+                   filterValues: FilterValue[]): void {
+        let gridInst: TuiGrid = container.grid.table;
+        let columns: OptColumn[] = gridInst.getColumns();
+        for (const column of columns) {
+            let bDisabled: boolean = false;
+            for (const filterValue of filterValues) {
+                if (column.name === filterValue.colName && filterValue.filter !== "All") {
+                    gridInst.disableColumn(column.name);
+                    bDisabled = true;
+                    break;
+                }
+            }
+            if (!bDisabled)
+                gridInst.enableColumn(column.name);
+        }
     },
 //This function adds new data to the existing table data of a grid.
 // It takes a container element with a grid property, and JSON data for the new data.
@@ -418,9 +565,11 @@ window.toastuigrid = {
         setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
     },
 
-    getColumns(parsedColumn: any[]): any[] {
+    getColumns(parsedColumn: any[]): { columns: OptColumn[], contextMenus: ContextMenuDic[], filterValues: FilterValue[] } {
         let columns: any[] = parsedColumn;
-        let tempColumns: any[] = [];
+        let tempColumns: OptColumn[] = [];
+        let contextMenus: ContextMenuDic[] = [];
+        let filterValues: FilterValue[] = [];
 
         for (let column of columns) {
             if (column.editor && column.editor.type == "input") {
@@ -446,7 +595,7 @@ window.toastuigrid = {
                 }
             }
 
-            if (column.editor && column.editor.type == "select") {
+            if (column.editor && column.editor.type === "select") {
                 const tempColumn = {
                     header: column.header,
                     name: column.name,
@@ -471,11 +620,36 @@ window.toastuigrid = {
                         }]
                     })
                 };
+                let items: MenuItem[] = [];
+                for (const listItem of tempColumn.editor.options.listItems) {
+                    let item: MenuItem = {
+                        title: listItem.text !== "Select" ? listItem.text : "All",
+                        command: listItem.text !== "Select" ?
+                            tempColumn.name + "-" + listItem.text + "-" + listItem.value :
+                            tempColumn.name + "-" + listItem.text + "-" + "All"
+
+                    };
+                    items.push(item);
+                }
+                let contextMenu: ContextMenuDic = {
+                    colName: tempColumn.name,
+                    items: items
+                };
+                let filterValue: FilterValue = {
+                    colName: tempColumn.name,
+                    filter: "All"
+                };
                 tempColumns.push(tempColumn);
+                contextMenus.push(contextMenu);
+                filterValues.push(filterValue);
             } else
                 tempColumns.push(column);
         }
-        return tempColumns;
+        return {
+            columns: tempColumns,
+            contextMenus: contextMenus,
+            filterValues: filterValues,
+        };
     }
     ,
 //This internal function is used to set the column content based on a matched name.
@@ -578,7 +752,11 @@ window.toastuigrid = {
     ,
 //This function parses the JSON data for complex columns and returns the parsed complex columns.
 // It also trims the child names.
-    getTableData(parsedData: OptRow[]) {
+    getTableData(parsedData
+                     :
+                     OptRow[]
+    ):
+        OptRow[] {
         let listData: OptRow[] = parsedData;
         for (const data of listData) {
 
@@ -600,7 +778,10 @@ window.toastuigrid = {
 // It handles special cases for input and select editors, and also handles depth0 and depth1 data for select editors.
     removeRows: function (container: HTMLElement & {
         $server: any
-        grid: JSX.Element & { table: TuiGrid }
+        grid: JSX.Element & {
+            table: TuiGrid
+        },
+        bData: boolean
     }): void {
 
         let gridInst: TuiGrid = container.grid.table;
@@ -615,11 +796,14 @@ window.toastuigrid = {
         }
         const focusedRow: number = gridInst.getIndexOfRow(min);
         gridInst.removeCheckedRows(false);
+        gridInst.restore();
         if (gridInst.getData().length > 0)
             if (gridInst.getData().length > focusedRow)
                 gridInst.focusAt(focusedRow, 0);
-            else
+            else {
+                container.bData = false;
                 gridInst.focusAt(gridInst.getData().length - 1, 0);
+            }
     }
     ,
 //This function updates the options of an existing grid.
@@ -641,7 +825,7 @@ window.toastuigrid = {
     },
 
     setTest: function (container: HTMLElement, content: any): void {
-        // console.log("Event Test: ", content);
+        console.log("Event Test: ", content);
     }
     ,
 //This function updates the grid by rendering the grid component using ReactDOM.render.

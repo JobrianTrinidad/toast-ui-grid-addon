@@ -40,6 +40,10 @@ public class GuiItem implements Item {
         this.headers.addAll(headers);
     }
 
+    public GuiItem() {
+
+    }
+
     public String toJSON() {
         JsonObject js = Json.createObject();
 

@@ -38,8 +38,7 @@ public class RelationBetweenColumnsExample extends Div {
         GuiItem item1 = new GuiItem(List.of("", "", ""), headers);
         GuiItem item2 = new GuiItem(List.of("2", "2_3", "2_3_1"), headers);
         GuiItem item3 = new GuiItem(List.of("3", "3_1", "3_1_1"), headers);
-        List<Item> TableData = List.of(item1, item2, item3);
-        return TableData;
+        return List.of(item1, item2, item3);
     }
 
     private List<Column> getColumns() {

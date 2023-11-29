@@ -82,12 +82,14 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             return rows;
         }
 
+        const data = loadRows(0);
         useEffect(() => {
             const grid = new TuiGrid({
                 el: gridRef.current!,
-                data: loadRows(0),
+                data: data,
                 columns: columns,
-                ...(contextMenu && {contextMenu}),
+                // ...(contextMenu && {contextMenu}),
+                contextMenu: null,
                 className: 'table-center',
                 ...(summary && {summary}),
                 ...(columnOptions && {columnOptions}),
@@ -145,6 +147,7 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             });
 
             grid.on('afterChange' as GridEventName, (ev: TuiGridEvent): void => {
+                console.log("changed: ", ev);
                 if (onAfterChange) {
                     onAfterChange(ev);
                 }
@@ -154,6 +157,9 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 if (onColumnResize) {
                     onColumnResize(ev);
                 }
+            });
+
+            grid.on('mousedown' as GridEventName, (ev: TuiGridEvent): void => {
             });
 
             getGridInstance(grid);
@@ -214,7 +220,8 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
 
         return (
             <div>
-                <div ref={gridRef}></div>
+                <div id={"container"}></div>
+                <div id={"target"} ref={gridRef}></div>
                 <ExcelSheet
                     ref={excelRef}
                     range={range}

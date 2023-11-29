@@ -20,31 +20,28 @@
 package com.vaadin.componentfactory.tuigrid.event;
 
 import com.vaadin.componentfactory.tuigrid.TuiGrid;
+import com.vaadin.componentfactory.tuigrid.model.Item;
 import com.vaadin.flow.component.ComponentEvent;
 
 /**
  * Event thrown when an item is resized.
  */
-public class ItemChangeEvent extends ComponentEvent<TuiGrid> {
+public class ItemAddEvent extends ComponentEvent<TuiGrid> {
 
-    private final String colName;
-    private final int row;
-    private String colValue;
+    private Item item;
     private boolean cancelled = false;
 
-    public ItemChangeEvent(TuiGrid source, String colName, String colValue, int row, boolean fromClient) {
+    public ItemAddEvent(TuiGrid source, Item item, boolean fromClient) {
         super(source, fromClient);
-        this.colName = colName;
-        this.colValue = colValue;
-        this.row = row;
+        this.item = item;
     }
 
-    public String getColName() {
-        return colName;
+    public Item getItem() {
+        return item;
     }
 
-    public int getRow() {
-        return row;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     public boolean isCancelled() {
@@ -53,14 +50,6 @@ public class ItemChangeEvent extends ComponentEvent<TuiGrid> {
 
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
-    }
-
-    public String getColValue() {
-        return colValue;
-    }
-
-    public void setColValue(String colValue) {
-        this.colValue = colValue;
     }
 
     public TuiGrid getTuiGrid() {
