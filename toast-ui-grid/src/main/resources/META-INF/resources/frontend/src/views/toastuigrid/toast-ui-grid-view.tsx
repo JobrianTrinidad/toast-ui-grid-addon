@@ -243,8 +243,9 @@ window.toastuigrid = {
                         // let top: number = rect.top + window.scrollY;
                         let left: number = rect.left + window.scrollX;
 
-                        if (event.clientX >= left && event.clientX < rect.right)
+                        if (event.clientX >= left && event.clientX < rect.right) {
                             contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._processContextMenu(e, cmd, filterValues, container), contextMenu1.items);
+                        }
                     }
                 }
                 return;
@@ -464,6 +465,28 @@ window.toastuigrid = {
         }
     },
 
+    _defaultContextMenu(e: PointerEvent, cmd: string
+        , container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
+        switch (cmd) {
+            case "copy":
+                container.grid.table.copyToClipboard();
+                break;
+            case "copyColumns":
+                break;
+            case "copyRows":
+                break;
+            case "csvExport":
+                container.grid.table.export('csv');
+                break;
+            case "excelExport":
+                container.grid.table.export('xlsx');
+                break;
+            case "txtExport":
+                container.grid.table.export('txt');
+                break;
+        }
+    },
+
     _processContextMenu(e: PointerEvent, cmd: string, filterValues: FilterValue[]
         , container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
         let strArrayTemp: string[] = cmd.split("-");
@@ -487,24 +510,20 @@ window.toastuigrid = {
 
     createContextMenu(): ContextMenu {
         let contextMenu: ContextMenu = new ContextMenu(document.querySelector("#container"));
-        // contextMenu.container = document.querySelector("#container");
-        contextMenu.register("#target", this._processContextMenu, [
-            {title: 'New Folder'},
-            {
-                title: 'New File',
-                menu: [
-                    {title: '20170101.xls'},
-                    {title: 'image.png', command: 'export-to-png'},
-                    {title: 'image.jpg', command: 'export-to-jpg'}
-                ]
-            },
+        contextMenu.register("#target", this._defaultContextMenu, [
+            {title: 'copy', command: 'copy'},
+            // {title: 'copyColumns', command: 'copyColumns'},
+            // {title: 'copyRows', command: 'copyRows'},
             {separator: true},
-            {title: 'Rename'},
-            {title: 'Delete'},
-            {title: 'Copy', disable: true},
-            {title: 'Paste', disable: true}
+            {
+                title: 'expert',
+                menu: [
+                    {title: 'csvExport', command: 'csvExport'},
+                    {title: 'excelExport', command: 'excelExport'},
+                    {title: 'txtExport', command: 'txtExport'}
+                ]
+            }
         ]);
-
 
         return contextMenu;
     },
