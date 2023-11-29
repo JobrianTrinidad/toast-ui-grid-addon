@@ -141,9 +141,6 @@ window.toastuigrid = {
                     let key: string = column.name;
                     record = {...record, [key]: gridInst.getValue(ev.changes[0]['rowKey'], column.name)}
                 }
-                console.log("record: ", record);
-                console.log("record0: ", columns);
-                console.log("record1: ", gridInst.getValue(ev.changes[0]['rowKey']));
                 cleanedObject = {...cleanedObject, record: record};
                 // if (gridInst.getValue(editingRowKey, columns[0].name) !== "")
                 container.$server.onUpdateData(cleanedObject);
