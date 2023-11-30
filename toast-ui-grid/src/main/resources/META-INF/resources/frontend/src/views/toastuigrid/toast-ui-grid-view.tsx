@@ -508,9 +508,9 @@ window.toastuigrid = {
         this.validateColumn(container, filterValues);
     },
 
-    createContextMenu(): ContextMenu {
+    createContextMenu(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): ContextMenu {
         let contextMenu: ContextMenu = new ContextMenu(document.querySelector("#container"));
-        contextMenu.register("#target", this._defaultContextMenu, [
+        contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._defaultContextMenu(e, cmd, container), [
             {title: 'copy', command: 'copy'},
             // {title: 'copyColumns', command: 'copyColumns'},
             // {title: 'copyRows', command: 'copyRows'},
