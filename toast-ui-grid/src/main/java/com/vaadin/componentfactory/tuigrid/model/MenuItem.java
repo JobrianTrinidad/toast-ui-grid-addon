@@ -64,6 +64,12 @@ public class MenuItem {
         return clickListeners;
     }
 
+    public void click() {
+        for (ClickListener listener : clickListeners) {
+            listener.onClick();
+        }
+    }
+
     public MenuItem addSubItem(String caption) {
         MenuItem subItem = new MenuItem(caption);
         subItems.add(subItem);

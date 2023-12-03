@@ -1,5 +1,6 @@
 package com.vaadin.componentfactory.tuigrid;
 
+import com.vaadin.componentfactory.tuigrid.event.ClickListener;
 import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
@@ -41,9 +42,18 @@ public class BasicExample extends Div {
         grid.setHeaderHeight(100);
 
         AATContextMenu contextMenu = new AATContextMenu();
+        contextMenu.setOpenOnClick(true);
+        contextMenu.setTarget(grid);
 
         MenuItem fileItem = contextMenu.addItem("File");
-        fileItem.addClickListener(() -> sp.add("File clicked"));
+        fileItem.addClickListener(new ClickListener() {
+            @Override
+            public void onClick() {
+                UI.getCurrent().access(() -> {
+                    sp.setText("File clicked");
+                });
+            }
+        });
 
         MenuItem editItem = contextMenu.addItem("Edit");
         editItem.addClickListener(() -> System.out.println("Edit clicked"));

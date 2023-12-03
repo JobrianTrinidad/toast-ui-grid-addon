@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 public class AATContextMenu {
     private boolean openOnClick;
     private List<MenuItem> items;
+    private Object target;
 
     public String convertChildrenToJson() {
         return this.getItems() != null
@@ -55,6 +56,10 @@ public class AATContextMenu {
 
     public List<MenuItem> getItems() {
         return items;
+    }
+
+    public void setTarget(Object target) {
+        this.target = target;
     }
 
     /**
