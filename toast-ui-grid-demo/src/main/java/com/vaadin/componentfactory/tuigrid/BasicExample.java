@@ -7,6 +7,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.Route;
@@ -53,6 +54,14 @@ public class BasicExample extends Div {
                     sp.setText("File clicked");
                 });
             }
+        });
+
+        MenuItem copyItem = contextMenu.addItem("Copy");
+        copyItem.addClickListener(() -> {
+            // Copy logic here
+            UI.getCurrent().access(() -> {
+                Notification.show("Copy");
+            });
         });
 
         MenuItem editItem = contextMenu.addItem("Edit");

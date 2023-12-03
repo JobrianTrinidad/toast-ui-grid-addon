@@ -19,6 +19,8 @@ package com.vaadin.componentfactory.tuigrid.model;
  * #L%
  */
 
+import com.vaadin.flow.component.ClientCallable;
+import com.vaadin.flow.component.dependency.JsModule;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 
@@ -26,11 +28,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@JsModule("./src/views/toastuigrid/toast-ui-grid-view.tsx")
 public class AATContextMenu {
     private boolean openOnClick;
     private List<MenuItem> items;
     private Object target;
+
+    @ClientCallable
+    public void onContextMenuAction(String cmd) {
+        // Handle the context menu action
+        switch (cmd) {
+            case "copy":
+                // Copy to clipboard
+                break;
+            case "copyColumns":
+                // Copy columns
+                break;
+            case "copyRows":
+                // Copy rows
+                break;
+            case "csvExport":
+                // Export to CSV
+                break;
+            case "excelExport":
+                // Export to Excel
+                break;
+            case "txtExport":
+                // Export to TXT
+                break;
+        }
+    }
 
     public String convertChildrenToJson() {
         return this.getItems() != null

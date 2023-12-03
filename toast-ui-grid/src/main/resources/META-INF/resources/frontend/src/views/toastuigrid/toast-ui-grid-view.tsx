@@ -21,7 +21,22 @@ import {Cell} from "../components/Table/ExcelSheet";
 declare global {
     interface Window {
         toastuigrid: { [key: string]: any };
+        callServerSideListener: (cmd: string) => void;
+        Vaadin: {
+            Flow: {
+                clients: {
+                    [key: string]: {
+                        $server: {
+                            onContextMenuAction: (cmd: string) => void;
+                        };
+                    };
+                };
+            };
+        };
     }
+}
+window.callServerSideListener = function (cmd: string): void {
+    window.Vaadin.Flow.clients.AATContextMenu.$server.onContextMenuAction(cmd);
 }
 
 type MenuItem = {
@@ -538,7 +553,7 @@ window.toastuigrid = {
         //     }
         // ]);
 
-        contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._defaultContextMenu(e, cmd, container), contextMenusAdded);
+        contextMenu.register("#target", (e: PointerEvent, cmd: string) => window.callServerSideListener(cmd), contextMenusAdded);
 
         return contextMenu;
     },
