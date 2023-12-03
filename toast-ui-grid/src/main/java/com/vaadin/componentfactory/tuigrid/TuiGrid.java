@@ -149,6 +149,22 @@ public class TuiGrid extends Div {
                             this);
     }
 
+    public void setContextMenu(AATContextMenu contextMenu) {
+        tuiGridOption.contextMenu = contextMenu;
+        this.updateTuiGridOptions();
+
+    }
+
+    //    public void addMenu(String menuTitle) {
+//        AATContextMenu aatContextMenu = new AATContextMenu(menuTitle);
+//        tuiGridOption.aatContextMenuList.add(aatContextMenu);
+//    }
+//
+//    public void addMenu(String menuTitle, String[] children) {
+//        AATContextMenu aatContextMenu = new AATContextMenu(menuTitle, children);
+//        tuiGridOption.aatContextMenuList.add(aatContextMenu);
+//    }
+
     public void setAutoSave(boolean autoSave) {
         tuiGridOption.autoSave = autoSave;
         this.updateTuiGridOptions();
@@ -583,6 +599,7 @@ public class TuiGrid extends Div {
 
         item.setHeaders(headers);
         item.setRecordData(record);
+        this.items = new ArrayList<>(this.items);
         this.items.add(item);
 
         ItemAddEvent addEvent = new ItemAddEvent(this, item, true);
@@ -673,4 +690,6 @@ public class TuiGrid extends Div {
     public void addItemDeleteListener(ComponentEventListener<ItemDeleteEvent> listener) {
         addListener(ItemDeleteEvent.class, listener);
     }
+
+
 }

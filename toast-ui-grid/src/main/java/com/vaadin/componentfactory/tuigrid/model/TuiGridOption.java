@@ -53,6 +53,7 @@ public class TuiGridOption {
     public List<String> rowHeaders = new ArrayList<>();
     public TreeOption treeOption;
     public boolean autoSave = false;
+    public AATContextMenu contextMenu;
 
     public String toJSON() {
         JsonObject js = Json.createObject();
@@ -101,6 +102,8 @@ public class TuiGridOption {
             Optional.ofNullable(convertSummaryToJson()).ifPresent(v -> summaryJs.put("columnContent", "[" + v + "]"));
             js.put("summary", summaryJs);
         }
+
+        Optional.ofNullable(this.contextMenu.convertChildrenToJson()).ifPresent(v -> js.put("contextmenu", "[" + v + "]"));
 
         return js.toJson();
     }

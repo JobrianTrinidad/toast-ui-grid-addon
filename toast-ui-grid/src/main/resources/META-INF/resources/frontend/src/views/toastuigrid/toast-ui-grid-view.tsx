@@ -61,6 +61,7 @@ window.toastuigrid = {
     }, itemsJson: string, optionsJson: string): void {
         let parsedItems: OptRow[] = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
+        console.log("parsedOptions: ", JSON.parse(parsedOptions.contextmenu));
         let editingRowKey: string | number = -1;
         let columns: OptColumn[] = this.getColumns(JSON.parse(parsedOptions.columns)).columns;
         let contextMenus: ContextMenuDic[] = this.getColumns(JSON.parse(parsedOptions.columns)).contextMenus;
@@ -410,8 +411,8 @@ window.toastuigrid = {
         document.addEventListener("mouseup", handleMouseUp);
 
         this.updateGrid(container);
-        setTimeout(() => {
-            contextMenu = this.createContextMenu();
+        setTimeout((): void => {
+            contextMenu = this.createContextMenu(container);
         });
     },
 //This function is a wrapper around _createGrid that delays the execution using setTimeout.

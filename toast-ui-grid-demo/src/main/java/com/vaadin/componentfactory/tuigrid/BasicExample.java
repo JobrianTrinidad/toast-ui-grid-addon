@@ -3,11 +3,9 @@ package com.vaadin.componentfactory.tuigrid;
 import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.Route;
@@ -41,6 +39,27 @@ public class BasicExample extends Div {
         grid.sethScroll(true);
         grid.setAutoSave(true);
         grid.setHeaderHeight(100);
+
+        AATContextMenu contextMenu = new AATContextMenu();
+
+        MenuItem fileItem = contextMenu.addItem("File");
+        fileItem.addClickListener(() -> sp.add("File clicked"));
+
+        MenuItem editItem = contextMenu.addItem("Edit");
+        editItem.addClickListener(() -> System.out.println("Edit clicked"));
+
+        MenuItem subMenuItem = editItem.addSubItem("Submenu");
+        subMenuItem.addClickListener(() -> System.out.println("Submenu clicked"));
+
+        List<MenuItem> items = contextMenu.getItems();
+        for (MenuItem item : items) {
+            System.out.println("Menu: " + item.getCaption());
+            for (MenuItem subItem : item.getSubItems()) {
+                System.out.println("Submenu: " + subItem.getCaption());
+            }
+        }
+
+        grid.setContextMenu(contextMenu);
 
         grid.addColumnResizeListener(e -> {
             sp.add(e.getColName() + e.getColWidth());
