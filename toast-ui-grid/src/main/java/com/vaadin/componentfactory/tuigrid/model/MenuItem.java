@@ -47,9 +47,9 @@ public class MenuItem {
     }
 
     private String convertChildrenToJson() {
-        return this.subItems != null
+        return this.subItems != null && !this.subItems.isEmpty()
                 ? this.subItems.stream().map(MenuItem::toJSON).collect(Collectors.joining(","))
-                : "";
+                : null;
     }
 
     public String getCaption() {

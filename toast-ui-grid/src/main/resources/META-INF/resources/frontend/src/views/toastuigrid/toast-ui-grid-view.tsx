@@ -61,7 +61,6 @@ window.toastuigrid = {
     }, itemsJson: string, optionsJson: string): void {
         let parsedItems: OptRow[] = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
-        console.log("parsedOptions: ", JSON.parse(parsedOptions.contextmenu));
         let editingRowKey: string | number = -1;
         let columns: OptColumn[] = this.getColumns(JSON.parse(parsedOptions.columns)).columns;
         let contextMenus: ContextMenuDic[] = this.getColumns(JSON.parse(parsedOptions.columns)).contextMenus;
@@ -411,8 +410,9 @@ window.toastuigrid = {
         document.addEventListener("mouseup", handleMouseUp);
 
         this.updateGrid(container);
+        let contextMenusAdded: MenuItem[] = this.convertToMenuItem(JSON.parse(parsedOptions.contextmenu));
         setTimeout((): void => {
-            contextMenu = this.createContextMenu(container);
+            contextMenu = this.createContextMenu(container, contextMenusAdded);
         });
     },
 //This function is a wrapper around _createGrid that delays the execution using setTimeout.
@@ -509,22 +509,36 @@ window.toastuigrid = {
         this.validateColumn(container, filterValues);
     },
 
-    createContextMenu(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): ContextMenu {
-        let contextMenu: ContextMenu = new ContextMenu(document.querySelector("#container"));
-        contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._defaultContextMenu(e, cmd, container), [
-            {title: 'copy', command: 'copy'},
-            // {title: 'copyColumns', command: 'copyColumns'},
-            // {title: 'copyRows', command: 'copyRows'},
-            {separator: true},
-            {
-                title: 'expert',
-                menu: [
-                    {title: 'csvExport', command: 'csvExport'},
-                    {title: 'excelExport', command: 'excelExport'},
-                    {title: 'txtExport', command: 'txtExport'}
-                ]
+    convertToMenuItem(menus: any[]): MenuItem[] {
+        return menus.map((menu) => {
+            if (typeof menu === 'string') {
+                menu = JSON.parse(menu);
             }
-        ]);
+            if (menu.menu && typeof menu.menu === 'string') {
+                menu.menu = this.convertToMenuItem(JSON.parse(menu.menu));
+            }
+            return menu as MenuItem;
+        });
+    },
+
+    createContextMenu(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, contextMenusAdded: MenuItem[]): ContextMenu {
+        let contextMenu: ContextMenu = new ContextMenu(document.querySelector("#container"));
+        // contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._defaultContextMenu(e, cmd, container), [
+        //     {title: 'copy', command: 'copy'},
+        //     // {title: 'copyColumns', command: 'copyColumns'},
+        //     // {title: 'copyRows', command: 'copyRows'},
+        //     {separator: true},
+        //     {
+        //         title: 'expert',
+        //         menu: [
+        //             {title: 'csvExport', command: 'csvExport'},
+        //             {title: 'excelExport', command: 'excelExport'},
+        //             {title: 'txtExport', command: 'txtExport'}
+        //         ]
+        //     }
+        // ]);
+
+        contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._defaultContextMenu(e, cmd, container), contextMenusAdded);
 
         return contextMenu;
     },
@@ -664,8 +678,14 @@ window.toastuigrid = {
             contextMenus: contextMenus,
             filterValues: filterValues,
         };
-    }
-    ,
+    },
+
+    getContextMenu(parsedConextMenu: MenuItem[]): void {
+        let contextMenus: MenuItem[] = parsedConextMenu;
+        for (const contextMenu of contextMenus) {
+            console.log("contextMenus", contextMenu.menu);
+        }
+    },
 //This internal function is used to set the column content based on a matched name.
 // It takes an object columnContent and modifies it based on its value.
 // The modified object is used for displaying summary information in the grid.
