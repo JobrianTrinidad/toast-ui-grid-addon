@@ -1,6 +1,5 @@
 package com.vaadin.componentfactory.tuigrid;
 
-import com.vaadin.componentfactory.tuigrid.event.ClickListener;
 import com.vaadin.componentfactory.tuigrid.model.*;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
@@ -46,29 +45,24 @@ public class BasicExample extends Div {
         contextMenu.setOpenOnClick(true);
         contextMenu.setTarget(grid);
 
+
         MenuItem fileItem = contextMenu.addItem("File");
-        fileItem.addClickListener(new ClickListener() {
-            @Override
-            public void onClick() {
-                UI.getCurrent().access(() -> {
-                    sp.setText("File clicked");
-                });
-            }
+        fileItem.addContextMenuClickListener(e -> {
+            sp.setText("File clicked");
+            Notification.show(e.getItem().getCaption());
         });
 
         MenuItem copyItem = contextMenu.addItem("Copy");
-        copyItem.addClickListener(() -> {
+        copyItem.addContextMenuClickListener(e -> {
             // Copy logic here
-            UI.getCurrent().access(() -> {
-                Notification.show("Copy");
-            });
+            Notification.show("Copy");
         });
 
         MenuItem editItem = contextMenu.addItem("Edit");
-        editItem.addClickListener(() -> System.out.println("Edit clicked"));
+        editItem.addContextMenuClickListener(e -> System.out.println("Edit clicked"));
 
         MenuItem subMenuItem = editItem.addSubItem("Submenu");
-        subMenuItem.addClickListener(() -> System.out.println("Submenu clicked"));
+        subMenuItem.addContextMenuClickListener(e -> System.out.println("Submenu clicked"));
 
         List<MenuItem> items = contextMenu.getItems();
         for (MenuItem item : items) {
@@ -126,10 +120,10 @@ public class BasicExample extends Div {
 
         // Apply CSS to hide scrollbar
         UI.getCurrent().getPage().executeJs(
-                "let hostElement = document.querySelector('vaadin-app-layout');\n" +
-                        "let shadowRoot = hostElement.shadowRoot;\n" +
-                        "let contentElement = shadowRoot.querySelector('[content]');" +
-                        "contentElement.style.overflow = 'hidden';");
+                """
+                        let hostElement = document.querySelector('vaadin-app-layout');
+                        let shadowRoot = hostElement.shadowRoot;
+                        let contentElement = shadowRoot.querySelector('[content]');contentElement.style.overflow = 'hidden';""");
     }
 
     private List<Item> getTableData() {
@@ -168,11 +162,10 @@ public class BasicExample extends Div {
         Column typeCol = new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", ""), true, "input");
         Column genreCol = new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), true, "input");
 //        Column releaseCol = new Column(new ColumnBaseOption(4, "Release", "release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false));
-        List<Column> columns = List.of(
+        return List.of(
                 nameCol,
                 artistCol,
                 typeCol,
                 genreCol);
-        return columns;
     }
 }

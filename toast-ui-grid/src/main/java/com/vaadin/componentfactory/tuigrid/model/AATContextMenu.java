@@ -19,8 +19,6 @@ package com.vaadin.componentfactory.tuigrid.model;
  * #L%
  */
 
-import com.vaadin.flow.component.ClientCallable;
-import com.vaadin.flow.component.dependency.JsModule;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 
@@ -28,37 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-@JsModule("./src/views/toastuigrid/toast-ui-grid-view.tsx")
+
 public class AATContextMenu {
     private boolean openOnClick;
     private List<MenuItem> items;
     private Object target;
 
-    @ClientCallable
-    public void onContextMenuAction(String cmd) {
-        // Handle the context menu action
-        switch (cmd) {
-            case "copy":
-                // Copy to clipboard
-                break;
-            case "copyColumns":
-                // Copy columns
-                break;
-            case "copyRows":
-                // Copy rows
-                break;
-            case "csvExport":
-                // Export to CSV
-                break;
-            case "excelExport":
-                // Export to Excel
-                break;
-            case "txtExport":
-                // Export to TXT
-                break;
-        }
+    /**
+     * This is a constructor for creating a column object with the column base option, editable, type, and maximum length specified.
+     */
+    public AATContextMenu() {
+        this.items = new ArrayList<>();
     }
-
     public String convertChildrenToJson() {
         return this.getItems() != null
                 ? this.getItems().stream().map(MenuItem::toJSON).collect(Collectors.joining(","))
@@ -89,11 +68,12 @@ public class AATContextMenu {
         this.target = target;
     }
 
-    /**
-     * This is a constructor for creating a column object with the column base option, editable, type, and maximum length specified.
-     */
-    public AATContextMenu() {
-        this.items = new ArrayList<>();
+    public void onContextMenuAction(String cmd) {
+        // Handle the context menu action
+        for (MenuItem item :
+                this.items) {
+            if (item.getCaption().equals(cmd))
+                item.onContextMenuAction();
+        }
     }
 }
-

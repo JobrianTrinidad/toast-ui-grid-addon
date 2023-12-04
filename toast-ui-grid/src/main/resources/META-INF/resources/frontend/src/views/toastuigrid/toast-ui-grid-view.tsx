@@ -21,22 +21,7 @@ import {Cell} from "../components/Table/ExcelSheet";
 declare global {
     interface Window {
         toastuigrid: { [key: string]: any };
-        callServerSideListener: (cmd: string) => void;
-        Vaadin: {
-            Flow: {
-                clients: {
-                    [key: string]: {
-                        $server: {
-                            onContextMenuAction: (cmd: string) => void;
-                        };
-                    };
-                };
-            };
-        };
     }
-}
-window.callServerSideListener = function (cmd: string): void {
-    window.Vaadin.Flow.clients.AATContextMenu.$server.onContextMenuAction(cmd);
 }
 
 type MenuItem = {
@@ -309,85 +294,6 @@ window.toastuigrid = {
             }
         };
 
-        console.log("Columns: ", columns);
-
-        // const contextMenu = ({rowKey, columnName}: ContextMenuParams) => {
-        //     console.log("rowKey: ", rowKey, " columnName: ", columnName);
-        //     let selIndex: number = -1;
-        //     const column: OptColumn | undefined = columns.find(
-        //         (col: OptColumn, index: number) => {
-        //             selIndex = index
-        //             return col.name === columnName && col.hasOwnProperty("formatter") && col.formatter === "listItemText"
-        //         }
-        //     );
-        //     if (column) {
-        //         const subMenu = column.editor.options.listItems.map((item: SelectParams, index: number) => {
-        //             if (index === 0) {
-        //                 return ({
-        //                     name: "all",
-        //                     label: "All",
-        //                     action: (): void => {
-        //                         console.log("data: ", this.getTableData(parsedItems));
-        //                         container.grid.table.resetData(this.getTableData(parsedItems));
-        //                     },
-        //                 });
-        //             } else
-        //                 return ({
-        //                     name: item.text,
-        //                     label: item.text,
-        //                     action: (): void => {
-        //                         container.grid.table.setFilter(columnName, "select");
-        //                         let filterState: FilterState = {
-        //                             code: "eq",
-        //                             value: item.text
-        //                         };
-        //                         container.grid.table.filter(columnName, [filterState]);
-        //
-        //                         // container.grid.table.resetData(this.getTableData(parsedItems), {
-        //                         //     filterState: {
-        //                         //         columnName,
-        //                         //         columnFilterState: {
-        //                         //             code: "eq",
-        //                         //             value: item.value
-        //                         //         }
-        //                         //     }
-        //                         // });
-        //                         let tempColumns: OptColumn[] = columns;
-        //                         let tempColumn: OptColumn = column;
-        //                         tempColumn.editor.options.listItems = [];
-        //                         tempColumn.editor.options.listItems[0] = {text: item.text, value: item.value};
-        //                         tempColumns[selIndex] = tempColumn;
-        //                         console.log("temColumn: ", tempColumns);
-        //                         container.grid.table.setColumns(tempColumns);
-        //                         let tempData: OptRow[] = [];
-        //                         for (const row of this.getTableData(parsedItems)) {
-        //                             if (row[columnName] === item.value)
-        //                                 tempData.push(row);
-        //                         }
-        //                         container.grid.table.resetData(tempData);
-        //                         if (tempData.length === 0) {
-        //                             let row: OptRow = {[column.name]: item.value};
-        //                             container.grid.table.prependRow(row, {focus: true});
-        //                             console.log("I amd : ", container.grid.table.getData())
-        //                         }
-        //                         // this.refreshLayout(container);
-        //                         console.log(["AAA: ", "BBB: ", "CCC: "][index], this.getTableData(parsedItems))
-        //                     },
-        //                 });
-        //         });
-        //         return [[{name: 'filter', label: 'filter', subMenu}]];
-        //     }
-        //     return [[{name: "copy", label: "Copy", action: 'copy'},
-        //         {name: "copyColumns", label: "CopyColumns", action: 'copyColumns'},
-        //         {name: "copyRows", label: "CopyRows", action: 'copyRows'},
-        //         {
-        //             name: "export", label: "Export", subMenu: [
-        //                 {name: "csvExport", label: "CsvExport", action: 'csvExport'},
-        //                 {name: "excelExport", label: "ExcelExport", action: 'excelExport'},
-        //                 {name: "txtExport", label: "TxtExport", action: 'txtExport'},]
-        //         }]];
-        // };
-
         container.grid = (
             <FeatureTable
                 getGridInstance={handleGetGridInstance}
@@ -536,7 +442,9 @@ window.toastuigrid = {
         });
     },
 
-    createContextMenu(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, contextMenusAdded: MenuItem[]): ContextMenu {
+    createContextMenu(container: HTMLElement &
+                          { $server: any, grid: JSX.Element & { table: TuiGrid } }
+        , contextMenusAdded: MenuItem[]): ContextMenu {
         let contextMenu: ContextMenu = new ContextMenu(document.querySelector("#container"));
         // contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._defaultContextMenu(e, cmd, container), [
         //     {title: 'copy', command: 'copy'},
@@ -553,7 +461,7 @@ window.toastuigrid = {
         //     }
         // ]);
 
-        contextMenu.register("#target", (e: PointerEvent, cmd: string) => window.callServerSideListener(cmd), contextMenusAdded);
+        contextMenu.register("#target", (e: PointerEvent, cmd: string) => container.$server.onContextMenuAction(cmd), contextMenusAdded);
 
         return contextMenu;
     },
@@ -695,12 +603,6 @@ window.toastuigrid = {
         };
     },
 
-    getContextMenu(parsedConextMenu: MenuItem[]): void {
-        let contextMenus: MenuItem[] = parsedConextMenu;
-        for (const contextMenu of contextMenus) {
-            console.log("contextMenus", contextMenu.menu);
-        }
-    },
 //This internal function is used to set the column content based on a matched name.
 // It takes an object columnContent and modifies it based on its value.
 // The modified object is used for displaying summary information in the grid.

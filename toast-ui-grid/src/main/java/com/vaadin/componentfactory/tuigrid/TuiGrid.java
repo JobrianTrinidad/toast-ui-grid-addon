@@ -529,6 +529,12 @@ public class TuiGrid extends Div {
                         this, colName);
     }
 
+    @ClientCallable
+    public void onContextMenuAction(String cmd) {
+        this.tuiGridOption.contextMenu.onContextMenuAction(cmd);
+    }
+
+
     /**
      * Handles the onCheck event in the grid.
      */
@@ -569,9 +575,6 @@ public class TuiGrid extends Div {
                 this, itemChanged.getString("columnName"),
                 itemChanged.getString("value"),
                 (int) itemChanged.getNumber("rowKey"), true);
-
-        //        updateData((int) itemChanged.getNumber("rowKey"),
-//                eventData.getObject("record"));
 
         RuntimeException exception = null;
         try {
