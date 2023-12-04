@@ -103,7 +103,9 @@ public class TuiGridOption {
             js.put("summary", summaryJs);
         }
 
-        Optional.ofNullable(this.contextMenu.convertChildrenToJson()).ifPresent(v -> js.put("contextmenu", "[" + v + "]"));
+        if (this.contextMenu != null) {
+            Optional.ofNullable(this.contextMenu.convertChildrenToJson()).ifPresent(v -> js.put("contextmenu", "[" + v + "]"));
+        }
 
         return js.toJson();
     }
