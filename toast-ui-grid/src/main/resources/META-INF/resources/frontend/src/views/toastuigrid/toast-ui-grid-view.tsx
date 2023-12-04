@@ -63,7 +63,7 @@ window.toastuigrid = {
         let parsedOptions = JSON.parse(optionsJson);
         let editingRowKey: string | number = -1;
         let columns: OptColumn[] = this.getColumns(JSON.parse(parsedOptions.columns)).columns;
-        let contextMenus: ContextMenuDic[] = this.getColumns(JSON.parse(parsedOptions.columns)).contextMenus;
+        let contextMenus: ContextMenu[] = this.getColumns(JSON.parse(parsedOptions.columns)).contextMenus;
         let filterValues: FilterValue[] = this.getColumns(JSON.parse(parsedOptions.columns)).filterValues;
         let prevColumnName: string = "";
         let gridInst: TuiGrid;
@@ -235,16 +235,18 @@ window.toastuigrid = {
 
             if (event.button === 2) {
                 for (const contextMenu1 of contextMenus) {
-
-                    let element: Element | null = document.querySelector(`[data-column-name="${contextMenu1.colName}"]`);
+                    console.log("contextMenu1: ", contextMenu1);
+                    let element: Element | null = document.querySelector(`[data-column-name="${contextMenu1.title}"]`);
                     if (element !== null) {
                         let rect: DOMRect = element.getBoundingClientRect();
+                        console.log("contextMenu3: ", rect);
 
                         // let top: number = rect.top + window.scrollY;
                         let left: number = rect.left + window.scrollX;
 
                         if (event.clientX >= left && event.clientX < rect.right) {
-                            contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._processContextMenu(e, cmd, filterValues, container), contextMenu1.items);
+                            console.log("contextMenu2: ", contextMenu1);
+                            contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._processContextMenu(e, cmd, filterValues, container), contextMenu1.menu);
                         }
                     }
                 }
@@ -331,7 +333,10 @@ window.toastuigrid = {
         document.addEventListener("mouseup", handleMouseUp);
 
         this.updateGrid(container);
-        let contextMenusAdded: MenuItem[] = this.convertToMenuItem(JSON.parse(parsedOptions.contextmenu));
+
+        let contextMenusAdded: MenuItem[];
+        if (parsedOptions.contextmenu)
+            contextMenusAdded = this.convertToMenuItem(JSON.parse(parsedOptions.contextmenu));
         setTimeout((): void => {
             contextMenu = this.createContextMenu(container, contextMenusAdded);
         });
@@ -446,22 +451,24 @@ window.toastuigrid = {
                           { $server: any, grid: JSX.Element & { table: TuiGrid } }
         , contextMenusAdded: MenuItem[]): ContextMenu {
         let contextMenu: ContextMenu = new ContextMenu(document.querySelector("#container"));
-        // contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._defaultContextMenu(e, cmd, container), [
-        //     {title: 'copy', command: 'copy'},
-        //     // {title: 'copyColumns', command: 'copyColumns'},
-        //     // {title: 'copyRows', command: 'copyRows'},
-        //     {separator: true},
-        //     {
-        //         title: 'expert',
-        //         menu: [
-        //             {title: 'csvExport', command: 'csvExport'},
-        //             {title: 'excelExport', command: 'excelExport'},
-        //             {title: 'txtExport', command: 'txtExport'}
-        //         ]
-        //     }
-        // ]);
+        contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._defaultContextMenu(e, cmd, container), [
+            {title: 'copy', command: 'copy'},
+            // {title: 'copyColumns', command: 'copyColumns'},
+            // {title: 'copyRows', command: 'copyRows'},
+            {separator: true},
+            {
+                title: 'expert',
+                menu: [
+                    {title: 'csvExport', command: 'csvExport'},
+                    {title: 'excelExport', command: 'excelExport'},
+                    {title: 'txtExport', command: 'txtExport'}
+                ]
+            }
+        ]);
 
-        contextMenu.register("#target", (e: PointerEvent, cmd: string) => container.$server.onContextMenuAction(cmd), contextMenusAdded);
+        if (contextMenusAdded !== null) {
+            contextMenu.register("#target", (e: PointerEvent, cmd: string) => container.$server.onContextMenuAction(cmd), contextMenusAdded);
+        }
 
         return contextMenu;
     },
@@ -516,10 +523,14 @@ window.toastuigrid = {
         setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
     },
 
-    getColumns(parsedColumn: any[]): { columns: OptColumn[], contextMenus: ContextMenuDic[], filterValues: FilterValue[] } {
+    getColumns(parsedColumn: any[]): {
+        columns: OptColumn[],
+        contextMenus: ContextMenu[],
+        filterValues: FilterValue[]
+    } {
         let columns: any[] = parsedColumn;
         let tempColumns: OptColumn[] = [];
-        let contextMenus: ContextMenuDic[] = [];
+        let contextMenus: ContextMenu[] = [];
         let filterValues: FilterValue[] = [];
 
         for (let column of columns) {
@@ -582,9 +593,9 @@ window.toastuigrid = {
                     };
                     items.push(item);
                 }
-                let contextMenu: ContextMenuDic = {
-                    colName: tempColumn.name,
-                    items: items
+                let contextMenu: MenuItem = {
+                    title: tempColumn.name,
+                    menu: items
                 };
                 let filterValue: FilterValue = {
                     colName: tempColumn.name,
