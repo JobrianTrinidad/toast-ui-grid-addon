@@ -69,11 +69,18 @@ public class AATContextMenu {
     }
 
     public void onContextMenuAction(String cmd) {
-        // Handle the context menu action
-        for (MenuItem item :
-                this.items) {
-            if (item.getCaption().equals(cmd))
-                item.onContextMenuAction();
+        for (MenuItem item : this.items) {
+            checkCaption(item, cmd);
+        }
+    }
+
+    public void checkCaption(MenuItem item, String cmd) {
+        if (item.getCaption().equals(cmd)) {
+            item.onContextMenuAction();
+        }
+
+        for (MenuItem subItem : item.getSubItems()) {
+            checkCaption(subItem, cmd);
         }
     }
 }

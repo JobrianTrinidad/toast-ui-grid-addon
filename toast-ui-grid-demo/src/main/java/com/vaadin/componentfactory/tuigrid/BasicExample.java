@@ -62,7 +62,7 @@ public class BasicExample extends Div {
         editItem.addContextMenuClickListener(e -> System.out.println("Edit clicked"));
 
         MenuItem subMenuItem = editItem.addSubItem("Submenu");
-        subMenuItem.addContextMenuClickListener(e -> System.out.println("Submenu clicked"));
+        subMenuItem.addContextMenuClickListener(e ->  Notification.show("Copy"));
 
         List<MenuItem> items = contextMenu.getItems();
         for (MenuItem item : items) {
