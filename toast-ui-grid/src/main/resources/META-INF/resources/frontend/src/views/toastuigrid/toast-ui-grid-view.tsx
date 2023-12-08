@@ -234,6 +234,13 @@ window.toastuigrid = {
         const handleMouseDown = (event: MouseEvent): void => {
 
             if (event.button === 2) {
+                let contextElement: HTMLElement = document.querySelector('.tui-contextmenu') as HTMLElement;
+                let targetElement :HTMLElement= event.target as HTMLElement;
+                let rectTarget:DOMRect = targetElement.getBoundingClientRect();
+                if (contextElement) {
+                    contextElement.style.left = (rectTarget.right - event.clientX) + "px";
+                }
+
                 for (const contextMenu1 of contextMenus) {
                     console.log("contextMenu1: ", contextMenu1);
                     let element: Element | null = document.querySelector(`[data-column-name="${contextMenu1.title}"]`);
@@ -245,7 +252,7 @@ window.toastuigrid = {
                         let left: number = rect.left + window.scrollX;
 
                         if (event.clientX >= left && event.clientX < rect.right) {
-                            console.log("contextMenu2: ", contextMenu1);
+                            console.log("contextElement: ", contextElement);
                             contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._processContextMenu(e, cmd, filterValues, container), contextMenu1.menu);
                         }
                     }
@@ -465,10 +472,6 @@ window.toastuigrid = {
                 ]
             }
         ]);
-
-        if (contextMenusAdded !== null) {
-            contextMenu.register("#target", (e: PointerEvent, cmd: string) => container.$server.onContextMenuAction(cmd), contextMenusAdded);
-        }
 
         return contextMenu;
     },
