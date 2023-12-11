@@ -62,10 +62,10 @@ window.toastuigrid = {
         let parsedItems: OptRow[] = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
         let editingRowKey: string | number = -1;
-        console.log("parsedOptions.columns: ", parsedOptions.columns);
         let columns: OptColumn[] = this.getColumns(JSON.parse(parsedOptions.columns)).columns;
         let contextMenus: ContextMenu[] = this.getColumns(JSON.parse(parsedOptions.columns)).contextMenus;
         let filterValues: FilterValue[] = this.getColumns(JSON.parse(parsedOptions.columns)).filterValues;
+
         let prevColumnName: string = "";
         let gridInst: TuiGrid;
         let rangeSelected: number[] = [];
@@ -241,7 +241,6 @@ window.toastuigrid = {
                 if (contextElement) {
                     contextElement.style.left = (rectTarget.right - event.clientX) + "px";
                 }
-
                 for (const contextMenu1 of contextMenus) {
                     let element: Element | null = document.querySelector(`[data-column-name="${contextMenu1.title}"]`);
                     if (element !== null) {
@@ -251,20 +250,9 @@ window.toastuigrid = {
                         let left: number = rect.left + window.scrollX;
 
                         if (event.clientX >= left && event.clientX < rect.right) {
-                            let newMenu: MenuItem[] = contextMenu1.menu.push({title: 'Copy', command: 'copy'},
-                                {title: 'CopyColumns', command: 'copyColumns'},
-                                {title: 'CopyRows', command: 'copyRows'},
-                                {separator: true},
-                                {
-                                    title: 'Expert',
-                                    menu: [
-                                        {title: 'CsvExport', command: 'csvExport'},
-                                        {title: 'ExcelExport', command: 'excelExport'},
-                                        {title: 'TxtExport', command: 'txtExport'}
-                                    ]
-                                });
+
                             contextMenu.register("#target", (e: PointerEvent, cmd: string) =>
-                                this._processContextMenu(e, cmd, filterValues, container), newMenu);
+                                this._processContextMenu(e, cmd, filterValues, container), contextMenu1.menu);
                         }
                     }
                 }
@@ -485,8 +473,7 @@ window.toastuigrid = {
                           { $server: any, grid: JSX.Element & { table: TuiGrid } }
         , contextMenusAdded: MenuItem[]): ContextMenu {
         let contextMenu: ContextMenu = new ContextMenu(document.querySelector("#container"));
-
-        contextMenusAdded.push({title: 'Copy', command: 'copy'},
+        let defaultContextMenu: MenuItem[] = [{title: 'Copy', command: 'copy'},
             {title: 'CopyColumns', command: 'copyColumns'},
             {title: 'CopyRows', command: 'copyRows'},
             {separator: true},
@@ -497,7 +484,14 @@ window.toastuigrid = {
                     {title: 'ExcelExport', command: 'excelExport'},
                     {title: 'TxtExport', command: 'txtExport'}
                 ]
-            });
+            }];
+        if (contextMenusAdded === null || contextMenusAdded === undefined) {
+            contextMenu.register("#target", (e: PointerEvent, cmd: string) => container.$server.onContextMenuAction(cmd), defaultContextMenu);
+            return contextMenu;
+        }
+        for (const defaultContextMenu1 of defaultContextMenu) {
+            contextMenusAdded.push(defaultContextMenu1);
+        }
 
         contextMenu.register("#target", (e: PointerEvent, cmd: string) => container.$server.onContextMenuAction(cmd), contextMenusAdded);
 
@@ -561,7 +555,19 @@ window.toastuigrid = {
     } {
         let columns: any[] = parsedColumn;
         let tempColumns: OptColumn[] = [];
-        let contextMenus: ContextMenu[] = [];
+        let contextMenus: ContextMenu[] = [{title: 'Copy', command: 'copy'},
+            {title: 'CopyColumns', command: 'copyColumns'},
+            {title: 'CopyRows', command: 'copyRows'},
+            {separator: true},
+            {
+                title: 'Expert',
+                menu: [
+                    {title: 'CsvExport', command: 'csvExport'},
+                    {title: 'ExcelExport', command: 'excelExport'},
+                    {title: 'TxtExport', command: 'txtExport'}
+                ]
+            }];
+
         let filterValues: FilterValue[] = [];
 
         for (let column of columns) {
@@ -624,6 +630,19 @@ window.toastuigrid = {
                     };
                     items.push(item);
                 }
+                items.push({separator: true},
+                    {title: 'Copy', command: 'copy'},
+                    {title: 'CopyColumns', command: 'copyColumns'},
+                    {title: 'CopyRows', command: 'copyRows'},
+                    {separator: true},
+                    {
+                        title: 'Expert',
+                        menu: [
+                            {title: 'CsvExport', command: 'csvExport'},
+                            {title: 'ExcelExport', command: 'excelExport'},
+                            {title: 'TxtExport', command: 'txtExport'}
+                        ]
+                    });
                 let contextMenu: MenuItem = {
                     title: tempColumn.name,
                     menu: items
