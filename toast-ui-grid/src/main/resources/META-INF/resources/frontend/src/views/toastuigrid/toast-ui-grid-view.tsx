@@ -12,7 +12,7 @@ import InputComponent from "../components/input/ada-input";
 import {CheckboxRenderer, RowNumberRenderer} from '../renderer/renderer';
 import DropDown from "../components/dropdown/index";
 import FeatureTable from "../components/Table/FeaturesTable";
-import TuiGrid, {FilterState, Row, RowKey} from 'tui-grid';
+import TuiGrid, {ColumnInfo, FilterState, Row, RowKey} from 'tui-grid';
 import ContextMenu from 'tui-context-menu';
 import {OptColumn, OptRow} from 'tui-grid/types/options';
 import {TuiGridEvent} from "tui-grid/types/event";
@@ -25,7 +25,7 @@ declare global {
 }
 
 type MenuItem = {
-    title: string;
+    title?: string;
     command?: string;
     menu?: MenuItem[];
     separator?: boolean;
@@ -62,6 +62,7 @@ window.toastuigrid = {
         let parsedItems: OptRow[] = JSON.parse(itemsJson);
         let parsedOptions = JSON.parse(optionsJson);
         let editingRowKey: string | number = -1;
+        console.log("parsedOptions.columns: ", parsedOptions.columns);
         let columns: OptColumn[] = this.getColumns(JSON.parse(parsedOptions.columns)).columns;
         let contextMenus: ContextMenu[] = this.getColumns(JSON.parse(parsedOptions.columns)).contextMenus;
         let filterValues: FilterValue[] = this.getColumns(JSON.parse(parsedOptions.columns)).filterValues;
@@ -242,18 +243,28 @@ window.toastuigrid = {
                 }
 
                 for (const contextMenu1 of contextMenus) {
-                    console.log("contextMenu1: ", contextMenu1);
                     let element: Element | null = document.querySelector(`[data-column-name="${contextMenu1.title}"]`);
                     if (element !== null) {
                         let rect: DOMRect = element.getBoundingClientRect();
-                        console.log("contextMenu3: ", rect);
 
                         // let top: number = rect.top + window.scrollY;
                         let left: number = rect.left + window.scrollX;
 
                         if (event.clientX >= left && event.clientX < rect.right) {
-                            console.log("contextElement: ", contextElement);
-                            contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._processContextMenu(e, cmd, filterValues, container), contextMenu1.menu);
+                            let newMenu: MenuItem[] = contextMenu1.menu.push({title: 'Copy', command: 'copy'},
+                                {title: 'CopyColumns', command: 'copyColumns'},
+                                {title: 'CopyRows', command: 'copyRows'},
+                                {separator: true},
+                                {
+                                    title: 'Expert',
+                                    menu: [
+                                        {title: 'CsvExport', command: 'csvExport'},
+                                        {title: 'ExcelExport', command: 'excelExport'},
+                                        {title: 'TxtExport', command: 'txtExport'}
+                                    ]
+                                });
+                            contextMenu.register("#target", (e: PointerEvent, cmd: string) =>
+                                this._processContextMenu(e, cmd, filterValues, container), newMenu);
                         }
                     }
                 }
@@ -399,15 +410,31 @@ window.toastuigrid = {
         }
     },
 
-    _defaultContextMenu(e: PointerEvent, cmd: string
+    defaultContextMenu: function (cmd: string
         , container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
+        const focusedCell = container.grid.table.getFocusedCell();
+        if (!focusedCell || !focusedCell.columnName) {
+            return;
+        }
+
+        const startColumnIndex = container.grid.table.getColumns().findIndex((column: ColumnInfo): boolean => column.name === focusedCell.columnName);
         switch (cmd) {
             case "copy":
                 container.grid.table.copyToClipboard();
                 break;
             case "copyColumns":
+                container.grid.table.setSelectionRange({
+                    start: [0, startColumnIndex],
+                    end: [container.grid.table.getRowCount() - 1, startColumnIndex]
+                });
+                container.grid.table.copyToClipboard();
                 break;
             case "copyRows":
+                container.grid.table.setSelectionRange({
+                    start: [Number(focusedCell["rowKey"]), 0],
+                    end: [Number(focusedCell["rowKey"]), container.grid.table.getColumns().length - 1]
+                });
+                container.grid.table.copyToClipboard();
                 break;
             case "csvExport":
                 container.grid.table.export('csv');
@@ -458,20 +485,21 @@ window.toastuigrid = {
                           { $server: any, grid: JSX.Element & { table: TuiGrid } }
         , contextMenusAdded: MenuItem[]): ContextMenu {
         let contextMenu: ContextMenu = new ContextMenu(document.querySelector("#container"));
-        contextMenu.register("#target", (e: PointerEvent, cmd: string) => this._defaultContextMenu(e, cmd, container), [
-            {title: 'copy', command: 'copy'},
-            // {title: 'copyColumns', command: 'copyColumns'},
-            // {title: 'copyRows', command: 'copyRows'},
+
+        contextMenusAdded.push({title: 'Copy', command: 'copy'},
+            {title: 'CopyColumns', command: 'copyColumns'},
+            {title: 'CopyRows', command: 'copyRows'},
             {separator: true},
             {
-                title: 'expert',
+                title: 'Expert',
                 menu: [
-                    {title: 'csvExport', command: 'csvExport'},
-                    {title: 'excelExport', command: 'excelExport'},
-                    {title: 'txtExport', command: 'txtExport'}
+                    {title: 'CsvExport', command: 'csvExport'},
+                    {title: 'ExcelExport', command: 'excelExport'},
+                    {title: 'TxtExport', command: 'txtExport'}
                 ]
-            }
-        ]);
+            });
+
+        contextMenu.register("#target", (e: PointerEvent, cmd: string) => container.$server.onContextMenuAction(cmd), contextMenusAdded);
 
         return contextMenu;
     },

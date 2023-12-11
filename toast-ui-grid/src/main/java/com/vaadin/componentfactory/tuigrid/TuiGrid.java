@@ -531,7 +531,22 @@ public class TuiGrid extends Div {
 
     @ClientCallable
     public void onContextMenuAction(String cmd) {
-        this.tuiGridOption.contextMenu.onContextMenuAction(cmd);
+        switch (cmd) {
+            case "copy":
+            case "copyColumns":
+            case "copyRows":
+            case "csvExport":
+            case "excelExport":
+            case "txtExport":
+                this.getElement()
+                        .executeJs(
+                                "toastuigrid.defaultContextMenu($0, $1);",
+                                cmd, this);
+                break;
+            default:
+                this.tuiGridOption.contextMenu.onContextMenuAction(cmd);
+                break;
+        }
     }
 
 
