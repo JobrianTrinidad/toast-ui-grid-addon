@@ -29,6 +29,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
 import elemental.json.JsonNull;
 import elemental.json.JsonObject;
 import elemental.json.JsonValue;
@@ -530,7 +531,10 @@ public class TuiGrid extends Div {
     }
 
     @ClientCallable
-    public void onContextMenuAction(String cmd) {
+    public void onContextMenuAction(String cmd, JsonObject focusedCell) {
+        Cell cell = new Cell(focusedCell.getString("columnName"),
+                (int) focusedCell.getNumber("rowKey"),
+                focusedCell.getString("value"));
         switch (cmd) {
             case "copy":
             case "copyColumns":
@@ -544,7 +548,7 @@ public class TuiGrid extends Div {
                                 cmd, this);
                 break;
             default:
-                this.tuiGridOption.contextMenu.onContextMenuAction(cmd);
+                this.tuiGridOption.contextMenu.onContextMenuAction(cmd, cell);
                 break;
         }
     }

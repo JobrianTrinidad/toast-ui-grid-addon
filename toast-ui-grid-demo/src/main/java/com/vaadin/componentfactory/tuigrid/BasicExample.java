@@ -49,7 +49,7 @@ public class BasicExample extends Div {
         MenuItem fileItem = contextMenu.addItem("File");
         fileItem.addContextMenuClickListener(e -> {
             sp.setText("File clicked");
-            Notification.show(e.getItem().getCaption());
+            Notification.show(e.getCell().getCellValue());
         });
 
         MenuItem copyItem = contextMenu.addItem("Copy");

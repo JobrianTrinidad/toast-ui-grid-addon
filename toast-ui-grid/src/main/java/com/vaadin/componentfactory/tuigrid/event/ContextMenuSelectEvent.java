@@ -20,7 +20,7 @@
 package com.vaadin.componentfactory.tuigrid.event;
 
 import com.vaadin.componentfactory.tuigrid.TuiGrid;
-import com.vaadin.componentfactory.tuigrid.model.AATContextMenu;
+import com.vaadin.componentfactory.tuigrid.model.Cell;
 import com.vaadin.componentfactory.tuigrid.model.MenuItem;
 import com.vaadin.flow.component.ComponentEvent;
 
@@ -29,20 +29,20 @@ import com.vaadin.flow.component.ComponentEvent;
  */
 public class ContextMenuSelectEvent extends ComponentEvent<MenuItem> {
 
-    private MenuItem item;
+    private Cell cell;
     private boolean cancelled = false;
 
-    public ContextMenuSelectEvent(MenuItem source, MenuItem item, boolean fromClient) {
+    public ContextMenuSelectEvent(MenuItem source, Cell cell, boolean fromClient) {
         super(source, fromClient);
-        this.item = item;
+        this.cell = cell;
     }
 
-    public MenuItem getItem() {
-        return item;
+    public Cell getCell() {
+        return cell;
     }
 
-    public void setItem(MenuItem item) {
-        this.item = item;
+    public void setCell(Cell cell) {
+        this.cell = cell;
     }
 
     public boolean isCancelled() {

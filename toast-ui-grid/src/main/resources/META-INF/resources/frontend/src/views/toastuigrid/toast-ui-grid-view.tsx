@@ -486,14 +486,18 @@ window.toastuigrid = {
                 ]
             }];
         if (contextMenusAdded === null || contextMenusAdded === undefined) {
-            contextMenu.register("#target", (e: PointerEvent, cmd: string) => container.$server.onContextMenuAction(cmd), defaultContextMenu);
+            contextMenu.register("#target", (e: PointerEvent, cmd: string): void => {
+                container.$server.onContextMenuAction(cmd);
+            }, defaultContextMenu);
             return contextMenu;
         }
         for (const defaultContextMenu1 of defaultContextMenu) {
             contextMenusAdded.push(defaultContextMenu1);
         }
 
-        contextMenu.register("#target", (e: PointerEvent, cmd: string) => container.$server.onContextMenuAction(cmd), contextMenusAdded);
+        contextMenu.register("#target", (e: PointerEvent, cmd: string): void => {
+            container.$server.onContextMenuAction(cmd, container.grid.table.getFocusedCell())
+        }, contextMenusAdded);
 
         return contextMenu;
     },

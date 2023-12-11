@@ -68,19 +68,19 @@ public class AATContextMenu {
         this.target = target;
     }
 
-    public void onContextMenuAction(String cmd) {
+    public void onContextMenuAction(String cmd, Cell cell) {
         for (MenuItem item : this.items) {
-            checkCaption(item, cmd);
+            checkCaption(item, cmd, cell);
         }
     }
 
-    public void checkCaption(MenuItem item, String cmd) {
+    public void checkCaption(MenuItem item, String cmd, Cell cell) {
         if (item.getCaption().equals(cmd)) {
-            item.onContextMenuAction();
+            item.onContextMenuAction(cell);
         }
 
         for (MenuItem subItem : item.getSubItems()) {
-            checkCaption(subItem, cmd);
+            checkCaption(subItem, cmd, cell);
         }
     }
 }
