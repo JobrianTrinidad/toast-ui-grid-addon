@@ -519,6 +519,13 @@ public class TuiGrid extends Div {
                         "toastuigrid.refreshLayout($0);",
                         this);
     }
+
+    public void setFilter(String colName, String filter){
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setFilter($0, $1, $2);",
+                        colName, filter, this);
+    }
     /**
      * Handles the click event in the grid for the specified column name and row.
      */

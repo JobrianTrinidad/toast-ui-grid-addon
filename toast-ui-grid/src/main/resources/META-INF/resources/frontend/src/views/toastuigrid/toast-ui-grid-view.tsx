@@ -457,6 +457,18 @@ window.toastuigrid = {
         this.validateColumn(container, filterValues);
     },
 
+    setFilter(colName: string, filter: string,
+              container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
+
+        container.grid.table.setFilter(colName, "select");
+        let filterState: FilterState = {
+            code: filter !== "Select" ? "eq" : "ne",
+            value: filter
+        };
+        container.grid.table.filter(colName, [filterState]);
+        this.validateColumn(container, [{colName, filter}]);
+    },
+
     convertToMenuItem(menus: any[]): MenuItem[] {
         return menus.map((menu) => {
             if (typeof menu === 'string') {

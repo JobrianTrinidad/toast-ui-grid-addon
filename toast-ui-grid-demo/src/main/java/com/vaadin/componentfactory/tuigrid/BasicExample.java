@@ -89,7 +89,8 @@ public class BasicExample extends Div {
         addBtn.addClickListener(listener -> {
 //            grid.addItem(List.of(new GuiItem(List.of("", "", "", ""), headers)));
 //            add(layout);
-            grid.refreshGrid();
+//            grid.refreshGrid();
+            grid.setFilter("artist", "X");
         });
 
         Button delBtn = new Button("Delete");
