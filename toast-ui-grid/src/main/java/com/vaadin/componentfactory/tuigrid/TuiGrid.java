@@ -539,9 +539,19 @@ public class TuiGrid extends Div {
 
     @ClientCallable
     public void onContextMenuAction(String cmd, JsonObject focusedCell) {
-        Cell cell = new Cell(focusedCell.getString("columnName"),
-                (int) focusedCell.getNumber("rowKey"),
-                focusedCell.getString("value"));
+        List<Cell> row = new ArrayList<>();
+        for (String header :
+                this.headers) {
+            if (focusedCell.getString(header).isEmpty()) {
+                Cell cell = new Cell(header,
+                        (int) focusedCell.getNumber("rowKey"),
+                        focusedCell.getString(header));
+                row.add(cell);
+            }
+        }
+//        Cell cell = new Cell(focusedCell.getString("columnName"),
+//                (int) focusedCell.getNumber("rowKey"),
+//                focusedCell.getString("value"));
         switch (cmd) {
             case "copy":
             case "copyColumns":
@@ -555,7 +565,7 @@ public class TuiGrid extends Div {
                                 cmd, this);
                 break;
             default:
-                this.tuiGridOption.contextMenu.onContextMenuAction(cmd, cell);
+                this.tuiGridOption.contextMenu.onContextMenuAction(cmd, row);
                 break;
         }
     }

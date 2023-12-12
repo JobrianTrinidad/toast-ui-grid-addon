@@ -508,7 +508,9 @@ window.toastuigrid = {
         }
 
         contextMenu.register("#target", (e: PointerEvent, cmd: string): void => {
-            container.$server.onContextMenuAction(cmd, container.grid.table.getFocusedCell())
+            let rowKey: RowKey = container.grid.table.getFocusedCell()['rowKey'] || 0;
+            console.log("Cell Cell: ", container.grid.table.getRow(rowKey));
+            container.$server.onContextMenuAction(cmd, container.grid.table.getRow(rowKey))
         }, contextMenusAdded);
 
         return contextMenu;

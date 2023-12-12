@@ -66,10 +66,10 @@ public class MenuItem extends Div {
         return subItems;
     }
 
-    public void onContextMenuAction(Cell cell) {
+    public void onContextMenuAction(List<Cell> row) {
         // Handle the context menu action
 
-        ContextMenuSelectEvent event = new ContextMenuSelectEvent(this, cell, true);
+        ContextMenuSelectEvent event = new ContextMenuSelectEvent(this, row, true);
         RuntimeException exception = null;
         try {
             fireEvent(event);

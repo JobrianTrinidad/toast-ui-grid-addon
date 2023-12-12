@@ -24,25 +24,27 @@ import com.vaadin.componentfactory.tuigrid.model.Cell;
 import com.vaadin.componentfactory.tuigrid.model.MenuItem;
 import com.vaadin.flow.component.ComponentEvent;
 
+import java.util.List;
+
 /**
  * Event thrown when an item is resized.
  */
 public class ContextMenuSelectEvent extends ComponentEvent<MenuItem> {
 
-    private Cell cell;
+    private List<Cell> row;
     private boolean cancelled = false;
 
-    public ContextMenuSelectEvent(MenuItem source, Cell cell, boolean fromClient) {
+    public ContextMenuSelectEvent(MenuItem source, List<Cell> row, boolean fromClient) {
         super(source, fromClient);
-        this.cell = cell;
+        this.row = row;
     }
 
-    public Cell getCell() {
-        return cell;
+    public List<Cell> getRow() {
+        return row;
     }
 
-    public void setCell(Cell cell) {
-        this.cell = cell;
+    public void setRow(List<Cell> row) {
+        this.row = row;
     }
 
     public boolean isCancelled() {
