@@ -29,7 +29,6 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.notification.Notification;
 import elemental.json.JsonNull;
 import elemental.json.JsonObject;
 import elemental.json.JsonValue;
@@ -542,7 +541,7 @@ public class TuiGrid extends Div {
         List<Cell> row = new ArrayList<>();
         for (String header :
                 this.headers) {
-            if (focusedCell.getString(header).isEmpty()) {
+            if (focusedCell.hasKey(header)) {
                 Cell cell = new Cell(header,
                         (int) focusedCell.getNumber("rowKey"),
                         focusedCell.getString(header));
