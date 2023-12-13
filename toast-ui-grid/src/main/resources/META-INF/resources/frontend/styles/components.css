@@ -9,6 +9,16 @@ button {
     border: none;
 }
 
+.link-button {
+    cursor: pointer;
+    text-decoration: underline;
+    color: blue;
+}
+
+.link-button:hover {
+    color: red;
+}
+
 select {
     /* styling */
     background-color: white;
