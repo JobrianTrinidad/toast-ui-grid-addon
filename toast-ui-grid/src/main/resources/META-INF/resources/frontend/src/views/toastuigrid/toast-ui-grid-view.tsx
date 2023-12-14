@@ -60,12 +60,13 @@ window.toastuigrid = {
         },
     }, itemsJson: string, optionsJson: string): void {
         let parsedItems: OptRow[] = JSON.parse(itemsJson);
+        console.log("parsedItems: ", parsedItems);
         let parsedOptions = JSON.parse(optionsJson);
         let editingRowKey: string | number = -1;
         let columns: OptColumn[] = this.getColumns(JSON.parse(parsedOptions.columns)).columns;
         let contextMenus: ContextMenu[] = this.getColumns(JSON.parse(parsedOptions.columns)).contextMenus;
         let filterValues: FilterValue[] = this.getColumns(JSON.parse(parsedOptions.columns)).filterValues;
-
+        console.log("Columns: ", columns);
         let prevColumnName: string = "";
         let gridInst: TuiGrid;
         let rangeSelected: number[] = [];
@@ -236,8 +237,8 @@ window.toastuigrid = {
 
             if (event.button === 2) {
                 let contextElement: HTMLElement = document.querySelector('.tui-contextmenu') as HTMLElement;
-                let targetElement :HTMLElement= event.target as HTMLElement;
-                let rectTarget:DOMRect = targetElement.getBoundingClientRect();
+                let targetElement: HTMLElement = event.target as HTMLElement;
+                let rectTarget: DOMRect = targetElement.getBoundingClientRect();
                 if (contextElement) {
                     contextElement.style.left = (rectTarget.right - event.clientX) + "px";
                 }
@@ -509,6 +510,7 @@ window.toastuigrid = {
 
         contextMenu.register("#target", (e: PointerEvent, cmd: string): void => {
             let rowKey: RowKey = container.grid.table.getFocusedCell()['rowKey'] || 0;
+            console.log("grid table: ", container.grid.table.getData());
             console.log("Cell Cell: ", container.grid.table.getRow(rowKey));
             container.$server.onContextMenuAction(cmd, container.grid.table.getRow(rowKey))
         }, contextMenusAdded);
@@ -572,7 +574,7 @@ window.toastuigrid = {
         filterValues: FilterValue[]
     } {
         let columns: any[] = parsedColumn;
-        let tempColumns: OptColumn[] = [];
+        let tempColumns: OptColumn[] = [{name: "id", hidden: true}];
         let contextMenus: ContextMenu[] = [{title: 'Copy', command: 'copy'},
             {title: 'CopyColumns', command: 'copyColumns'},
             {title: 'CopyRows', command: 'copyRows'},
@@ -795,6 +797,7 @@ window.toastuigrid = {
                 data._children = this.getTableData(JSON.parse(data._children));
             }
         }
+        console.log("listData: ", listData);
         return listData;
     }
     ,

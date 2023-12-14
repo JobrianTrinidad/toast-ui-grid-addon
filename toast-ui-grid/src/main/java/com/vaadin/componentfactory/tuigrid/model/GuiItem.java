@@ -30,11 +30,13 @@ import java.util.stream.Collectors;
 
 public class GuiItem implements Item {
     private List<String> recordData;
+    private int id;
     private List<String> headers = new ArrayList<>();
     private boolean expanded;
     private List<GuiItem> _children;
 
-    public GuiItem(List<String> recordData, List<String> headers) {
+    public GuiItem(int id, List<String> recordData, List<String> headers) {
+        this.id = id;
         this.recordData = recordData;
         this.headers.clear();
         this.headers.addAll(headers);
@@ -47,10 +49,11 @@ public class GuiItem implements Item {
     public String toJSON() {
         JsonObject js = Json.createObject();
 
+        js.put("id", this.id);
         for (int i = 0; i < this.headers.size(); i++) {
             js.put(this.headers.get(i), this.recordData.get(i) != null ? this.recordData.get(i) : "");
         }
-        if(isExpanded()){
+        if (isExpanded()) {
             JsonObject attributesJs = Json.createObject();
             Optional.ofNullable(isExpanded()).ifPresent(v -> attributesJs.put("expanded", v));
             js.put("_attributes", attributesJs);
@@ -99,5 +102,13 @@ public class GuiItem implements Item {
 
     public void set_children(List<GuiItem> _children) {
         this._children = _children;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

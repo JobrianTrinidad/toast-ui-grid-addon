@@ -22,7 +22,7 @@ public class MainLayout extends AppLayout {
     public MainLayout() {
         final DrawerToggle drawerToggle = new DrawerToggle();
         drawerToggle.addClickListener(event -> {
-            EventBus.getInstance().post("DrawerToggleClicked");
+//            EventBus.getInstance().post("DrawerToggleClicked");
         });
 
         final RouterLink basicExample =

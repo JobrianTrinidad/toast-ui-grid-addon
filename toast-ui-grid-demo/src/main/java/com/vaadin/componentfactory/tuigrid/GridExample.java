@@ -40,8 +40,8 @@ public class GridExample extends Div {
     private List<Item> getTableData() {
         List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen");
         List<Item> TableData = List.of(
-                new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers),
+                new GuiItem(0, List.of(
                         "X",
                         "Ed Sheeran",
                         "Deluxe;",
@@ -50,7 +50,7 @@ public class GridExample extends Div {
                         "20000",
                         "1900",
                         "2005"), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Moves Like Jagger",
                         "Maroon5",
                         "Single;",
@@ -60,7 +60,7 @@ public class GridExample extends Div {
                         "11000",
                         "3100"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "A Head Full Of Dreams",
                         "Coldplay",
                         "Deluxe;",
@@ -70,7 +70,7 @@ public class GridExample extends Div {
                         "2230",
                         "4030"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "21",
                         "Adele",
                         "Deluxe;",
@@ -80,7 +80,7 @@ public class GridExample extends Div {
                         "1007",
                         "12000"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Warm On A Cold Night",
                         "HONNE",
                         "EP;",
@@ -90,7 +90,7 @@ public class GridExample extends Div {
                         "1502",
                         "5000"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Take Me To The Alley",
                         "Gregory Porter",
                         "Deluxe;",
@@ -100,7 +100,7 @@ public class GridExample extends Div {
                         "1200",
                         "5003"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Make Out",
                         "LANY",
                         "EP;",
@@ -110,7 +110,7 @@ public class GridExample extends Div {
                         "8005",
                         "9000"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Get Lucky",
                         "Daft Punk",
                         "Single",
@@ -120,7 +120,7 @@ public class GridExample extends Div {
                         "11000",
                         "1500"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Valtari",
                         "Sigur Rós",
                         "EP;",
@@ -130,7 +130,7 @@ public class GridExample extends Div {
                         "9000",
                         "8010"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Bush",
                         "Snoop Dogg",
                         "EP",
@@ -140,7 +140,7 @@ public class GridExample extends Div {
                         "3000",
                         "2005"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Chaos And The Calm",
                         "James Bay",
                         "EP",
@@ -150,7 +150,7 @@ public class GridExample extends Div {
                         "8007",
                         "9000"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "4",
                         "Beyoncé",
                         "Deluxe",
@@ -160,7 +160,7 @@ public class GridExample extends Div {
                         "7000",
                         "11002"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "I Won't Give Up",
                         "Jason Mraz",
                         "Single",
@@ -170,7 +170,7 @@ public class GridExample extends Div {
                         "8000",
                         "2000"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Following My Intuition",
                         "Craig David",
                         "Deluxe",
@@ -180,7 +180,7 @@ public class GridExample extends Div {
                         "9001",
                         "8100"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Blue Skies",
                         "Lenka",
                         "Single",
@@ -190,7 +190,7 @@ public class GridExample extends Div {
                         "11000",
                         "9000"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "This Is Acting",
                         "Sia",
                         "EP",
@@ -200,7 +200,7 @@ public class GridExample extends Div {
                         "11400",
                         "5800"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "Blurryface",
                         "Twenty One Pilots",
                         "EP",
@@ -210,7 +210,7 @@ public class GridExample extends Div {
                         "6010",
                         "3020"
                 ), headers),
-                new GuiItem(List.of(
+                new GuiItem(0, List.of(
                         "I am Not The Only One",
                         "Sam Smith",
                         "Single",

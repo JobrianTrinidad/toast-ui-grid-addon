@@ -46,9 +46,9 @@ Here is an example of how to use the TuiGrid component:
     // Create a list of items
     List<Item> items = new ArrayList<>();
     List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen");
-    items.add(new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
-    items.add(new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
-    items.add(new GuiItem(List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
+    items.add(new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
+    items.add(new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
+    items.add(new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
     
     // Create a list of columns
     List<Column> columns = new ArrayList<>();

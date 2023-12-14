@@ -452,7 +452,7 @@ public class TuiGrid extends Div {
     /**
      * Sets the selected item in the grid based on the provided column name.
      *
-     * @param colName the String value to be set
+     * @param colName  the String value to be set
      * @param colWidth the int value to be set
      */
     @ClientCallable
@@ -507,24 +507,25 @@ public class TuiGrid extends Div {
             }
             tempRecord.set(temp.getHeaders().indexOf(columnName), columnValue);
         }
-        tempItems.set(row, new GuiItem(tempRecord, temp.getHeaders()));
+        tempItems.set(row, new GuiItem((int) record.getNumber("id"), tempRecord, temp.getHeaders()));
 //        this.items = new ArrayList<>();
         this.items = tempItems;
     }
 
-    public void refreshGrid(){
+    public void refreshGrid() {
         this.getElement()
                 .executeJs(
                         "toastuigrid.refreshLayout($0);",
                         this);
     }
 
-    public void setFilter(String colName, String filter){
+    public void setFilter(String colName, String filter) {
         this.getElement()
                 .executeJs(
                         "toastuigrid.setFilter($0, $1, $2);",
                         colName, filter, this);
     }
+
     /**
      * Handles the click event in the grid for the specified column name and row.
      */
@@ -689,7 +690,7 @@ public class TuiGrid extends Div {
                 recordData.add(jsonValue.get(header).toString());
             }
             this.items = new ArrayList<>();
-            this.items.add(new GuiItem(recordData, headers));
+            this.items.add(new GuiItem((int) jsonValue.getNumber("id"), recordData, headers));
         }
     }
 
