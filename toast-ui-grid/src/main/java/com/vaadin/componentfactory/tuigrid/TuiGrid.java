@@ -155,16 +155,6 @@ public class TuiGrid extends Div {
 
     }
 
-    //    public void addMenu(String menuTitle) {
-//        AATContextMenu aatContextMenu = new AATContextMenu(menuTitle);
-//        tuiGridOption.aatContextMenuList.add(aatContextMenu);
-//    }
-//
-//    public void addMenu(String menuTitle, String[] children) {
-//        AATContextMenu aatContextMenu = new AATContextMenu(menuTitle, children);
-//        tuiGridOption.aatContextMenuList.add(aatContextMenu);
-//    }
-
     public void setAutoSave(boolean autoSave) {
         tuiGridOption.autoSave = autoSave;
         this.updateTuiGridOptions();
@@ -508,7 +498,6 @@ public class TuiGrid extends Div {
             tempRecord.set(temp.getHeaders().indexOf(columnName), columnValue);
         }
         tempItems.set(row, new GuiItem((int) record.getNumber("id"), tempRecord, temp.getHeaders()));
-//        this.items = new ArrayList<>();
         this.items = tempItems;
     }
 
@@ -549,9 +538,6 @@ public class TuiGrid extends Div {
                 row.add(cell);
             }
         }
-//        Cell cell = new Cell(focusedCell.getString("columnName"),
-//                (int) focusedCell.getNumber("rowKey"),
-//                focusedCell.getString("value"));
         switch (cmd) {
             case "copy":
             case "copyColumns":
@@ -569,7 +555,6 @@ public class TuiGrid extends Div {
                 break;
         }
     }
-
 
     /**
      * Handles the onCheck event in the grid.
@@ -653,27 +638,6 @@ public class TuiGrid extends Div {
 
     }
 
-//    private void updateData(int nRow, JsonObject record) {
-//        if (nRow >= this.items.size()) {
-////                GuiItem temp = (GuiItem) this.items.get(0);
-//            List<String> itemData = new ArrayList<>();
-//            for (int i = 0; i < headers.size(); i++) {
-//                itemData.add("");
-//            }
-//
-//            GuiItem temp = new GuiItem(itemData, headers);
-//            List<String> tempData = new ArrayList<>();
-//            for (int i = 0; i < temp.getRecordData().size(); i++) {
-//                tempData.add("");
-//            }
-//            List<Item> mutableItems = new ArrayList<>(this.items);
-//            mutableItems.add(new GuiItem(tempData, temp.getHeaders()));
-//            this.items = mutableItems;
-//        }
-//        refreshData(nRow, record);
-//
-//    }
-
     /**
      * Handles the event to get data from the grid.
      */
@@ -729,6 +693,4 @@ public class TuiGrid extends Div {
     public void addItemDeleteListener(ComponentEventListener<ItemDeleteEvent> listener) {
         addListener(ItemDeleteEvent.class, listener);
     }
-
-
 }

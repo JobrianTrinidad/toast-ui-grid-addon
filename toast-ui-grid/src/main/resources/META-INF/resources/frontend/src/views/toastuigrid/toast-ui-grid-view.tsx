@@ -32,21 +32,10 @@ type MenuItem = {
     disable?: boolean;
 };
 
-type ContextMenuDic = {
-    colName: string;
-    items: MenuItem[];
-}
-
 type FilterValue = {
     colName: string;
     filter: string;
 }
-
-type SelectParams = {
-    text: string;
-    value: string;
-};
-
 
 window.toastuigrid = {
     // This function is responsible for creating a grid component.
@@ -135,7 +124,7 @@ window.toastuigrid = {
                 }
                 return value;
             }));
-// Send the cleaned object to the server getRowSpanData
+
             if (gridInst) {
                 let record: {} = {};
                 for (const column of columns) {
@@ -246,8 +235,6 @@ window.toastuigrid = {
                     let element: Element | null = document.querySelector(`[data-column-name="${contextMenu1.title}"]`);
                     if (element !== null) {
                         let rect: DOMRect = element.getBoundingClientRect();
-
-                        // let top: number = rect.top + window.scrollY;
                         let left: number = rect.left + window.scrollX;
 
                         if (event.clientX >= left && event.clientX < rect.right) {
@@ -262,9 +249,6 @@ window.toastuigrid = {
 
             gridInst = container.grid.table;
             editingRowKey = gridInst.getFocusedCell()['rowKey'];
-            // if (event.defaultPrevented === false) {
-            //     gridInst.restore();
-            // }
             const targetElement: HTMLElement = event.target as HTMLElement;
             if (targetElement.tagName === "VAADIN-APP-LAYOUT" || targetElement.tagName === "DIV") {
                 gridInst.finishEditing(editingRowKey, prevColumnName);
@@ -510,8 +494,6 @@ window.toastuigrid = {
 
         contextMenu.register("#target", (e: PointerEvent, cmd: string): void => {
             let rowKey: RowKey = container.grid.table.getFocusedCell()['rowKey'] || 0;
-            console.log("grid table: ", container.grid.table.getData());
-            console.log("Cell Cell: ", container.grid.table.getRow(rowKey));
             container.$server.onContextMenuAction(cmd, container.grid.table.getRow(rowKey))
         }, contextMenusAdded);
 
@@ -541,7 +523,6 @@ window.toastuigrid = {
 
         gridInst.startEditingAt(gridInst.getFilteredData().length - 1, 0);
         container.$server.onAddRecord(row);
-// this.updateGrid(container);
     },
 
     validateColumn(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } },
@@ -780,15 +761,10 @@ window.toastuigrid = {
                 return acc;
             }, {})
         }
-    }
-    ,
+    },
 //This function parses the JSON data for complex columns and returns the parsed complex columns.
 // It also trims the child names.
-    getTableData(parsedData
-                     :
-                     OptRow[]
-    ):
-        OptRow[] {
+    getTableData(parsedData: OptRow[]): OptRow[] {
         let listData: OptRow[] = parsedData;
         for (const data of listData) {
 
@@ -797,10 +773,8 @@ window.toastuigrid = {
                 data._children = this.getTableData(JSON.parse(data._children));
             }
         }
-        console.log("listData: ", listData);
         return listData;
-    }
-    ,
+    },
 //This function parses the JSON data for the summary and returns the parsed summary object.
 // It handles column content by calling _setColumnContentMatchedName to modify the column content based on its value.
     refreshLayout(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
@@ -843,20 +817,17 @@ window.toastuigrid = {
     }, optionsJson: string): void {
         let parsedOptions = JSON.parse(optionsJson);
         container.grid.setOption(parsedOptions);
-    }
-    ,
+    },
     setTableData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }, data: string): void {
         let parsedItems: OptRow[] = JSON.parse(data);
         if (container && container.grid && container.grid.table) {
             container.grid.table.resetData(this.getTableData(parsedItems));
         }
-// this.updateGrid(container);
     },
 
     setTest: function (container: HTMLElement, content: any): void {
         console.log("Event Test: ", content);
-    }
-    ,
+    },
 //This function updates the grid by rendering the grid component using ReactDOM.render.
     updateGrid: function (container: HTMLElement & {
         $server: any,

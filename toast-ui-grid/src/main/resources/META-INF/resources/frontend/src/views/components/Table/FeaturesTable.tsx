@@ -108,14 +108,6 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 grid.appendRows(loadRows(grid.store.data.viewData.length));
             });
 
-            grid.on('editingStart' as GridEventName, (ev: TuiGridEvent): void => {
-                // onEditingStart(ev);
-            });
-
-            grid.on('editingFinish' as GridEventName, (ev: TuiGridEvent): void => {
-                // onEditingFinish(ev);
-            });
-
             grid.on('selection' as GridEventName, (ev: TuiGridEvent): void => {
                 if (onSelection) {
                     onSelection(ev);
@@ -201,16 +193,6 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 getGridInstance(grid);
             }
         }
-
-        // let range: any[] = [];
-        // for (let row: number = 0; row < TableData.length; row++) {
-        //     let temp: any[] = [];
-        //     for (let col: number = 0; col < Object.keys(TableData[row]).length; col++) {
-        //         const cellValue = TableData[row][Object.keys(TableData[row])[col]];
-        //         temp.push({row: row, column: col, value: cellValue});
-        //     }
-        //     range.push(temp);
-        // }
 
         let range: Cell[][] = TableData.map((row: OptRow, rowIndex: number) => {
             return Object.keys(row).map((key: string, colIndex: number): Cell => {
