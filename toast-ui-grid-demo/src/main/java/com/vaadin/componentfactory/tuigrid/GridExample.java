@@ -1,8 +1,10 @@
 package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.model.*;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
@@ -28,13 +30,16 @@ public class GridExample extends Div {
         grid.setItems(this.getTableData());
         grid.setComplexColumns(this.getCustomHeader());
         grid.setSummaries(this.getSummaries());
-
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
         grid.addItemChangeListener(ev -> {
             sp.add(ev.getColName() + ": " + grid.getData().get(1).toJSON());
         });
-        add(grid, sp);
+
+        Button btnReload = new Button("Reload");
+        btnReload.addClickListener(e -> grid.restore());
+
+        add(new VerticalLayout(btnReload), grid);
     }
 
     private List<Item> getTableData() {
