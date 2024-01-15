@@ -30,7 +30,9 @@ public class Summary {
     public enum OperationType {
         sum,
         avg,
-        max
+        max,
+        min,
+        rowcount
     }
 
     private String colName;

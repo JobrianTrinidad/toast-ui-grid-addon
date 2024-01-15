@@ -246,7 +246,7 @@ public class GridExample extends Div {
         List<Summary> summaries = List.of(
                 new Summary("price", Summary.OperationType.sum),
                 new Summary("download", Summary.OperationType.avg),
-                new Summary("listen", Summary.OperationType.max));
+                new Summary("listen", Summary.OperationType.rowcount));
         return summaries;
     }
 

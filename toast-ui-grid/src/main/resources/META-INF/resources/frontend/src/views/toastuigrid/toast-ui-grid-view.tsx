@@ -294,7 +294,7 @@ window.toastuigrid = {
                 TableData={this.getTableData(parsedItems)}
                 columns={columns}
                 // contextMenu={contextMenu}
-                summary={this.getSummary(parsedOptions.summary)}
+                summary={this.getSummary(parsedOptions.summary, parsedItems.length)}
                 columnOptions={parsedOptions.columnOptions}
                 header={this.getHeader(parsedOptions.header)}
                 width={parsedOptions.width}
@@ -334,7 +334,7 @@ window.toastuigrid = {
     },
 //This function is a wrapper around _createGrid that delays the execution using setTimeout.
 // It takes a container element, JSON data for items, and JSON data for options.
-    _setColumnContentMatchedName(columnContent: any): void {
+    _setColumnContentMatchedName(columnContent: any, rowCount: number): void {
         const onSum = (): { template: (valueMap: any) => string } => {
             return {
                 template: (valueMap: any): string => {
@@ -363,6 +363,13 @@ window.toastuigrid = {
                 }
             }
         };
+        const onRowCount = (): { template: (valueMap: any) => string } => {
+            return {
+                template: (valueMap: any): string => {
+                    return `Row Count: ${rowCount}`;
+                }
+            }
+        };
 
         switch (columnContent[Object.keys(columnContent)[0]]) {
             case "sum" :
@@ -376,6 +383,9 @@ window.toastuigrid = {
                 break;
             case "min" :
                 columnContent[Object.keys(columnContent)[0]] = onMin();
+                break;
+            case "rowcount" :
+                columnContent[Object.keys(columnContent)[0]] = onRowCount();
                 break;
             default:
                 columnContent[Object.keys(columnContent)[0]] = onSum();
@@ -740,7 +750,7 @@ window.toastuigrid = {
     }
     ,
 //This function parses the JSON data for row headers and returns an array of trimmed row header names.
-    getSummary(parsedSummary: any) {
+    getSummary(parsedSummary: any, rowCount: number) {
         if (parsedSummary == undefined || !parsedSummary.hasOwnProperty('columnContent'))
             return null;
         let summaries: any = parsedSummary;
@@ -748,7 +758,7 @@ window.toastuigrid = {
         if (columnContents.length === 0)
             return null;
         for (const columnContent of columnContents) {
-            this._setColumnContentMatchedName(columnContent);
+            this._setColumnContentMatchedName(columnContent, rowCount);
         }
 
         return summaries = {
