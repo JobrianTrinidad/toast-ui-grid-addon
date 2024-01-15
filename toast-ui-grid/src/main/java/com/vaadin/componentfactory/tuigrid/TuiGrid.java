@@ -501,7 +501,6 @@ public class TuiGrid extends Div {
         this.items = tempItems;
     }
 
-    @ClientCallable
     public void refreshGrid() {
         this.getElement()
                 .executeJs(
@@ -509,7 +508,6 @@ public class TuiGrid extends Div {
                         this);
     }
 
-    @ClientCallable
     public void reloadData() {
         this.getElement()
                 .executeJs(

@@ -183,7 +183,7 @@ window.toastuigrid = {
                 && event.code === "Space") {
                 event.preventDefault();
                 if (rangeSelected.length === 0) {
-                    let selectedIndex = gridInst.getFocusedCell()["rowKey"];
+                    let selectedIndex: string | number | null = gridInst.getFocusedCell()["rowKey"];
                     if (gridInst.getCheckedRowKeys().includes(selectedIndex))
                         gridInst.uncheck(selectedIndex);
                     else
@@ -780,6 +780,12 @@ window.toastuigrid = {
     refreshLayout(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
         let gridInst: TuiGrid = container.grid.table;
         gridInst.refreshLayout();
+    },
+
+    reloadData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
+        let gridInst: TuiGrid = container.grid.table;
+        gridInst.finishEditing();
+        gridInst.reloadData();
     },
 //This function parses the JSON data for the columns and returns the parsed columns.
 // It handles special cases for input and select editors, and also handles depth0 and depth1 data for select editors.
