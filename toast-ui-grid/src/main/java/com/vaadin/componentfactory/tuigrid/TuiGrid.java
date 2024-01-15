@@ -501,10 +501,19 @@ public class TuiGrid extends Div {
         this.items = tempItems;
     }
 
+    @ClientCallable
     public void refreshGrid() {
         this.getElement()
                 .executeJs(
                         "toastuigrid.refreshLayout($0);",
+                        this);
+    }
+
+    @ClientCallable
+    public void reloadData() {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.reloadData($0);",
                         this);
     }
 
