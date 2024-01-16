@@ -795,7 +795,7 @@ window.toastuigrid = {
     reloadData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
         let gridInst: TuiGrid = container.grid.table;
         console.log("reloadData: ", gridInst);
-        gridInst.finishEditing();
+        gridInst.reloadData();
     },
 //This function parses the JSON data for the columns and returns the parsed columns.
 // It handles special cases for input and select editors, and also handles depth0 and depth1 data for select editors.
