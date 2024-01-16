@@ -37,7 +37,7 @@ public class GridExample extends Div {
         });
 
         Button btnReload = new Button("Reload");
-        btnReload.addClickListener(e -> grid.restore());
+        btnReload.addClickListener(e -> grid.reloadData());
 
         add(new VerticalLayout(btnReload), grid);
     }

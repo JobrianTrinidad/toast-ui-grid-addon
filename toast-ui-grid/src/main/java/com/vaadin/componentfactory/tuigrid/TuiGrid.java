@@ -508,10 +508,10 @@ public class TuiGrid extends Div {
                         this);
     }
 
-    public void restore() {
+    public void reloadData() {
         this.getElement()
                 .executeJs(
-                        "toastuigrid.restore($0);",
+                        "toastuigrid.reloadData($0);",
                         this);
     }
 
