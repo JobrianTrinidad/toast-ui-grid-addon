@@ -294,7 +294,7 @@ window.toastuigrid = {
                 TableData={this.getTableData(parsedItems)}
                 columns={columns}
                 // contextMenu={contextMenu}
-                summary={this.getSummary(parsedOptions.summary, parsedItems.length)}
+                summary={this.getSummary(parsedOptions.summary)}
                 columnOptions={parsedOptions.columnOptions}
                 header={this.getHeader(parsedOptions.header)}
                 width={parsedOptions.width}
@@ -334,7 +334,7 @@ window.toastuigrid = {
     },
 //This function is a wrapper around _createGrid that delays the execution using setTimeout.
 // It takes a container element, JSON data for items, and JSON data for options.
-    _setColumnContentMatchedName(columnContent: any, rowCount: number): void {
+    _setColumnContentMatchedName(columnContent: any): void {
         const onSum = (): { template: (valueMap: any) => string } => {
             return {
                 template: (valueMap: any): string => {
@@ -366,7 +366,7 @@ window.toastuigrid = {
         const onRowCount = (): { template: (valueMap: any) => string } => {
             return {
                 template: (valueMap: any): string => {
-                    return `Row Count: ${rowCount}`;
+                    return `Row Count: ${valueMap.cnt}`;
                 }
             }
         };
@@ -590,7 +590,10 @@ window.toastuigrid = {
                 column.editor.hasOwnProperty('options') &&
                 !column.editor.options.hasOwnProperty('maxLength')) {
 
+                console.log("Options of columns: ", column.editor.options);
                 column.editor.options = JSON.parse(column.editor.options);
+                console.log("Parsed options of columns: ", JSON.parse(column.editor.options));
+
                 if (column.editor.options.hasOwnProperty('fromYear') &&
                     parseInt(column.editor.options.fromYear) > 0) {
                     const fromYear: number = parseInt(column.editor.options.fromYear);
@@ -750,7 +753,7 @@ window.toastuigrid = {
     }
     ,
 //This function parses the JSON data for row headers and returns an array of trimmed row header names.
-    getSummary(parsedSummary: any, rowCount: number) {
+    getSummary(parsedSummary: any) {
         if (parsedSummary == undefined || !parsedSummary.hasOwnProperty('columnContent'))
             return null;
         let summaries: any = parsedSummary;
@@ -758,7 +761,7 @@ window.toastuigrid = {
         if (columnContents.length === 0)
             return null;
         for (const columnContent of columnContents) {
-            this._setColumnContentMatchedName(columnContent, rowCount);
+            this._setColumnContentMatchedName(columnContent);
         }
 
         return summaries = {
@@ -794,7 +797,6 @@ window.toastuigrid = {
 
     reloadData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
         let gridInst: TuiGrid = container.grid.table;
-        console.log("reloadData: ", gridInst);
         gridInst.reloadData();
     },
 //This function parses the JSON data for the columns and returns the parsed columns.
