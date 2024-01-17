@@ -609,6 +609,7 @@ window.toastuigrid = {
             }
 
             if (column.editor && column.editor.type === "select") {
+                console.log("AAAA: ", column["depth0"]);
                 const tempColumn = {
                     header: column.header,
                     name: column.name,
@@ -618,8 +619,8 @@ window.toastuigrid = {
                         type: DropDown,//"select"
                         options: {
                             ...column.editor.options,
-                            listItems: column["depth0"] ? column["depth0"] : []
-                            // listItems: column["depth0"] ? JSON.parse(column["depth0"]) : []
+                            // listItems: column["depth0"] ? column["depth0"] : []
+                            listItems: column["depth0"] ? JSON.parse(column["depth0"]) : []
                         }
                     },
                     ...(column["depth1"] != "[]" && {
