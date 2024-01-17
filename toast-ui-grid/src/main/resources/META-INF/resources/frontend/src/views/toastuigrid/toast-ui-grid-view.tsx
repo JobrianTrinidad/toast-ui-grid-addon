@@ -591,7 +591,7 @@ window.toastuigrid = {
                 !column.editor.options.hasOwnProperty('maxLength')) {
 
                 console.log("Options of columns: ", column.editor.options);
-                // column.editor.options = JSON.parse(column.editor.options);
+                column.editor.options = JSON.parse(column.editor.options);
                 // console.log("Parsed options of columns: ", JSON.parse(column.editor.options));
 
                 if (column.editor.options.hasOwnProperty('fromYear') &&
@@ -619,6 +619,7 @@ window.toastuigrid = {
                         options: {
                             ...column.editor.options,
                             listItems: column["depth0"] ? JSON.parse(column["depth0"]) : []
+                            // listItems: column["depth0"] ? JSON.parse(column["depth0"]) : []
                         }
                     },
                     ...(column["depth1"] != "[]" && {
