@@ -618,7 +618,7 @@ window.toastuigrid = {
                         type: DropDown,//"select"
                         options: {
                             ...column.editor.options,
-                            listItems: column["depth0"] ? JSON.parse(column["depth0"]) : []
+                            listItems: column["depth0"] ? column["depth0"] : []
                             // listItems: column["depth0"] ? JSON.parse(column["depth0"]) : []
                         }
                     },
