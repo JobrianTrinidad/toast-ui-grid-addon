@@ -73,6 +73,7 @@ class DropDown implements CellEditor {
                 }
             }
         } = this.props;
+        console.log("props: ", this.props);
         const inputRef = createRef<HTMLSelectElement>();
         const inputElement = (
                 <Select

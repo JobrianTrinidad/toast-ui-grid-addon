@@ -32,6 +32,7 @@ public class GridExample extends Div {
         grid.setSummaries(this.getSummaries());
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
+        grid.setHeight("calc(100vh - 106px");
         grid.addItemChangeListener(ev -> {
             sp.add(ev.getColName() + ": " + grid.getData().get(1).toJSON());
         });

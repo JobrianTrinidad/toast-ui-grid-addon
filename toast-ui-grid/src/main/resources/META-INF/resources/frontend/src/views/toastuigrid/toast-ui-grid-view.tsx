@@ -298,9 +298,10 @@ window.toastuigrid = {
                 columnOptions={parsedOptions.columnOptions}
                 header={this.getHeader(parsedOptions.header)}
                 width={parsedOptions.width}
-                bodyHeight={(parsedOptions.header.height && parsedOptions.header.height > 0)
-                    ? bodyHeight - parsedOptions.header.height
-                    : bodyHeight - 100}
+                // bodyHeight={(parsedOptions.header.height && parsedOptions.header.height > 0)
+                //     ? bodyHeight - parsedOptions.header.height
+                //     : bodyHeight - 100}
+                bodyHeight={"fitToParent"}
                 scrollX={parsedOptions.scrollX}
                 scrollY={parsedOptions.scrollY}
                 rowHeight={40}
@@ -609,7 +610,6 @@ window.toastuigrid = {
             }
 
             if (column.editor && column.editor.type === "select") {
-                console.log("AAAA: ", column["depth0"]);
                 const tempColumn = {
                     header: column.header,
                     name: column.name,
