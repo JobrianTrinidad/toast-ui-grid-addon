@@ -592,7 +592,7 @@ window.toastuigrid = {
 
                 console.log("Options of columns: ", column.editor.options);
                 // column.editor.options = JSON.parse(column.editor.options);
-                console.log("Parsed options of columns: ", JSON.parse(column.editor.options));
+                // console.log("Parsed options of columns: ", JSON.parse(column.editor.options));
 
                 if (column.editor.options.hasOwnProperty('fromYear') &&
                     parseInt(column.editor.options.fromYear) > 0) {
