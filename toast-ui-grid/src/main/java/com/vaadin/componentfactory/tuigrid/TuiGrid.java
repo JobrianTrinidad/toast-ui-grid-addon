@@ -29,6 +29,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
+import elemental.json.JsonArray;
 import elemental.json.JsonNull;
 import elemental.json.JsonObject;
 import elemental.json.JsonValue;
@@ -511,8 +512,29 @@ public class TuiGrid extends Div {
     public void reloadData() {
         this.getElement()
                 .executeJs(
-                        "toastuigrid.reloadData($0);",
+                        "toastuigrid.modifiedData($0);",
                         this);
+    }
+
+    @ClientCallable
+    public void modifiedData(JsonObject modifiedData) {
+        JsonArray updatedRows = modifiedData.getArray("updatedRows");
+        JsonArray createdRows = modifiedData.getArray("createdRows");
+        JsonArray deletedRows = modifiedData.getArray("deletedRows");
+        ItemSaveEvent event = new ItemSaveEvent(this, createdRows, updatedRows, deletedRows,
+                this.tuiGridOption.columns, headers, true);
+
+        RuntimeException exception = null;
+        try {
+            fireEvent(event);
+            this.getElement()
+                    .executeJs(
+                            "toastuigrid.resetOriginData($0);",
+                            this);
+        } catch (RuntimeException e) {
+            exception = e;
+            event.setCancelled(true);
+        }
     }
 
     public void setFilter(String colName, String filter) {
@@ -615,6 +637,23 @@ public class TuiGrid extends Div {
 
     @ClientCallable
     public void onAddRecord(JsonObject eventData) {
+        GuiItem item = convertJsonToItem(eventData);
+        this.items = new ArrayList<>(this.items);
+        this.items.add(item);
+
+        ItemAddEvent addEvent = new ItemAddEvent(this, item, true);
+
+        RuntimeException exception = null;
+        try {
+            fireEvent(addEvent);
+        } catch (RuntimeException e) {
+            exception = e;
+            addEvent.setCancelled(true);
+        }
+
+    }
+
+    private GuiItem convertJsonToItem(JsonObject eventData) {
         GuiItem item = new GuiItem();
         List<String> record = new ArrayList<>();
 
@@ -630,19 +669,7 @@ public class TuiGrid extends Div {
 
         item.setHeaders(headers);
         item.setRecordData(record);
-        this.items = new ArrayList<>(this.items);
-        this.items.add(item);
-
-        ItemAddEvent addEvent = new ItemAddEvent(this, item, true);
-
-        RuntimeException exception = null;
-        try {
-            fireEvent(addEvent);
-        } catch (RuntimeException e) {
-            exception = e;
-            addEvent.setCancelled(true);
-        }
-
+        return item;
     }
 
     /**
@@ -690,6 +717,15 @@ public class TuiGrid extends Div {
      */
     public void addColumnResizeListener(ComponentEventListener<ColumnResizeEvent> listener) {
         addListener(ColumnResizeEvent.class, listener);
+    }
+
+    /**
+     * Adds a listener for {@link ItemSaveEvent} to the component.
+     *
+     * @param listener the listener to be added
+     */
+    public void addItemSaveListener(ComponentEventListener<ItemSaveEvent> listener) {
+        addListener(ItemSaveEvent.class, listener);
     }
 
     /**

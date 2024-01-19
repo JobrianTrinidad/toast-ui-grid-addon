@@ -37,19 +37,24 @@ public class GridExample extends Div {
             sp.add(ev.getColName() + ": " + grid.getData().get(1).toJSON());
         });
 
+        grid.addItemSaveListener(ev -> {
+            sp.add("Here is: " + ev.getUpdatedRows().getObject(0) + " " + ev.getUpdatedRows().length());
+        });
+
         Button btnReload = new Button("Reload");
         // Assuming 'btnReload' is a Button and 'grid' is a Grid component
         btnReload.addClickListener(e -> grid.reloadData());
 //        this.getElement().getParent().appendChild(btnReload.getElement());
         this.getParent().ifPresent(parent -> parent.getElement().appendChild(btnReload.getElement()));
-        add(btnReload, grid);
+        add(sp, btnReload, grid);
     }
 
     private List<Item> getTableData() {
-        List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen");
+        List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen", "check");
         List<Item> TableData = List.of(
-                new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050",
+                        "true"), headers),
+                new GuiItem(1, List.of(
                         "X",
                         "Ed Sheeran",
                         "Deluxe;",
@@ -57,8 +62,9 @@ public class GridExample extends Div {
                         "",
                         "20000",
                         "1900",
-                        "2005"), headers),
-                new GuiItem(0, List.of(
+                        "2005",
+                        "false"), headers),
+                new GuiItem(2, List.of(
                         "Moves Like Jagger",
                         "Maroon5",
                         "Single;",
@@ -66,9 +72,10 @@ public class GridExample extends Div {
                         "2011-08-08",
                         "7000",
                         "11000",
-                        "3100"
+                        "3100",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(3, List.of(
                         "A Head Full Of Dreams",
                         "Coldplay",
                         "Deluxe;",
@@ -76,9 +83,10 @@ public class GridExample extends Div {
                         "2015-12-04",
                         "25000",
                         "2230",
-                        "4030"
+                        "4030",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(4, List.of(
                         "21",
                         "Adele",
                         "Deluxe;",
@@ -86,9 +94,10 @@ public class GridExample extends Div {
                         "2011-01-21",
                         "15000",
                         "1007",
-                        "12000"
+                        "12000",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(5, List.of(
                         "Warm On A Cold Night",
                         "HONNE",
                         "EP;",
@@ -96,9 +105,10 @@ public class GridExample extends Div {
                         "2016-07-22",
                         "11000",
                         "1502",
-                        "5000"
+                        "5000",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(6, List.of(
                         "Take Me To The Alley",
                         "Gregory Porter",
                         "Deluxe;",
@@ -106,9 +116,10 @@ public class GridExample extends Div {
                         "2016-09-02",
                         "30000",
                         "1200",
-                        "5003"
+                        "5003",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(7, List.of(
                         "Make Out",
                         "LANY",
                         "EP;",
@@ -116,9 +127,10 @@ public class GridExample extends Div {
                         "2015-12-11",
                         "12000",
                         "8005",
-                        "9000"
+                        "9000",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(8, List.of(
                         "Get Lucky",
                         "Daft Punk",
                         "Single",
@@ -126,9 +138,10 @@ public class GridExample extends Div {
                         "2013-04-23",
                         "9000",
                         "11000",
-                        "1500"
+                        "1500",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(9, List.of(
                         "Valtari",
                         "Sigur Rós",
                         "EP;",
@@ -136,9 +149,10 @@ public class GridExample extends Div {
                         "2012-05-31",
                         "10000",
                         "9000",
-                        "8010"
+                        "8010",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(10, List.of(
                         "Bush",
                         "Snoop Dogg",
                         "EP",
@@ -146,9 +160,10 @@ public class GridExample extends Div {
                         "2015-05-12",
                         "18000",
                         "3000",
-                        "2005"
+                        "2005",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(11, List.of(
                         "Chaos And The Calm",
                         "James Bay",
                         "EP",
@@ -156,9 +171,10 @@ public class GridExample extends Div {
                         "2015-03-23",
                         "12000",
                         "8007",
-                        "9000"
+                        "9000",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(12, List.of(
                         "4",
                         "Beyoncé",
                         "Deluxe",
@@ -166,9 +182,10 @@ public class GridExample extends Div {
                         "2011-07-26",
                         "12000",
                         "7000",
-                        "11002"
+                        "11002",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(13, List.of(
                         "I Won't Give Up",
                         "Jason Mraz",
                         "Single",
@@ -176,9 +193,10 @@ public class GridExample extends Div {
                         "2012-01-03",
                         "7000",
                         "8000",
-                        "2000"
+                        "2000",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(14, List.of(
                         "Following My Intuition",
                         "Craig David",
                         "Deluxe",
@@ -186,9 +204,10 @@ public class GridExample extends Div {
                         "2016-10-01",
                         "15000",
                         "9001",
-                        "8100"
+                        "8100",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(15, List.of(
                         "Blue Skies",
                         "Lenka",
                         "Single",
@@ -196,9 +215,10 @@ public class GridExample extends Div {
                         "2015-03-18",
                         "6000",
                         "11000",
-                        "9000"
+                        "9000",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(16, List.of(
                         "This Is Acting",
                         "Sia",
                         "EP",
@@ -206,9 +226,10 @@ public class GridExample extends Div {
                         "2016-10-22",
                         "20000",
                         "11400",
-                        "5800"
+                        "5800",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(17, List.of(
                         "Blurryface",
                         "Twenty One Pilots",
                         "EP",
@@ -216,9 +237,10 @@ public class GridExample extends Div {
                         "2015-05-19",
                         "13000",
                         "6010",
-                        "3020"
+                        "3020",
+                        "false"
                 ), headers),
-                new GuiItem(0, List.of(
+                new GuiItem(18, List.of(
                         "I am Not The Only One",
                         "Sam Smith",
                         "Single",
@@ -226,7 +248,8 @@ public class GridExample extends Div {
                         "",
                         "",
                         "",
-                        ""
+                        "",
+                        "false"
                 ), headers));
 
         return TableData;
@@ -241,7 +264,9 @@ public class GridExample extends Div {
                 new Column(new ColumnBaseOption(4, "Release", "release", 150, "center", "tui-grid-cell-required"), true, "datePicker", new DateOption("yyyy-MM-dd", false)),
                 new Column(new ColumnBaseOption(5, "Price", "price", 150, "center", ""), "asc", true),
                 new Column(new ColumnBaseOption(6, "Download", "download", 150, "center", "")),
-                new Column(new ColumnBaseOption(7, "Listen", "listen", 150, "center", "")));
+                new Column(new ColumnBaseOption(7, "Listen", "listen", 150, "center", "")),
+                new Column(new ColumnBaseOption(8, "Check", "check", 150, "center", ""), true, "check"));
+
         return columns;
     }
 

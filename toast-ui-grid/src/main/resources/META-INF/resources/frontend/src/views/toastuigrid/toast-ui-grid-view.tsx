@@ -12,11 +12,12 @@ import InputComponent from "../components/input/ada-input";
 import {CheckboxRenderer, RowNumberRenderer} from '../renderer/renderer';
 import DropDown from "../components/dropdown/index";
 import FeatureTable from "../components/Table/FeaturesTable";
-import TuiGrid, {ColumnInfo, FilterState, Row, RowKey} from 'tui-grid';
+import TuiGrid, {ColumnInfo, FilterState, Row, RowKey, ModifiedRows} from 'tui-grid';
 import ContextMenu from 'tui-context-menu';
 import {OptColumn, OptRow} from 'tui-grid/types/options';
 import {TuiGridEvent} from "tui-grid/types/event";
 import {Cell} from "../components/Table/ExcelSheet";
+import CheckboxComponent from "../components/checkbox/ada-checkbox";
 
 declare global {
     interface Window {
@@ -52,9 +53,7 @@ window.toastuigrid = {
         console.log("parsedItems: ", parsedItems);
         let parsedOptions = JSON.parse(optionsJson);
         let editingRowKey: string | number = -1;
-        let columns: OptColumn[] = this.getColumns(JSON.parse(parsedOptions.columns)).columns;
-        let contextMenus: ContextMenu[] = this.getColumns(JSON.parse(parsedOptions.columns)).contextMenus;
-        let filterValues: FilterValue[] = this.getColumns(JSON.parse(parsedOptions.columns)).filterValues;
+        const {columns, contextMenus, filterValues} = this.getColumns(container, JSON.parse(parsedOptions.columns));
         console.log("Columns: ", columns);
         let prevColumnName: string = "";
         let gridInst: TuiGrid;
@@ -118,7 +117,14 @@ window.toastuigrid = {
             container.$server.onUncheckAll(cleanedObject);
         };
         const onAfterChange = (ev: TuiGridEvent): void => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
+            let cleanedObject: {
+                changes: [{
+                    columnName: String,
+                    rowKey: number,
+                    value: String
+                }],
+                record: Row
+            } = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
                 if (value instanceof Node) {
                     return null; // Remove the DOM node reference
                 }
@@ -132,8 +138,7 @@ window.toastuigrid = {
                     record = {...record, [key]: gridInst.getValue(ev.changes[0]['rowKey'], column.name)}
                 }
                 cleanedObject = {...cleanedObject, record: record};
-                // if (gridInst.getValue(editingRowKey, columns[0].name) !== "")
-                container.$server.onUpdateData(cleanedObject);
+                this.onUpdateData(container, cleanedObject);
             }
         };
         const onColumnResize = (ev: TuiGridEvent): void => {
@@ -560,11 +565,12 @@ window.toastuigrid = {
         setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
     },
 
-    getColumns(parsedColumn: any[]): {
-        columns: OptColumn[],
-        contextMenus: ContextMenu[],
-        filterValues: FilterValue[]
-    } {
+    getColumns(container: HTMLElement & { $server: any }, parsedColumn: any[]):
+        {
+            columns: OptColumn[],
+            contextMenus: ContextMenu[],
+            filterValues: FilterValue[]
+        } {
         let columns: any[] = parsedColumn;
         let tempColumns: OptColumn[] = [{name: "id", hidden: true}];
         let contextMenus: ContextMenu[] = [{title: 'Copy', command: 'copy'},
@@ -582,18 +588,48 @@ window.toastuigrid = {
 
         let filterValues: FilterValue[] = [];
 
+        const onLoadModifiedInfo = (row: Row, colName: String, value: boolean): void => {
+            let cleanedObject: {
+                changes: [{
+                    columnName: String,
+                    rowKey: number,
+                    value: String
+                }],
+                record: Row
+            } = {
+                changes: [{
+                    columnName: colName,
+                    rowKey: row.rowKey,
+                    value: `${value}`
+                }],
+                record: row
+            };
+            this.onUpdateData(container, cleanedObject);
+        };
+
         for (let column of columns) {
-            if (column.editor && column.editor.type == "input") {
+            if (column.editor && column.editor.type === "input") {
                 column.editor.type = InputComponent;
+            } else if (column.editor && column.editor.type === "check") {
+                column = {
+                    header: column.header,
+                    name: column.name,
+                    renderer: {
+                        type: CheckboxRenderer,
+                        callback: onLoadModifiedInfo,
+                        options: {
+                            checkedTemplate: 'true',
+                            uncheckedTemplate: 'false',
+                        },
+                    },
+                }
             }
 
             if (column.hasOwnProperty('editor') &&
                 column.editor.hasOwnProperty('options') &&
                 !column.editor.options.hasOwnProperty('maxLength')) {
 
-                console.log("Options of columns: ", column.editor.options);
                 column.editor.options = JSON.parse(column.editor.options);
-                // console.log("Parsed options of columns: ", JSON.parse(column.editor.options));
 
                 if (column.editor.options.hasOwnProperty('fromYear') &&
                     parseInt(column.editor.options.fromYear) > 0) {
@@ -678,6 +714,18 @@ window.toastuigrid = {
             contextMenus: contextMenus,
             filterValues: filterValues,
         };
+    },
+
+    onUpdateData(container: HTMLElement & { $server: any },
+                 cleanedObject: {
+                     changes: [{
+                         columnName: String,
+                         rowKey: number,
+                         value: String
+                     }],
+                     record: Row
+                 }): void {
+        container.$server.onUpdateData(cleanedObject);
     },
 
 //This internal function is used to set the column content based on a matched name.
@@ -800,6 +848,20 @@ window.toastuigrid = {
     reloadData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
         let gridInst: TuiGrid = container.grid.table;
         gridInst.reloadData();
+    },
+
+    modifiedData(container: HTMLElement &
+        { $server: any, grid: JSX.Element & { table: TuiGrid } }): void {
+        let gridInst: TuiGrid = container.grid.table;
+        let modifiedRows: ModifiedRows = gridInst.getModifiedRows();
+        gridInst.resetOriginData();
+        container.$server.modifiedData(modifiedRows);
+    },
+
+    resetOriginData(container: HTMLElement &
+        { $server: any, grid: JSX.Element & { table: TuiGrid } }): void {
+        container.grid.table.resetOriginData();
+        container.grid.table.restore();
     },
 //This function parses the JSON data for the columns and returns the parsed columns.
 // It handles special cases for input and select editors, and also handles depth0 and depth1 data for select editors.

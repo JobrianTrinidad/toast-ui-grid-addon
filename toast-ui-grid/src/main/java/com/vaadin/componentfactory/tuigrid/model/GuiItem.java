@@ -38,7 +38,6 @@ public class GuiItem implements Item {
     public GuiItem(int id, List<String> recordData, List<String> headers) {
         this.id = id;
         this.recordData = recordData;
-        this.headers.clear();
         this.headers.addAll(headers);
     }
 
@@ -51,11 +50,15 @@ public class GuiItem implements Item {
 
         js.put("id", this.id);
         for (int i = 0; i < this.headers.size(); i++) {
-            js.put(this.headers.get(i), this.recordData.get(i) != null ? this.recordData.get(i) : "");
+            if (this.recordData.get(i).equals("true") ||
+                    this.recordData.get(i).equals("false"))
+                js.put(this.headers.get(i), Boolean.parseBoolean(this.recordData.get(i)));
+            else
+                js.put(this.headers.get(i), this.recordData.get(i) != null ? this.recordData.get(i) : "");
         }
         if (isExpanded()) {
             JsonObject attributesJs = Json.createObject();
-            Optional.ofNullable(isExpanded()).ifPresent(v -> attributesJs.put("expanded", v));
+            Optional.of(isExpanded()).ifPresent(v -> attributesJs.put("expanded", v));
             js.put("_attributes", attributesJs);
             Optional.ofNullable(convertChildrenToJson()).ifPresent(v -> js.put("_children", "[" + v + "]"));
         }
@@ -64,7 +67,7 @@ public class GuiItem implements Item {
 
     private String convertChildrenToJson() {
         return this._children != null
-                ? this._children.stream().map(child -> child.toJSON()).collect(Collectors.joining(","))
+                ? this._children.stream().map(GuiItem::toJSON).collect(Collectors.joining(","))
                 : "";
     }
 

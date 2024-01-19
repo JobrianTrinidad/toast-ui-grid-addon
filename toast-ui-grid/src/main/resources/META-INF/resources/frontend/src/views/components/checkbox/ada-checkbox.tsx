@@ -26,6 +26,7 @@ class CheckboxComponent implements CellEditor {
     constructor(props: CheckboxComponentProps) {
         this.props = props;
         this.el = this.renderCheckbox() as HTMLElement;
+        console.log("this.props: ", this.props);
     }
 
     getElement() {

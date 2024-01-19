@@ -1,3 +1,5 @@
+import TuiGrid, {ColumnInfo, Row, RowKey} from 'tui-grid';
+
 export class RowNumberRenderer {
     public el: HTMLElement;
 
@@ -11,16 +13,25 @@ export class RowNumberRenderer {
         return this.el;
     }
 
-    render(props: { formattedValue: string }) {
+    render(props: { formattedValue: string }): void {
         this.el.innerHTML = `No.${props.formattedValue}`;
     }
 }
+
+type CallbackFunction = (result: Row, colName: String, value: boolean) => void;
+
 export class CheckboxRenderer {
     public el: HTMLElement;
 
-    constructor(props: { value: any; grid: any; rowKey: any }) {
-        const { grid, rowKey } = props;
-
+    constructor(props: {
+        value: boolean; grid: TuiGrid; rowKey: RowKey,
+        columnInfo: ColumnInfo & {
+            renderer: CheckboxRenderer &
+                { callback: CallbackFunction }
+        }
+    }) {
+        const {grid, rowKey, columnInfo} = props;
+        console.log("callback: ", props);
         const label = document.createElement('label');
         label.className = 'checkbox tui-grid-row-header-checkbox';
         label.setAttribute('for', String(rowKey));
@@ -36,7 +47,7 @@ export class CheckboxRenderer {
         label.appendChild(customInput);
 
         hiddenInput.type = 'checkbox';
-        label.addEventListener('click', (ev) => {
+        label.addEventListener('click', (ev: MouseEvent): void => {
             ev.preventDefault();
 
             if (ev.shiftKey) {
@@ -45,6 +56,15 @@ export class CheckboxRenderer {
             }
 
             grid[!hiddenInput.checked ? 'check' : 'uncheck'](rowKey);
+            let colName: string | null = grid.getFocusedCell().columnName;
+            let row: Row | null = grid['getRow'](rowKey);
+            if (row !== null) {
+                if (colName !== null) {
+                    row[colName] = !hiddenInput.checked;
+                }
+                grid['setRow'](rowKey, row);
+                columnInfo.renderer.callback(row, colName, !hiddenInput.checked);
+            }
         });
 
         this.el = label;
@@ -52,11 +72,19 @@ export class CheckboxRenderer {
         this.render(props);
     }
 
-    getElement(): HTMLElement {
+    getElement()
+        :
+        HTMLElement {
         return this.el;
     }
 
-    render(props: { value: any }) {
+    render(props
+               :
+               {
+                   value: boolean
+               }
+    ):
+        void {
         const hiddenInput = this.el.querySelector('.hidden-input') as HTMLInputElement;
         const checked = Boolean(props.value);
 

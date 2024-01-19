@@ -147,7 +147,8 @@ public class Column {
         if (this.isEditable()) {
             JsonObject editableJs = Json.createObject();
             Optional.ofNullable(getType()).ifPresent(v -> editableJs.put("type", v));
-            if (Objects.equals(getType(), "input")) {
+            if (Objects.equals(getType(), "input") ||
+                    Objects.equals(getType(), "check")) {
                 editableJs.put("options", this.inputTheme.toJSON());
             } else if (Objects.equals(getType(), "select")) {
                 this.toRelationJSON(js, this.relationOptions);
