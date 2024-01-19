@@ -56,8 +56,8 @@ public class GuiItem implements Item {
                     js.put(this.headers.get(i), Boolean.parseBoolean(this.recordData.get(i)));
                 else
                     js.put(this.headers.get(i), this.recordData.get(i));
-            }
-            js.put(this.headers.get(i), "");
+            } else
+                js.put(this.headers.get(i), "");
         }
         if (isExpanded()) {
             JsonObject attributesJs = Json.createObject();
