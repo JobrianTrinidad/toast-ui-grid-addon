@@ -50,11 +50,14 @@ public class GuiItem implements Item {
 
         js.put("id", this.id);
         for (int i = 0; i < this.headers.size(); i++) {
-            if (this.recordData.get(i).equals("true") ||
-                    this.recordData.get(i).equals("false"))
-                js.put(this.headers.get(i), Boolean.parseBoolean(this.recordData.get(i)));
-            else
-                js.put(this.headers.get(i), this.recordData.get(i) != null ? this.recordData.get(i) : "");
+            if (this.recordData.get(i) != null) {
+                if (this.recordData.get(i).equals("true") ||
+                        this.recordData.get(i).equals("false"))
+                    js.put(this.headers.get(i), Boolean.parseBoolean(this.recordData.get(i)));
+                else
+                    js.put(this.headers.get(i), this.recordData.get(i));
+            }
+            js.put(this.headers.get(i), "");
         }
         if (isExpanded()) {
             JsonObject attributesJs = Json.createObject();
