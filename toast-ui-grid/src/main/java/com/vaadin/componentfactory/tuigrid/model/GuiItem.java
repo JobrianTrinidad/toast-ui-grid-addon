@@ -50,6 +50,8 @@ public class GuiItem implements Item {
 
         js.put("id", this.id);
         for (int i = 0; i < this.headers.size(); i++) {
+            if (this.headers.get(i).equals("id"))
+                continue;
             if (this.recordData.get(i) != null) {
                 if (this.recordData.get(i).equals("true") ||
                         this.recordData.get(i).equals("false"))
