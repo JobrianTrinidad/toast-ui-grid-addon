@@ -58,8 +58,6 @@ export class CheckboxRenderer {
                 return;
             }
 
-            grid[!hiddenInput.checked ? 'check' : 'uncheck'](rowKey);
-
             let colName: string | null = grid.getFocusedCell().columnName;
             let row: Row | null = grid['getRow'](rowKey);
             if (row !== null) {
@@ -69,7 +67,8 @@ export class CheckboxRenderer {
                 grid['setRow'](rowKey, row);
                 if (columnInfo.renderer.callback !== undefined) {
                     columnInfo.renderer.callback(row, colName, !hiddenInput.checked);
-                }
+                } else
+                    grid[!hiddenInput.checked ? 'check' : 'uncheck'](rowKey);
             }
         });
 
