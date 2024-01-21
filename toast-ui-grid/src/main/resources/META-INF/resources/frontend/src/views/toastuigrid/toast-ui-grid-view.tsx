@@ -616,6 +616,7 @@ window.toastuigrid = {
                     name: column.name,
                     renderer: {
                         type: CheckboxRenderer,
+                        className: "tui-grid-checkbox",
                         callback: onLoadModifiedInfo,
                         options: {
                             checkedTemplate: 'true',
@@ -794,7 +795,8 @@ window.toastuigrid = {
                               </label>
                             `,
                     renderer: {
-                        type: CheckboxRenderer
+                        type: CheckboxRenderer,
+                        className: "tui-grid-row-header-checkbox",
                     }
                 };
             }

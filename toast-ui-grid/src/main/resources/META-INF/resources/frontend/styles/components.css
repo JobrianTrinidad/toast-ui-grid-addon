@@ -48,7 +48,7 @@ select:-moz-focusring {
     text-shadow: 0 0 0 #000;
 }
 
-.checkbox.tui-grid-row-header-checkbox {
+.checkbox.tui-grid-row-header-checkbox, .checkbox.tui-grid-checkbox {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -140,8 +140,9 @@ select:-moz-focusring {
     border-style: none !important;
     color: #0000009A !important;
 }
-.tui-grid-cell-summary{
-    background-color:#66878840 !important;
+
+.tui-grid-cell-summary {
+    background-color: #66878840 !important;
     text-align: end !important;
 }
 

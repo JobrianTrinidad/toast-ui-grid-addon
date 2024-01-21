@@ -27,13 +27,16 @@ export class CheckboxRenderer {
         value: boolean; grid: TuiGrid; rowKey: RowKey,
         columnInfo: ColumnInfo & {
             renderer: CheckboxRenderer &
-                { callback: CallbackFunction }
+                {
+                    callback: CallbackFunction,
+                    className: String,
+                }
         }
     }) {
         const {grid, rowKey, columnInfo} = props;
-        console.log("callback: ", props);
+        console.log("callback1s: ", columnInfo.renderer.callback);
         const label = document.createElement('label');
-        label.className = 'checkbox tui-grid-row-header-checkbox';
+        label.className = 'checkbox ' + columnInfo.renderer.className;
         label.setAttribute('for', String(rowKey));
 
         const hiddenInput = document.createElement('input');
@@ -56,6 +59,7 @@ export class CheckboxRenderer {
             }
 
             grid[!hiddenInput.checked ? 'check' : 'uncheck'](rowKey);
+
             let colName: string | null = grid.getFocusedCell().columnName;
             let row: Row | null = grid['getRow'](rowKey);
             if (row !== null) {
@@ -63,7 +67,9 @@ export class CheckboxRenderer {
                     row[colName] = !hiddenInput.checked;
                 }
                 grid['setRow'](rowKey, row);
-                columnInfo.renderer.callback(row, colName, !hiddenInput.checked);
+                if (columnInfo.renderer.callback !== undefined) {
+                    columnInfo.renderer.callback(row, colName, !hiddenInput.checked);
+                }
             }
         });
 
@@ -72,19 +78,11 @@ export class CheckboxRenderer {
         this.render(props);
     }
 
-    getElement()
-        :
-        HTMLElement {
+    getElement(): HTMLElement {
         return this.el;
     }
 
-    render(props
-               :
-               {
-                   value: boolean
-               }
-    ):
-        void {
+    render(props: { value: boolean }): void {
         const hiddenInput = this.el.querySelector('.hidden-input') as HTMLInputElement;
         const checked = Boolean(props.value);
 
