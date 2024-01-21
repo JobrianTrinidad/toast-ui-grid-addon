@@ -58,18 +58,21 @@ export class CheckboxRenderer {
                 return;
             }
 
+            console.log("MouseEvent: ", ev);
+
             let colName: string | null = grid.getFocusedCell().columnName;
             let row: Row | null = grid['getRow'](rowKey);
-            if (row !== null) {
-                if (colName !== null) {
-                    row[colName] = !hiddenInput.checked;
-                }
-                grid['setRow'](rowKey, row);
-                if (columnInfo.renderer.callback !== undefined) {
+            if (columnInfo.renderer.callback !== undefined) {
+                if (row !== null) {
+                    if (colName !== null) {
+                        row[colName] = !hiddenInput.checked;
+                    }
+                    grid['setRow'](rowKey, row);
+
                     columnInfo.renderer.callback(row, colName, !hiddenInput.checked);
-                } else
-                    grid[!hiddenInput.checked ? 'check' : 'uncheck'](rowKey);
-            }
+                }
+            } else if (columnInfo.renderer.className.includes("header"))
+                grid[!hiddenInput.checked ? 'check' : 'uncheck'](rowKey);
         });
 
         this.el = label;

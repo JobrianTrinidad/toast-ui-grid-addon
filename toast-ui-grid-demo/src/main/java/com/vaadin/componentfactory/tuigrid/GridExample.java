@@ -28,6 +28,7 @@ public class GridExample extends Div {
         grid.setColumns(this.getColumns());
         grid.setInputTheme(inputTheme);
         grid.setItems(this.getTableData());
+        grid.setRowHeaders(List.of("checkbox"));
         grid.setComplexColumns(this.getCustomHeader());
         grid.setSummaries(this.getSummaries());
         grid.setHeaderHeight(100);
@@ -50,10 +51,10 @@ public class GridExample extends Div {
     }
 
     private List<Item> getTableData() {
-        List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen", "check");
+        List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen", "check", "check2");
         List<Item> TableData = List.of(
                 new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050",
-                        "true"), headers),
+                        "true","true"), headers),
                 new GuiItem(1, List.of(
                         "X",
                         "Ed Sheeran",
@@ -63,6 +64,7 @@ public class GridExample extends Div {
                         "20000",
                         "1900",
                         "2005",
+                        "false",
                         "false"), headers),
                 new GuiItem(2, List.of(
                         "Moves Like Jagger",
@@ -73,6 +75,7 @@ public class GridExample extends Div {
                         "7000",
                         "11000",
                         "3100",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(3, List.of(
@@ -84,6 +87,7 @@ public class GridExample extends Div {
                         "25000",
                         "2230",
                         "4030",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(4, List.of(
@@ -95,6 +99,7 @@ public class GridExample extends Div {
                         "15000",
                         "1007",
                         "12000",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(5, List.of(
@@ -106,6 +111,7 @@ public class GridExample extends Div {
                         "11000",
                         "1502",
                         "5000",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(6, List.of(
@@ -117,6 +123,7 @@ public class GridExample extends Div {
                         "30000",
                         "1200",
                         "5003",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(7, List.of(
@@ -128,6 +135,7 @@ public class GridExample extends Div {
                         "12000",
                         "8005",
                         "9000",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(8, List.of(
@@ -139,6 +147,7 @@ public class GridExample extends Div {
                         "9000",
                         "11000",
                         "1500",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(9, List.of(
@@ -150,6 +159,7 @@ public class GridExample extends Div {
                         "10000",
                         "9000",
                         "8010",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(10, List.of(
@@ -161,6 +171,7 @@ public class GridExample extends Div {
                         "18000",
                         "3000",
                         "2005",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(11, List.of(
@@ -172,6 +183,7 @@ public class GridExample extends Div {
                         "12000",
                         "8007",
                         "9000",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(12, List.of(
@@ -183,6 +195,7 @@ public class GridExample extends Div {
                         "12000",
                         "7000",
                         "11002",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(13, List.of(
@@ -194,6 +207,7 @@ public class GridExample extends Div {
                         "7000",
                         "8000",
                         "2000",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(14, List.of(
@@ -205,6 +219,7 @@ public class GridExample extends Div {
                         "15000",
                         "9001",
                         "8100",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(15, List.of(
@@ -216,6 +231,7 @@ public class GridExample extends Div {
                         "6000",
                         "11000",
                         "9000",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(16, List.of(
@@ -227,6 +243,7 @@ public class GridExample extends Div {
                         "20000",
                         "11400",
                         "5800",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(17, List.of(
@@ -238,6 +255,7 @@ public class GridExample extends Div {
                         "13000",
                         "6010",
                         "3020",
+                        "false",
                         "false"
                 ), headers),
                 new GuiItem(18, List.of(
@@ -249,6 +267,7 @@ public class GridExample extends Div {
                         "",
                         "",
                         "",
+                        "false",
                         "false"
                 ), headers));
 
@@ -265,7 +284,8 @@ public class GridExample extends Div {
                 new Column(new ColumnBaseOption(5, "Price", "price", 150, "center", ""), "asc", true),
                 new Column(new ColumnBaseOption(6, "Download", "download", 150, "center", "")),
                 new Column(new ColumnBaseOption(7, "Listen", "listen", 150, "center", "")),
-                new Column(new ColumnBaseOption(8, "Check", "check", 150, "center", ""), true, "check"));
+                new Column(new ColumnBaseOption(8, "Check", "check", 150, "center", ""), true, "check"),
+                new Column(new ColumnBaseOption(9, "Check2", "check2", 150, "center", ""), true, "check"));
 
         return columns;
     }
