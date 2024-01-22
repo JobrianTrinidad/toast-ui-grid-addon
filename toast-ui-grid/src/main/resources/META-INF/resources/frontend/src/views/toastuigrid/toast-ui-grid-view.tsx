@@ -500,7 +500,7 @@ window.toastuigrid = {
             }];
         if (contextMenusAdded === null || contextMenusAdded === undefined) {
             contextMenu.register("#target", (e: PointerEvent, cmd: string): void => {
-                container.$server.onContextMenuAction(cmd);
+                container.$server.onContextMenuAction(cmd, {});
             }, defaultContextMenu);
             return contextMenu;
         }
@@ -913,9 +913,7 @@ window.toastuigrid = {
         grid: JSX.Element & { table: TuiGrid }
     }, elementId: string): void {
         setTimeout((): void => {
-            console.log("Here is: ");
             const rowCount = container.grid.table.getRowCount();
-            console.log("Row Count: ", rowCount);
             const targetElement = document.getElementById(elementId) as HTMLElement;
             if (targetElement) {
                 targetElement.textContent = `# ${rowCount}`;

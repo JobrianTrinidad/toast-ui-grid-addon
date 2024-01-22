@@ -572,7 +572,7 @@ public class TuiGrid extends Div {
             if (focusedCell.hasKey(header)) {
                 Cell cell = new Cell(header,
                         (int) focusedCell.getNumber("id"),
-                        focusedCell.getString(header));
+                        focusedCell.get(header).asString());
                 row.add(cell);
             }
         }
