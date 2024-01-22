@@ -912,11 +912,13 @@ window.toastuigrid = {
     setRowCount: function (container: HTMLElement & {
         grid: JSX.Element & { table: TuiGrid }
     }, elementId: string): void {
-        const rowCount = container.grid.table.getRowCount();
-        const targetElement = document.getElementById(elementId) as HTMLElement;
-        if (targetElement) {
-            targetElement.textContent = `# ${rowCount}`;
-        }
+        setTimeout((): void => {
+            const rowCount = container.grid.table.getRowCount();
+            const targetElement = document.getElementById(elementId) as HTMLElement;
+            if (targetElement) {
+                targetElement.textContent = `# ${rowCount}`;
+            }
+        });
     },
 
     setTest: function (container: HTMLElement, content: any): void {
