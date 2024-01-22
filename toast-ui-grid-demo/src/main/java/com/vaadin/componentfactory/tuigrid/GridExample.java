@@ -1,6 +1,7 @@
 package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.model.*;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Route(value = "grid", layout = MainLayout.class)
 public class GridExample extends Div {
+    TuiGrid grid;
 
     public GridExample() {
         Span sp = new Span("Clicked table!");
@@ -24,7 +26,7 @@ public class GridExample extends Div {
         inputTheme.setHeight("100%");
         inputTheme.setOpacity(1);
         // create items
-        TuiGrid grid = new TuiGrid();
+        grid = new TuiGrid();
 
         grid.setColumns(this.getColumns());
         grid.setInputTheme(inputTheme);
@@ -51,11 +53,17 @@ public class GridExample extends Div {
         add(sp, btnReload, grid);
     }
 
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+        grid.setRowCountOnElement("iam");
+    }
+
     private List<Item> getTableData() {
         List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen", "check", "check2");
         List<Item> TableData = List.of(
                 new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050",
-                        "true","true"), headers),
+                        "true", "true"), headers),
                 new GuiItem(1, List.of(
                         "X",
                         "Ed Sheeran",
