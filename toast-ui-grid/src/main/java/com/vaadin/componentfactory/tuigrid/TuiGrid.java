@@ -516,6 +516,13 @@ public class TuiGrid extends Div {
                         this);
     }
 
+    public void setRowCountOnElement(String elementId) {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setRowCount($0, $1);",
+                        this, elementId);
+    }
+
     @ClientCallable
     public void modifiedData(JsonObject modifiedData) {
         JsonArray updatedRows = modifiedData.getArray("updatedRows");
