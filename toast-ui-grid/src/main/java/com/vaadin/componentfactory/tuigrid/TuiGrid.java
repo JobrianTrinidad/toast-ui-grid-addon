@@ -517,10 +517,12 @@ public class TuiGrid extends Div {
     }
 
     public void setRowCountOnElement(String elementId) {
-        this.getElement()
-                .executeJs(
-                        "toastuigrid.setRowCount($0, $1);",
-                        this, elementId);
+        if (this.getElement().getNode().isAttached()) {
+            this.getElement()
+                    .executeJs(
+                            "toastuigrid.setRowCount($0, $1);",
+                            this, elementId);
+        }
     }
 
     @ClientCallable
