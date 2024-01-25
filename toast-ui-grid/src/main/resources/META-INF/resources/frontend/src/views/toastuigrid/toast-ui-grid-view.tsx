@@ -535,14 +535,8 @@ window.toastuigrid = {
 
         this.validateColumn(container, filterValues);
         gridInst.appendRow(row);
-        let record: {} = {};
-        for (const column of gridInst.getColumns()) {
-            let key: string = column.name;
-            record = {...record, [key]: gridInst.getValue(gridInst.getRowCount() - 1, column.name)}
-        }
-
         gridInst.startEditingAt(gridInst.getFilteredData().length - 1, 0);
-        container.$server.onAddRecord(row);
+        container.$server.onAddRecord({data: row, rowIndex: gridInst.getFocusedCell()["rowKey"]});
     },
 
     validateColumn(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } },

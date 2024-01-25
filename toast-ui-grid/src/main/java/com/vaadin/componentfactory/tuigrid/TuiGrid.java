@@ -664,15 +664,18 @@ public class TuiGrid extends Div {
     }
 
     private GuiItem convertJsonToItem(JsonObject eventData) {
+        JsonObject data = eventData.getObject("data");
+        int index = (int) eventData.getNumber("rowIndex");
         GuiItem item = new GuiItem();
+        item.setId(index);
         List<String> record = new ArrayList<>();
 
         for (Column column :
                 this.tuiGridOption.columns) {
             String colName = column.getColumnBaseOption().getName();
-            if (eventData.hasKey(colName)
-                    && !eventData.get(colName).toString().equals("All"))
-                record.add(eventData.get(colName).asString());
+            if (data.hasKey(colName)
+                    && !data.get(colName).toString().equals("All"))
+                record.add(data.get(colName).asString());
             else
                 record.add("");
         }
