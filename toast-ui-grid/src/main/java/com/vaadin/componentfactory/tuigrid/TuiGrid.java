@@ -629,11 +629,12 @@ public class TuiGrid extends Div {
     @ClientCallable
     public void onUpdateData(JsonObject eventData) {
         JsonObject itemChanged = eventData.getArray("changes").get(0);
+        JsonObject record = eventData.getArray("record").get(0);
 
         ItemChangeEvent event = new ItemChangeEvent(
                 this, itemChanged.getString("columnName"),
                 itemChanged.getString("value"),
-                (int) itemChanged.getNumber("rowKey"), true);
+                (int) record.getNumber("id"), true);
 
         RuntimeException exception = null;
         try {
