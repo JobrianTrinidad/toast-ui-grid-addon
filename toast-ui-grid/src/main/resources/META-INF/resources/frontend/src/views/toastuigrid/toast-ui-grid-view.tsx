@@ -182,7 +182,11 @@ window.toastuigrid = {
                 && event.code === "Delete") {
                 if (gridInst.getCheckedRowKeys().length > 0) {
                     rangeSelected = [];
-                    container.$server.deleteItems(gridInst.getCheckedRowKeys());
+                    let checkedRows : number[] = [];
+                    for (const row of gridInst.getCheckedRows()) {
+                        checkedRows.push(row["id"]);
+                    }
+                    container.$server.deleteItems(checkedRows);
                 }
             } else if (event.shiftKey === true
                 && event.code === "Space") {

@@ -34,7 +34,6 @@ export class CheckboxRenderer {
         }
     }) {
         const {grid, rowKey, columnInfo} = props;
-        console.log("callback1s: ", columnInfo.renderer.callback);
         const label = document.createElement('label');
         label.className = 'checkbox ' + columnInfo.renderer.className;
         label.setAttribute('for', String(rowKey));
