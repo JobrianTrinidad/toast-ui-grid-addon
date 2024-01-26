@@ -47,7 +47,7 @@ public class GridExample extends Div {
 
         Button btnReload = new Button("Reload");
         // Assuming 'btnReload' is a Button and 'grid' is a Grid component
-        btnReload.addClickListener(e -> grid.reloadData());
+        btnReload.addClickListener(e -> grid.setIDToGridRow(1, 101));
 //        this.getElement().getParent().appendChild(btnReload.getElement());
         this.getParent().ifPresent(parent -> parent.getElement().appendChild(btnReload.getElement()));
         add(sp, btnReload, grid);

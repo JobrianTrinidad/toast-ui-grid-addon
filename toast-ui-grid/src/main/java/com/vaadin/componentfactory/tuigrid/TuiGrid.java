@@ -660,7 +660,13 @@ public class TuiGrid extends Div {
             exception = e;
             addEvent.setCancelled(true);
         }
+    }
 
+    public void setIDToGridRow(int rowKey, int id) {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setIdToRow($0, $1, $2);",
+                        this, rowKey, id);
     }
 
     private GuiItem convertJsonToItem(JsonObject eventData) {

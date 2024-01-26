@@ -182,7 +182,7 @@ window.toastuigrid = {
                 && event.code === "Delete") {
                 if (gridInst.getCheckedRowKeys().length > 0) {
                     rangeSelected = [];
-                    let checkedRows : number[] = [];
+                    let checkedRows: number[] = [];
                     for (const row of gridInst.getCheckedRows()) {
                         checkedRows.push(row["id"]);
                     }
@@ -905,6 +905,15 @@ window.toastuigrid = {
         if (container && container.grid && container.grid.table) {
             container.grid.table.resetData(this.getTableData(parsedItems));
         }
+    },
+
+    setIdToRow: function (container: HTMLElement & {
+        grid: JSX.Element & { table: TuiGrid }
+    }, rowKey: number, itemId: number): void {
+        let rowValue: OptRow = container.grid.table.getRow(rowKey);
+        rowValue["id"] = itemId;
+        container.grid.table.setRow(rowKey, rowValue);
+        console.log("Here is: ", container.grid.table.getData());
     },
 
     setRowCount: function (container: HTMLElement & {
