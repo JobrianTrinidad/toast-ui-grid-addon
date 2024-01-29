@@ -53,7 +53,6 @@ window.toastuigrid = {
         console.log("parsedItems: ", parsedItems);
         let parsedOptions = JSON.parse(optionsJson);
         let editingRowKey: string | number = -1;
-        console.log("Columns1: ", JSON.parse(parsedOptions.columns));
         const {columns, contextMenus, filterValues} = this.getColumns(container, JSON.parse(parsedOptions.columns));
         console.log("Columns: ", columns);
         let prevColumnName: string = "";

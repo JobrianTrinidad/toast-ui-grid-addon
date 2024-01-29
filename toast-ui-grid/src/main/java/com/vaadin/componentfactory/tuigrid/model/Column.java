@@ -178,8 +178,11 @@ public class Column {
             js.put("depth1", "[]");
         }
 
-        if (isRoot()) js.put("depth0", "[" + select.toSelfJSON() + "," + this.convertRelationOptionsToJson() + "]");
-        else js.put("depth0", "[]");
+        js.put("depth0", isRoot() ?
+                (this.convertRelationOptionsToJson().isEmpty() ?
+                        "[" + select.toSelfJSON() + "]"
+                        : "[" + select.toSelfJSON() + "," + this.convertRelationOptionsToJson() + "]")
+                : "[]");
 
         return js.toJson();
     }
