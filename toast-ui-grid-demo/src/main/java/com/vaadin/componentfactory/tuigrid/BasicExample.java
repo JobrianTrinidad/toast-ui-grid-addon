@@ -17,6 +17,8 @@ import java.util.List;
 @Route(value = "", layout = MainLayout.class)
 public class BasicExample extends Div {
     Span sp = new Span("Here is :");
+    TuiGrid grid = new TuiGrid();
+
     List<String> headers = List.of("name", "artist", "type", "genre");
 
     public BasicExample() {
@@ -31,7 +33,6 @@ public class BasicExample extends Div {
         inputTheme.setHeight("100%");
         inputTheme.setOpacity(1);
 
-        TuiGrid grid = new TuiGrid();
         grid.setColumns(this.getColumns());
         grid.setInputTheme(inputTheme);
         grid.setItems(this.getTableData());
@@ -118,7 +119,7 @@ public class BasicExample extends Div {
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-
+        grid.setFilter("artist", "X");
         // Apply CSS to hide scrollbar
         UI.getCurrent().getPage().executeJs(
                 """

@@ -464,14 +464,15 @@ window.toastuigrid = {
 
     setFilter(colName: string, filter: string,
               container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
-
-        container.grid.table.setFilter(colName, "select");
-        let filterState: FilterState = {
-            code: filter !== "Select" ? "eq" : "ne",
-            value: filter
-        };
-        container.grid.table.filter(colName, [filterState]);
-        this.validateColumn(container, [{colName, filter}]);
+        setTimeout(() => {
+            container.grid.table.setFilter(colName, "select");
+            let filterState: FilterState = {
+                code: filter !== "Select" ? "eq" : "ne",
+                value: filter
+            };
+            container.grid.table.filter(colName, [filterState]);
+            this.validateColumn(container, [{colName, filter}]);
+        }, 300);
     },
 
     convertToMenuItem(menus: any[]): MenuItem[] {
@@ -694,16 +695,16 @@ window.toastuigrid = {
                             {title: 'TxtExport', command: 'txtExport'}
                         ]
                     });
-                let contextMenu: MenuItem = {
-                    title: tempColumn.name,
-                    menu: items
-                };
+                // let contextMenu: MenuItem = {
+                //     title: tempColumn.name,
+                //     menu: items
+                // };
                 let filterValue: FilterValue = {
                     colName: tempColumn.name,
                     filter: "All"
                 };
                 tempColumns.push(tempColumn);
-                contextMenus.push(contextMenu);
+                // contextMenus.push(contextMenu);
                 filterValues.push(filterValue);
             } else
                 tempColumns.push(column);
