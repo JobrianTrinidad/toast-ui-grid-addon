@@ -634,7 +634,7 @@ public class TuiGrid extends Div {
         ItemChangeEvent event = new ItemChangeEvent(
                 this, itemChanged.getString("columnName"),
                 itemChanged.getString("value"),
-                (int) record.getNumber("id"), true);
+                (int) record.get("id").asNumber(), true);
 
         RuntimeException exception = null;
         try {
