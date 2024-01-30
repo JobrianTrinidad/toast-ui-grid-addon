@@ -538,7 +538,7 @@ window.toastuigrid = {
             for (const filterValue of gridInst.getFilterState()) {
                 switch (filterValue.type) {
                     case 'select':
-                        row = {...row, [filterValue.columnName]: Number.parseInt(container.filterId)};
+                        row = {...row, [filterValue.columnName]: container.filterId};
                         break;
                     case 'text':
                     case 'number':
@@ -551,13 +551,10 @@ window.toastuigrid = {
             }
         }
         gridInst.appendRow(row);
-        console.log("Added Row: ", row);
         if (gridInst.getFilterState() !== null) {
-            console.log("Filtered Data: ", gridInst.getFilteredData());
             position = gridInst.getFilteredData().length - 1;
         } else {
             position = gridInst.getData().length - 1;
-            console.log("All Data: ", gridInst.getData());
         }
         gridInst.startEditingAt(position, 0);
         container.$server.onAddRecord({data: row, rowIndex: gridInst.getFocusedCell()["rowKey"]});
