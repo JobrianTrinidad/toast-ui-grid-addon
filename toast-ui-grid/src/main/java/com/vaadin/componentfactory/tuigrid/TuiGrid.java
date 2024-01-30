@@ -66,6 +66,7 @@ public class TuiGrid extends Div {
     private List<Item> items = new ArrayList<>();
     protected TuiGridOption tuiGridOption = new TuiGridOption();
     private List<Column> columns = new ArrayList<>();
+    private int filterId = -1;
     private List<Integer> checkedItems = new ArrayList<>();
     List<String> headers = new ArrayList<>();
     Theme inputTheme;
@@ -148,6 +149,14 @@ public class TuiGrid extends Div {
                     .executeJs(
                             "toastuigrid.addTableData($0);",
                             this);
+    }
+
+    public int getFilterId() {
+        return filterId;
+    }
+
+    public void setFilterId(int filterId) {
+        this.filterId = filterId;
     }
 
     public void setContextMenu(AATContextMenu contextMenu) {
@@ -348,9 +357,9 @@ public class TuiGrid extends Div {
     private void initTuiGrid() {
         this.getElement()
                 .executeJs(
-                        "toastuigrid.create($0, $1, $2);",
+                        "toastuigrid.create($0, $1, $2, $3);",
                         this, "[" + convertItemsToJson() + "]",
-                        tuiGridOption.toJSON());
+                        tuiGridOption.toJSON(), this.getFilterId());
     }
 
     /**

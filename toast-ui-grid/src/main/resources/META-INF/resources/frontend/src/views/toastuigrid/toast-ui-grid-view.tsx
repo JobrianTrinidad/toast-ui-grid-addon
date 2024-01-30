@@ -48,7 +48,8 @@ window.toastuigrid = {
         grid: JSX.Element & {
             table: TuiGrid
         },
-    }, itemsJson: string, optionsJson: string): void {
+        filterId: string,
+    }, itemsJson: string, optionsJson: string, filterId: string): void {
         let parsedItems: OptRow[] = JSON.parse(itemsJson);
         console.log("parsedItems: ", parsedItems);
         let parsedOptions = JSON.parse(optionsJson);
@@ -329,6 +330,8 @@ window.toastuigrid = {
             ></FeatureTable>
         );
 
+        container.filterId = filterId;
+
         document.addEventListener("keydown", handleKeyDown);
         document.addEventListener("mousedown", handleMouseDown);
         document.addEventListener("mouseup", handleMouseUp);
@@ -525,32 +528,34 @@ window.toastuigrid = {
 // and JSON data for the new data. The function updates the table data, and then updates the grid.
     onAddRecord(container: HTMLElement & {
         $server: any,
-        grid: JSX.Element & { table: TuiGrid }
+        grid: JSX.Element & { table: TuiGrid },
+        filterId: string,
     }): void {
         let gridInst: TuiGrid = container.grid.table;
         let row: OptRow = {};
         let position: Number = 1;
         if (gridInst.getFilterState() !== null) {
             for (const filterValue of gridInst.getFilterState()) {
-                row = {...row, [filterValue.columnName]: filterValue.state[0] ? filterValue.state[0].value : ""};
+                switch (filterValue.type) {
+                    case 'select':
+                        row = {...row, [filterValue.columnName]: Number.parseInt(container.filterId)};
+                        break;
+                    case 'text':
+                    case 'number':
+                    default:
+                        row = {
+                            ...row,
+                            [filterValue.columnName]: filterValue.state[0] ? filterValue.state[0].value : ""
+                        };
+                }
             }
         }
-        console.log("Filtered Data length1: ", gridInst.getFilteredData().length);
         gridInst.appendRow(row);
+
         if (gridInst.getFilterState() !== null) {
-            for (const filterValue of gridInst.getFilterState()) {
-                row = {...row, [filterValue.columnName]: filterValue.state[0] ? filterValue.state[0].value : ""};
-                console.log("Filter State: ", gridInst.getFilterState());
-                gridInst.filter(filterValue.columnName,  filterValue.state);
-            }
-        }
-        if (gridInst.getFilterState() !== null) {
-            console.log("Filtered Data length2: ", gridInst.getFilteredData().length);
             position = gridInst.getFilteredData().length - 1;
         } else
             position = gridInst.getData().length - 1;
-        console.log("All Data: ", gridInst.getData());
-        console.log("Filtered Data: ", gridInst.getFilteredData());
         gridInst.startEditingAt(position, 0);
         container.$server.onAddRecord({data: row, rowIndex: gridInst.getFocusedCell()["rowKey"]});
     },
@@ -576,8 +581,8 @@ window.toastuigrid = {
 //This function adds new data to the existing table data of a grid.
 // It takes a container element with a grid property, and JSON data for the new data.
 // The function appends the new data to the existing table data, and then updates the grid.
-    create(container: HTMLElement, itemsJson: string, optionsJson: string): void {
-        setTimeout(() => this._createGrid(container, itemsJson, optionsJson, null));
+    create(container: HTMLElement, itemsJson: string, optionsJson: string, filterId: string): void {
+        setTimeout(() => this._createGrid(container, itemsJson, optionsJson, filterId));
     },
 
     getColumns(container: HTMLElement & { $server: any }, parsedColumn: any[]):
