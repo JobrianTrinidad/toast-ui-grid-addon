@@ -528,13 +528,21 @@ window.toastuigrid = {
         grid: JSX.Element & { table: TuiGrid }
     }): void {
         let gridInst: TuiGrid = container.grid.table;
-        let row: OptRow = {id: 0};
-        if (gridInst.getFilterState() !== null)
+        let row: OptRow = {};
+        let position: Number = 1;
+        if (gridInst.getFilterState() !== null) {
             for (const filterValue of gridInst.getFilterState()) {
                 row = {...row, [filterValue.columnName]: filterValue.state[1] ? filterValue.state[1].value : ""};
             }
+        }
         gridInst.appendRow(row);
-        gridInst.startEditingAt(gridInst.getFilteredData().length - 1, 0);
+        console.log("Row: ", row);
+        console.log("filtered")
+        if (gridInst.getFilterState() !== null) {
+            position = gridInst.getFilteredData().length - 1;
+        } else
+            position = gridInst.getData().length - 1;
+        gridInst.startEditingAt(position, 0);
         container.$server.onAddRecord({data: row, rowIndex: gridInst.getFocusedCell()["rowKey"]});
     },
 
