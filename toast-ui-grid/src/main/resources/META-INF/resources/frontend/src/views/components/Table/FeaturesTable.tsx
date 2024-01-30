@@ -70,13 +70,11 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
         const gridInstanceRef = useRef<TuiGrid | null>(null);
 
         function loadRows(lengthOfLoaded: number, allData: OptRow[]): OptRow[] {
-            console.log("allData: ", allData);
             const rows: OptRow[] = [];
             let endPoint: number = lengthOfLoaded + 50 <= allData.length ? lengthOfLoaded + 50 : allData.length
             for (let i: number = lengthOfLoaded; i < endPoint; i += 1) {
                 const row: OptRow = {};
                 for (let j: number = 0; j < columns.length; j += 1) {
-                    console.log("I see: ", i, " ", j, " ", columns[j])
                     row[columns[j].name] = allData[i][columns[j].name];
                 }
                 rows.push(row);
@@ -107,8 +105,6 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             });
             gridInstanceRef.current = grid;
             grid.on('scrollEnd' as GridEventName, (): void => {
-                console.log("data: ", grid.getFilteredData().length);
-                console.log("data: ", grid.getData().length);
                 if (grid.getFilterState() === null)
                     grid.appendRows(loadRows(grid.getData().length, TableData));
                 else

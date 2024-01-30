@@ -531,14 +531,11 @@ window.toastuigrid = {
         let row: OptRow = {};
         let position: Number = 1;
         if (gridInst.getFilterState() !== null) {
-            console.log("gridInst.getFilterState(): ", gridInst.getFilterState());
             for (const filterValue of gridInst.getFilterState()) {
-                row = {...row, [filterValue.columnName]: filterValue.state[1] ? filterValue.state[1].value : ""};
+                row = {...row, [filterValue.columnName]: filterValue.state[0] ? filterValue.state[0].value : ""};
             }
         }
         gridInst.appendRow(row);
-        console.log("Row: ", row);
-        console.log("filtered")
         if (gridInst.getFilterState() !== null) {
             position = gridInst.getFilteredData().length - 1;
         } else
@@ -922,7 +919,6 @@ window.toastuigrid = {
         let rowValue: OptRow = container.grid.table.getRow(rowKey);
         rowValue["id"] = itemId;
         container.grid.table.setRow(rowKey, rowValue);
-        console.log("Here is: ", container.grid.table.getData());
     },
 
     setRowCount: function (container: HTMLElement & {
