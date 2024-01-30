@@ -531,6 +531,7 @@ window.toastuigrid = {
         let row: OptRow = {};
         let position: Number = 1;
         if (gridInst.getFilterState() !== null) {
+            console.log("gridInst.getFilterState(): ", gridInst.getFilterState());
             for (const filterValue of gridInst.getFilterState()) {
                 row = {...row, [filterValue.columnName]: filterValue.state[1] ? filterValue.state[1].value : ""};
             }
