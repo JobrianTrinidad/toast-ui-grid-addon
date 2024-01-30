@@ -69,20 +69,22 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
         const excelRef = useRef<HTMLDivElement>(null);
         const gridInstanceRef = useRef<TuiGrid | null>(null);
 
-        function loadRows(lengthOfLoaded: number): OptRow[] {
+        function loadRows(lengthOfLoaded: number, allData: OptRow[]): OptRow[] {
+            console.log("allData: ", allData);
             const rows: OptRow[] = [];
-            let endPoint: number = lengthOfLoaded + 50 <= TableData.length ? lengthOfLoaded + 50 : TableData.length
+            let endPoint: number = lengthOfLoaded + 50 <= allData.length ? lengthOfLoaded + 50 : allData.length
             for (let i: number = lengthOfLoaded; i < endPoint; i += 1) {
                 const row: OptRow = {};
                 for (let j: number = 0; j < columns.length; j += 1) {
-                    row[columns[j].name] = TableData[i][columns[j].name];
+                    console.log("I see: ", i, " ", j, " ", columns[j])
+                    row[columns[j].name] = allData[i][columns[j].name];
                 }
                 rows.push(row);
             }
             return rows;
         }
 
-        const data = loadRows(0);
+        const data = loadRows(0, TableData);
         useEffect(() => {
             const grid = new TuiGrid({
                 el: gridRef.current!,
@@ -105,7 +107,13 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             });
             gridInstanceRef.current = grid;
             grid.on('scrollEnd' as GridEventName, (): void => {
-                grid.appendRows(loadRows(grid.store.data.viewData.length));
+                console.log("data: ", grid.getFilteredData().length);
+                console.log("data: ", grid.getData().length);
+                if (grid.getFilterState() === null)
+                    grid.appendRows(loadRows(grid.getData().length, TableData));
+                else
+                    grid.appendRows(loadRows(grid.getFilteredData().length, grid.getFilteredData()));
+
             });
 
             grid.on('selection' as GridEventName, (ev: TuiGridEvent): void => {

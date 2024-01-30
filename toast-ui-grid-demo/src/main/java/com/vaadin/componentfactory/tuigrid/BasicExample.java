@@ -40,6 +40,7 @@ public class BasicExample extends Div {
         grid.setHeaders(headers);
         grid.sethScroll(true);
         grid.setAutoSave(true);
+        grid.setTableHeight(400);
         grid.setHeaderHeight(100);
 
         AATContextMenu contextMenu = new AATContextMenu();
@@ -63,7 +64,7 @@ public class BasicExample extends Div {
         editItem.addContextMenuClickListener(e -> System.out.println("Edit clicked"));
 
         MenuItem subMenuItem = editItem.addSubItem("Submenu");
-        subMenuItem.addContextMenuClickListener(e ->  Notification.show("Copy"));
+        subMenuItem.addContextMenuClickListener(e -> Notification.show("Copy"));
 
         List<MenuItem> items = contextMenu.getItems();
         for (MenuItem item : items) {

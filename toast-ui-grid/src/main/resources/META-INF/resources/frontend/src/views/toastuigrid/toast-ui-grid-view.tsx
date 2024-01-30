@@ -14,7 +14,7 @@ import DropDown from "../components/dropdown/index";
 import FeatureTable from "../components/Table/FeaturesTable";
 import TuiGrid, {ColumnInfo, FilterState, Row, RowKey, ModifiedRows} from 'tui-grid';
 import ContextMenu from 'tui-context-menu';
-import {OptColumn, OptRow} from 'tui-grid/types/options';
+import {OptColumn, OptRow, OptAppendRow} from 'tui-grid/types/options';
 import {TuiGridEvent} from "tui-grid/types/event";
 import {Cell} from "../components/Table/ExcelSheet";
 import CheckboxComponent from "../components/checkbox/ada-checkbox";
@@ -214,7 +214,7 @@ window.toastuigrid = {
             } else if (event.shiftKey === true
                 && event.code === "Insert") {
                 event.preventDefault();
-                this.addTableData(container, filterValues);
+                this.onAddRecord(container);
             } else if (parsedOptions.autoSave === true
                 && event.code === "Tab"
                 && gridInst.getFocusedCell()['rowKey'] === gridInst.getRowCount() - 1
@@ -523,18 +523,16 @@ window.toastuigrid = {
 
 //This function updates the table data of an existing grid. It takes a container element with a grid property,
 // and JSON data for the new data. The function updates the table data, and then updates the grid.
-    addTableData(container: HTMLElement & {
-                     $server: any,
-                     grid: JSX.Element & { table: TuiGrid }
-                 },
-                 filterValues: FilterValue[]): void {
+    onAddRecord(container: HTMLElement & {
+        $server: any,
+        grid: JSX.Element & { table: TuiGrid }
+    }): void {
         let gridInst: TuiGrid = container.grid.table;
-        let row: OptRow = {};
-        for (const filterValue of filterValues) {
-            row = {...row, [filterValue.colName]: filterValue.filter};
-        }
-
-        this.validateColumn(container, filterValues);
+        let row: OptRow = {id: 0};
+        if (gridInst.getFilterState() !== null)
+            for (const filterValue of gridInst.getFilterState()) {
+                row = {...row, [filterValue.columnName]: filterValue.state[1] ? filterValue.state[1].value : ""};
+            }
         gridInst.appendRow(row);
         gridInst.startEditingAt(gridInst.getFilteredData().length - 1, 0);
         container.$server.onAddRecord({data: row, rowIndex: gridInst.getFocusedCell()["rowKey"]});
@@ -553,7 +551,8 @@ window.toastuigrid = {
                     break;
                 }
             }
-            if (!bDisabled)
+            // if (!bDisabled)
+            if (gridInst.getFilterState() === null)
                 gridInst.enableColumn(column.name);
         }
     },
