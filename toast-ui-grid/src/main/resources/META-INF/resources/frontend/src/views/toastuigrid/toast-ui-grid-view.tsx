@@ -535,7 +535,7 @@ window.toastuigrid = {
                 row = {...row, [filterValue.columnName]: filterValue.state[0] ? filterValue.state[0].value : ""};
             }
         }
-        gridInst.appendRow(row);
+        gridInst.appendRows([row]);
         if (gridInst.getFilterState() !== null) {
             position = gridInst.getFilteredData().length - 1;
         } else
