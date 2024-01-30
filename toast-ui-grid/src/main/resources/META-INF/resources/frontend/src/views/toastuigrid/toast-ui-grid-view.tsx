@@ -537,9 +537,11 @@ window.toastuigrid = {
         }
         gridInst.appendRows([row]);
         if (gridInst.getFilterState() !== null) {
+            console.log("Filtered Data length: ", gridInst.getFilteredData().length);
             position = gridInst.getFilteredData().length - 1;
         } else
             position = gridInst.getData().length - 1;
+        console.log("All Data length: ", gridInst.getData().length);
         gridInst.startEditingAt(position, 0);
         container.$server.onAddRecord({data: row, rowIndex: gridInst.getFocusedCell()["rowKey"]});
     },
