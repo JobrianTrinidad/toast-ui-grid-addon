@@ -549,7 +549,8 @@ window.toastuigrid = {
             position = gridInst.getFilteredData().length - 1;
         } else
             position = gridInst.getData().length - 1;
-        console.log("All Data length: ", gridInst.getData().length);
+        console.log("All Data: ", gridInst.getData());
+        console.log("Filtered Data: ", gridInst.getFilteredData());
         gridInst.startEditingAt(position, 0);
         container.$server.onAddRecord({data: row, rowIndex: gridInst.getFocusedCell()["rowKey"]});
     },
