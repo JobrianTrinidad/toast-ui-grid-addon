@@ -535,16 +535,17 @@ window.toastuigrid = {
                 row = {...row, [filterValue.columnName]: filterValue.state[0] ? filterValue.state[0].value : ""};
             }
         }
-        gridInst.appendRows([row]);
+        console.log("Filtered Data length1: ", gridInst.getFilteredData().length);
+        gridInst.appendRow(row);
         if (gridInst.getFilterState() !== null) {
             for (const filterValue of gridInst.getFilterState()) {
                 row = {...row, [filterValue.columnName]: filterValue.state[0] ? filterValue.state[0].value : ""};
                 console.log("Filter State: ", gridInst.getFilterState());
-                gridInst.filter(filterValue.columnName, gridInst.getFilterState()[0].state);
+                gridInst.filter(filterValue.columnName,  filterValue.state);
             }
         }
         if (gridInst.getFilterState() !== null) {
-            console.log("Filtered Data length: ", gridInst.getFilteredData().length);
+            console.log("Filtered Data length2: ", gridInst.getFilteredData().length);
             position = gridInst.getFilteredData().length - 1;
         } else
             position = gridInst.getData().length - 1;
