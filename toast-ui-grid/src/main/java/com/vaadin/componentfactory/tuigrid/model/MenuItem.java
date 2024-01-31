@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 public class MenuItem extends Div {
     private final String caption;
+    private MenuItem parentMenu;
     private final List<MenuItem> subItems;
 
     public MenuItem(String caption) {
@@ -42,6 +43,8 @@ public class MenuItem extends Div {
     public String toJSON() {
         JsonObject js = Json.createObject();
         js.put("title", this.caption);
+        String command = this.parentMenu != null ? this.parentMenu.getCaption() + "_" + this.caption : this.caption;
+        js.put("command", command);
         Optional.ofNullable(convertChildrenToJson()).ifPresent(v -> js.put("menu", "[" + v + "]"));
         return js.toJson();
     }
@@ -56,8 +59,17 @@ public class MenuItem extends Div {
         return caption;
     }
 
+    public MenuItem getParentMenu() {
+        return parentMenu;
+    }
+
+    public void setParentMenu(MenuItem parentMenu) {
+        this.parentMenu = parentMenu;
+    }
+
     public MenuItem addSubItem(String caption) {
         MenuItem subItem = new MenuItem(caption);
+        subItem.setParentMenu(this);
         subItems.add(subItem);
         return subItem;
     }

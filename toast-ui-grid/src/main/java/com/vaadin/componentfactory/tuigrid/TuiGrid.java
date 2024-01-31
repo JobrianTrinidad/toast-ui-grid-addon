@@ -43,7 +43,6 @@ import java.util.stream.Collectors;
  * Toast-ui-grid component definition. Toast-ui-grid uses vis-timeline component to display data in time (see
  * more at https://github.com/toast-ui-grid).
  */
-@SuppressWarnings("serial")
 @NpmPackage(value = "react", version = "^18.2.0")
 @NpmPackage(value = "react-dom", version = "^18.2.0")
 //@NpmPackage(value = "@types/react", version = "^18.2.0")
