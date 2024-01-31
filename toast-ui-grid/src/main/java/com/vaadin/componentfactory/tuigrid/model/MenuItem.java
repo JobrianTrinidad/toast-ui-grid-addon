@@ -73,13 +73,13 @@ public class MenuItem extends Div {
     }
 
     public void setParentMenu(MenuItem parentMenu) {
-        command = this.parentMenu != null ? this.parentMenu.getCaption() + "_" + this.caption : this.caption;
         this.parentMenu = parentMenu;
     }
 
     public MenuItem addSubItem(String caption) {
         MenuItem subItem = new MenuItem(caption);
         subItem.setParentMenu(this);
+        subItem.setCommand(this.getCaption() + "_" + subItem.getCaption());
         subItems.add(subItem);
         return subItem;
     }
