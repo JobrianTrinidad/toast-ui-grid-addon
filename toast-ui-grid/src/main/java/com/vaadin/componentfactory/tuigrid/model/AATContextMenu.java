@@ -75,7 +75,7 @@ public class AATContextMenu {
     }
 
     public void checkCaption(MenuItem item, String cmd, List<Cell> row) {
-        if (item.getCaption().equals(cmd)) {
+        if (item.getCommand().equals(cmd)) {
             item.onContextMenuAction(row);
         }
 

@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 public class MenuItem extends Div {
     private final String caption;
+    private String command;
     private MenuItem parentMenu;
     private final List<MenuItem> subItems;
 
@@ -59,11 +60,20 @@ public class MenuItem extends Div {
         return caption;
     }
 
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
     public MenuItem getParentMenu() {
         return parentMenu;
     }
 
     public void setParentMenu(MenuItem parentMenu) {
+        command = this.parentMenu != null ? this.parentMenu.getCaption() + "_" + this.caption : this.caption;
         this.parentMenu = parentMenu;
     }
 
