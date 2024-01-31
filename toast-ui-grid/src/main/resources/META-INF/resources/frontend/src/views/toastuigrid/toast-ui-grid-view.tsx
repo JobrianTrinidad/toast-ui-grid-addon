@@ -538,7 +538,7 @@ window.toastuigrid = {
             for (const filterValue of gridInst.getFilterState()) {
                 switch (filterValue.type) {
                     case 'select':
-                        row = {...row, [filterValue.columnName]: container.filterId.toString()};
+                        row = {...row, [filterValue.columnName]: `${container.filterId}`};
                         break;
                     case 'text':
                     case 'number':
