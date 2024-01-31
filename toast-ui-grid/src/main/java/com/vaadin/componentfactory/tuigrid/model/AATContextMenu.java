@@ -56,6 +56,7 @@ public class AATContextMenu {
 
     public MenuItem addItem(String caption) {
         MenuItem newItem = new MenuItem(caption);
+        newItem.setCommand(caption);
         items.add(newItem);
         return newItem;
     }
