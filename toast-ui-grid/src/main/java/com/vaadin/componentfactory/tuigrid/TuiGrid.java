@@ -393,6 +393,7 @@ public class TuiGrid extends Div {
      *
      * @param colName the String value to be set
      */
+    @ClientCallable
     public void setSelectItem(String colName, int rowKey) {
         fireItemSelectEvent(colName, rowKey, true);
     }
@@ -727,6 +728,7 @@ public class TuiGrid extends Div {
     public void addItemSelectListener(ComponentEventListener<SelectionEvent> listener) {
         addListener(SelectionEvent.class, listener);
     }
+
     /**
      * Adds a listener for {@link ItemChangeEvent} to the component.
      *

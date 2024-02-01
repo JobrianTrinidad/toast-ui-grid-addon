@@ -146,7 +146,7 @@ window.toastuigrid = {
             resizedColumn = ev.resizedColumns[0];
         };
         const onFocusChange = (ev: TuiGridEvent): void => {
-            container.$server.setSelectItem(ev.columnName, ev.rowKey);
+            container.$server.setSelectItem(ev.columnName, container.grid.table.getRow(ev.rowKey)["id"]);
         };
         const handleSearchResult = (result: Cell): void => {
             gridInst = container.grid.table;
