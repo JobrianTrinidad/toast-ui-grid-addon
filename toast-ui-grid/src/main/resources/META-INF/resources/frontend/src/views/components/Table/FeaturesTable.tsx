@@ -112,6 +112,12 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
 
             });
 
+            grid.on('focusChange' as GridEventName, (ev: TuiGridEvent): void => {
+                if (onFocusChange) {
+                    onFocusChange(ev);
+                }
+            });
+
             grid.on('selection' as GridEventName, (ev: TuiGridEvent): void => {
                 if (onSelection) {
                     onSelection(ev);

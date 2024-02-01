@@ -146,24 +146,7 @@ window.toastuigrid = {
             resizedColumn = ev.resizedColumns[0];
         };
         const onFocusChange = (ev: TuiGridEvent): void => {
-            const firstCol = JSON.parse(parsedOptions.columns)[0];
-            if (firstCol.hasOwnProperty('editor') &&
-                firstCol.editor.hasOwnProperty('type') &&
-                firstCol.editor.type === 'select') {
-                editingRowKey = -1;
-                return;
-            }
-            if (ev.prevRowKey !== ev.rowKey && editingRowKey !== -1) {
-                for (const column of columns) {
-                    if (!(gridInst.getValue(editingRowKey, column.name) === "" ||
-                        gridInst.getValue(editingRowKey, column.name) === null)) {
-                        return;
-                    }
-                }
-                gridInst.removeRow(editingRowKey);
-                gridInst.restore();
-                editingRowKey = -1;
-            }
+            container.$server.setSelectItem(ev.columnName, ev.rowKey);
         };
         const handleSearchResult = (result: Cell): void => {
             gridInst = container.grid.table;

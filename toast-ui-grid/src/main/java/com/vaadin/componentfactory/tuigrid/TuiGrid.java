@@ -393,16 +393,16 @@ public class TuiGrid extends Div {
      *
      * @param colName the String value to be set
      */
-    public void setSelectItem(String colName) {
-        fireItemSelectEvent(colName, true);
+    public void setSelectItem(String colName, int rowKey) {
+        fireItemSelectEvent(colName, rowKey, true);
     }
 
     /**
      * Fires an item select event with the provided column name and client information.
      */
     protected void fireItemSelectEvent(
-            String colName, boolean fromClient) {
-        SelectionEvent event = new SelectionEvent(this, colName, 1, fromClient);
+            String colName, int rowKey, boolean fromClient) {
+        SelectionEvent event = new SelectionEvent(this, colName, rowKey, fromClient);
         RuntimeException exception = null;
 
         try {
@@ -719,6 +719,14 @@ public class TuiGrid extends Div {
         }
     }
 
+    /**
+     * Adds a listener for {@link SelectionEvent} to the component.
+     *
+     * @param listener the listener to be added
+     */
+    public void addItemSelectListener(ComponentEventListener<SelectionEvent> listener) {
+        addListener(SelectionEvent.class, listener);
+    }
     /**
      * Adds a listener for {@link ItemChangeEvent} to the component.
      *

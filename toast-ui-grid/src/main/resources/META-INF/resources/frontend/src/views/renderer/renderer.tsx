@@ -57,8 +57,6 @@ export class CheckboxRenderer {
                 return;
             }
 
-            console.log("MouseEvent: ", ev);
-
             let colName: string | null = grid.getFocusedCell().columnName;
             let row: Row | null = grid['getRow'](rowKey);
             if (columnInfo.renderer.callback !== undefined) {
