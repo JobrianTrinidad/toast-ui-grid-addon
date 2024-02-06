@@ -1,6 +1,7 @@
 package com.vaadin.componentfactory.tuigrid;
 
 import com.vaadin.componentfactory.tuigrid.model.*;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
 
@@ -16,7 +17,16 @@ public class DatePickerExample extends Div {
                 this.getColumns(), null);
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
-        add(grid);
+
+        Button addBtn = new Button("Add");
+        addBtn.addClickListener(listener -> {
+            grid.setDateFilter("default", "01-01-1991", "01-01-2024");
+//            grid.addItem(0, List.of(new GuiItem(0, List.of("", "", "", ""), headers)));
+//            add(layout);
+//            grid.refreshGrid();
+        });
+
+        add(addBtn, grid);
     }
 
     private List<Item> getTableData() {

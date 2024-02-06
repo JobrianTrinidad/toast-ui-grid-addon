@@ -461,6 +461,31 @@ window.toastuigrid = {
         }, 300);
     },
 
+    setDateFilter(colName: string, startDate: string, endDate: string,
+                  container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
+        setTimeout(() => {
+            container.grid.table.setFilter(colName, "date");
+
+            let filterStates: FilterState[] = [];
+
+            let filterState1: FilterState = {
+                code: "afterEq",
+                value: startDate
+            };
+            if (startDate !== null && startDate !== "")
+                filterStates.push(filterState1);
+
+            let filterState2: FilterState = {
+                code: "beforeEq",
+                value: endDate
+            };
+            if (endDate !== null && endDate !== "")
+                filterStates.push(filterState2);
+
+            container.grid.table.filter(colName, filterStates);
+        }, 300);
+    },
+
     convertToMenuItem(menus: any[]): MenuItem[] {
         return menus.map((menu) => {
             if (typeof menu === 'string') {
@@ -573,13 +598,14 @@ window.toastuigrid = {
         setTimeout(() => this._createGrid(container, itemsJson, optionsJson, filterId));
     },
 
-    getColumns(container: HTMLElement & { $server: any }, parsedColumn: any[]):
+    getColumns(container: HTMLElement & { $server: any }, parsedColumn: OptColumn[]):
         {
             columns: OptColumn[],
             contextMenus: ContextMenu[],
             filterValues: FilterValue[]
         } {
-        let columns: any[] = parsedColumn;
+        let columns: OptColumn[] = parsedColumn;
+        console.log("temp: ", columns);
         let tempColumns: OptColumn[] = [{name: "id", hidden: true}];
         let contextMenus: ContextMenu[] = [{title: 'Copy', command: 'copy'},
             {title: 'CopyColumns', command: 'copyColumns'},
@@ -658,6 +684,7 @@ window.toastuigrid = {
                 const tempColumn = {
                     header: column.header,
                     name: column.name,
+                    whiteSpace: column.whiteSpace,
                     align: column.align,
                     formatter: "listItemText",
                     editor: {

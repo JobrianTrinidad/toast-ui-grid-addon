@@ -40,6 +40,7 @@ public class Column {
     private boolean sortable;
     private Theme inputTheme;
     private Theme selectTheme;
+    private boolean multiline = false;
 
     public boolean isEditable() {
         return editable;
@@ -137,9 +138,21 @@ public class Column {
         this.selectTheme = selectTheme;
     }
 
+    public boolean isMultiline() {
+        return multiline;
+    }
+
+    public void setMultiline(boolean multiline) {
+        this.multiline = multiline;
+    }
+
     public String toJSON(boolean bResizable) {
         JsonObject js = columnBaseOption.toJSON();
         if (!bResizable) js.put("resizable", false);
+        if (this.multiline)
+            js.put("whiteSpace", "normal");
+        else
+            js.put("whiteSpace", "nowrap");
         if (!Objects.equals(getSortingType(), "")) {
             Optional.ofNullable(getSortingType()).ifPresent(v -> js.put("sortingType", v));
             Optional.of(isSortable()).ifPresent(v -> js.put("sortable", v));

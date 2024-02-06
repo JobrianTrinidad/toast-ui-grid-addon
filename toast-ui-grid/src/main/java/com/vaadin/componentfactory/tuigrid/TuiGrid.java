@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 //@NpmPackage(value = "@types/react-dom", version = "^18.2.0")
 @NpmPackage(value = "@chakra-ui/react", version = "^2.8.0")
 @NpmPackage(value = "@chakra-ui/icons", version = "^2.1.0")
-@NpmPackage(value = "tui-grid", version = "^4.21.19")
+@NpmPackage(value = "tui-grid", version = "^4.21.22")
 @NpmPackage(value = "tui-context-menu", version = "^2.1.9")
 @JsModule("./src/views/toastuigrid/toast-ui-grid-view.tsx")
 @JsModule("./src/views/components/Table/FeaturesTable.tsx")
@@ -560,6 +560,13 @@ public class TuiGrid extends Div {
                 .executeJs(
                         "toastuigrid.setFilter($0, $1, $2);",
                         colName, filter, this);
+    }
+
+    public void setDateFilter(String colName, String startDate, String endDate) {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setDateFilter($0, $1, $2, $3);",
+                        colName, startDate, endDate, this);
     }
 
     /**

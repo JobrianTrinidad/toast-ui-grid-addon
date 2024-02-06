@@ -164,6 +164,10 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             grid.on('mousedown' as GridEventName, (ev: TuiGridEvent): void => {
             });
 
+            grid.on('beforeFilter' as GridEventName, (ev: TuiGridEvent): void => {
+                console.log(ev);
+            });
+
             getGridInstance(grid);
 
             return (): void => {

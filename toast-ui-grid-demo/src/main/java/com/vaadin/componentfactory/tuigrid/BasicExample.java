@@ -137,7 +137,7 @@ public class BasicExample extends Div {
             TableData.add(new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050"), headers));
             TableData.add(new GuiItem(1, List.of("X", "Ed Sheeran", "Deluxe;", "", "", "20000", "1900", "2005"), headers));
             TableData.add(new GuiItem(2, List.of("Moves Like Jagger", "Maroon5", "Single;", "Pop,Rock", "2011-08-08", "7000", "11000", "3100"), headers));
-            TableData.add(new GuiItem(3, List.of("A Head Full Of Dreams", "Coldplay", "Deluxe;", "Rock", "2015-12-04", "25000", "2230", "4030"), headers));
+            TableData.add(new GuiItem(3, List.of("A Head Full Of aadddddd dddddddddddddddddd ddddddddddddddddddd dddddddddddddddddddddddd ddddddddddddddd aaaaaaaaaaaaaaaaa Dreams", "Coldplay", "Deluxe;", "Rock", "2015-12-04", "25000", "2230", "4030"), headers));
             TableData.add(new GuiItem(4, List.of("21", "Adele", "Deluxe;", "Pop,R&B", "2011-01-21", "15000", "1007", "12000"), headers));
             TableData.add(new GuiItem(5, List.of("Warm On A Cold Night", "HONNE", "EP;", "R&B,Electronic", "2016-07-22", "11000", "1502", "5000"), headers));
             TableData.add(new GuiItem(6, List.of("Take Me To The Alley", "Gregory Porter", "Deluxe;", "Jazz", "2016-09-02", "30000", "1200", "5003"), headers));
@@ -161,6 +161,7 @@ public class BasicExample extends Div {
     private List<Column> getColumns() {
 
         Column nameCol = new Column(new ColumnBaseOption(0, "Name", "name", 0, "center", ""), true, "input");
+        nameCol.setMultiline(true);
         Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", ""), true, "input");
         Column typeCol = new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", ""), true, "input");
         Column genreCol = new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), true, "input");
