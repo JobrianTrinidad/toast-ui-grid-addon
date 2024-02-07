@@ -615,14 +615,23 @@ public class TuiGrid extends Div {
      */
     @ClientCallable
     public void onCheck(int[] rows) {
-        checkedItems = new ArrayList<>();
-        for (int num : rows) {
-            checkedItems.add(num);
+        fireItemMultiSelectEvent(rows, true);
+    }
+
+    /**
+     * Fires an item select event with the provided column name and client information.
+     */
+    protected void fireItemMultiSelectEvent(
+            int[] itemIds, boolean fromClient) {
+        ItemMultiSelectEvent event = new ItemMultiSelectEvent(this, itemIds, fromClient);
+        RuntimeException exception = null;
+
+        try {
+            fireEvent(event);
+        } catch (RuntimeException e) {
+            exception = e;
+            event.setCancelled(true);
         }
-        this.getElement()
-                .executeJs(
-                        "toastuigrid.setTest($0, $1);",
-                        this, checkedItems.toString());
     }
 
     /**
@@ -749,6 +758,15 @@ public class TuiGrid extends Div {
      */
     public void addItemSelectListener(ComponentEventListener<SelectionEvent> listener) {
         addListener(SelectionEvent.class, listener);
+    }
+
+    /**
+     * Adds a listener for {@link ItemMultiSelectEvent} to the component.
+     *
+     * @param listener the listener to be added
+     */
+    public void addItemMultiSelectListener(ComponentEventListener<ItemMultiSelectEvent> listener) {
+        addListener(ItemMultiSelectEvent.class, listener);
     }
 
     /**
