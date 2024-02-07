@@ -69,7 +69,6 @@ class InputComponent implements CellEditor {
             },
         } = this.props;
 
-        console.log("input props: ", this.props);
         const inputRef = createRef<HTMLInputElement>();
         const inputElement = (
             <Input

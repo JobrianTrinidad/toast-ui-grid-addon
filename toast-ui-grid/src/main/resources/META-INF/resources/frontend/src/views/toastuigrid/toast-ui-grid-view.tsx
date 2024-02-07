@@ -329,14 +329,6 @@ window.toastuigrid = {
         });
     },
 
-    // getRowHeight(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): number {
-    //     const rowData = grid.getRowAt(rowIdx);
-    //     const textLines = rowData.map((cellData: Row) => cellData.toString().split('\n').length);
-    //     console.log("textlines: ", textLines);
-    //     const maxLines = Math.max(...textLines);
-    //     return 25 + (maxLines - 1) * 15; // Adjust the row height based on the content
-    // },
-
 //This function is a wrapper around _createGrid that delays the execution using setTimeout.
 // It takes a container element, JSON data for items, and JSON data for options.
     _setColumnContentMatchedName(columnContent: any): void {
@@ -475,18 +467,20 @@ window.toastuigrid = {
         setTimeout(() => {
             container.grid.table.setFilter(colName, "date");
 
+            const start_date = new Date(startDate);
+            const end_date = new Date(endDate);
             let filterStates: FilterState[] = [];
 
             let filterState1: FilterState = {
                 code: "afterEq",
-                value: startDate
+                value: start_date.toString()
             };
             if (startDate !== null && startDate !== "")
                 filterStates.push(filterState1);
 
             let filterState2: FilterState = {
                 code: "beforeEq",
-                value: endDate
+                value: end_date.toString()
             };
             if (endDate !== null && endDate !== "")
                 filterStates.push(filterState2);
@@ -568,13 +562,10 @@ window.toastuigrid = {
             }
         }
         gridInst.appendRow(row);
-        console.log("Added Row: ", row);
         if (gridInst.getFilterState() !== null) {
-            console.log("Filtered Data: ", gridInst.getFilteredData());
             position = gridInst.getFilteredData().length - 1;
         } else {
             position = gridInst.getData().length - 1;
-            console.log("All Data: ", gridInst.getData());
         }
         gridInst.startEditingAt(position, 0);
         container.$server.onAddRecord({data: row, rowIndex: gridInst.getFocusedCell()["rowKey"]});
@@ -612,7 +603,6 @@ window.toastuigrid = {
             filterValues: FilterValue[]
         } {
         let columns: OptColumn[] = parsedColumn;
-        console.log("temp: ", columns);
         let tempColumns: OptColumn[] = [{name: "id", hidden: true}];
         let contextMenus: ContextMenu[] = [{title: 'Copy', command: 'copy'},
             {title: 'CopyColumns', command: 'copyColumns'},

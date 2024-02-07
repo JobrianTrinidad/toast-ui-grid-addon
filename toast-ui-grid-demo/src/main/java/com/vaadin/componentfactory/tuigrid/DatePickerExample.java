@@ -5,8 +5,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Route(value = "datepicker", layout = MainLayout.class)
 public class DatePickerExample extends Div {
@@ -20,7 +24,9 @@ public class DatePickerExample extends Div {
 
         Button addBtn = new Button("Add");
         addBtn.addClickListener(listener -> {
-            grid.setDateFilter("default", "01-01-1991", "01-01-2024");
+//            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate startDate = LocalDate.parse("2019-11-20", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            grid.setDateFilter("timepicker", startDate.toString(), LocalDateTime.now().toString());
 //            grid.addItem(0, List.of(new GuiItem(0, List.of("", "", "", ""), headers)));
 //            add(layout);
 //            grid.refreshGrid();

@@ -105,7 +105,6 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 ...(minBodyHeight && {minBodyHeight}),
             });
             gridInstanceRef.current = grid;
-            console.log("grid grid grid: ", grid);
             grid.on('scrollEnd' as GridEventName, (): void => {
                 if (grid.getFilterState() === null)
                     grid.appendRows(loadRows(grid.getData().length, TableData));
@@ -167,7 +166,6 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
             });
 
             grid.on('beforeFilter' as GridEventName, (ev: TuiGridEvent): void => {
-                console.log(ev);
             });
 
             getGridInstance(grid);
