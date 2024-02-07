@@ -525,6 +525,20 @@ public class TuiGrid extends Div {
                         this);
     }
 
+    public void onEnable() {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.onEnable($0);",
+                        this);
+    }
+
+    public void onDisable() {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.onDisable($0);",
+                        this);
+    }
+
     public void setRowCountOnElement(String elementId) {
         if (this.getElement().getNode().isAttached()) {
             this.getElement()

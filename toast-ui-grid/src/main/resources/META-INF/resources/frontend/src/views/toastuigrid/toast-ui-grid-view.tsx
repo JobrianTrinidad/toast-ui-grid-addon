@@ -574,6 +574,24 @@ window.toastuigrid = {
         container.$server.onAddRecord({data: row, rowIndex: gridInst.getFocusedCell()["rowKey"]});
     },
 
+    onEnable(container: HTMLElement & {
+        $server: any,
+        grid: JSX.Element & { table: TuiGrid },
+    }): void {
+        setTimeout((): void => {
+            container.grid.table.enable();
+        }, 300);
+    },
+
+    onDisable(container: HTMLElement & {
+        $server: any,
+        grid: JSX.Element & { table: TuiGrid },
+    }): void {
+        setTimeout((): void => {
+            container.grid.table.disable();
+        }, 300);
+    },
+
     validateColumn(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } },
                    filterValues: FilterValue[]): void {
         let gridInst: TuiGrid = container.grid.table;
