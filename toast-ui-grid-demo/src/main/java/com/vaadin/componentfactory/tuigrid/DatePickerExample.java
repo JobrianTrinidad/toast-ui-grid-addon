@@ -25,8 +25,9 @@ public class DatePickerExample extends Div {
         Button addBtn = new Button("Add");
         addBtn.addClickListener(listener -> {
 //            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDate startDate = LocalDate.parse("2019-11-20", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            grid.setDateFilter("timepicker", startDate.toString(), LocalDateTime.now().toString());
+            LocalDate startDate = LocalDate.parse("2019-11-08", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate endDate = LocalDate.parse("2019-11-29", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            grid.setDateFilter("timepicker", startDate.toString(), endDate.toString());
 //            grid.addItem(0, List.of(new GuiItem(0, List.of("", "", "", ""), headers)));
 //            add(layout);
 //            grid.refreshGrid();

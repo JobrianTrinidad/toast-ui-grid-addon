@@ -469,6 +469,8 @@ window.toastuigrid = {
 
             const start_date = new Date(startDate);
             const end_date = new Date(endDate);
+            console.log("startDate: ", start_date);
+            console.log("endDate: ", end_date);
             let filterStates: FilterState[] = [];
 
             let filterState1: FilterState = {
