@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import ExcelSheet, {Cell} from "./ExcelSheet";
-import TuiGrid, {GridEventName} from 'tui-grid';
+import TuiGrid, {GridEventName, Row} from 'tui-grid';
 import {TuiGridEvent} from "tui-grid/types/event";
 import {OptColumn, OptGrid, OptHeader, OptRow, OptRowHeader, OptSummaryData, OptTree} from "tui-grid/types/options";
 import {CreateMenuGroups} from "tui-grid/types/store";
@@ -100,10 +100,12 @@ const FeatureTable: React.FC<FeatureTableProps> = React.forwardRef<HTMLDivElemen
                 scrollY: scrollY,
                 ...(rowHeaders && {rowHeaders}),
                 ...(treeColumnOptions && {treeColumnOptions}),
-                ...(rowHeight && {rowHeight}),
+                // ...(rowHeight && {rowHeight}),
+                rowHeight: 'auto',
                 ...(minBodyHeight && {minBodyHeight}),
             });
             gridInstanceRef.current = grid;
+            console.log("grid grid grid: ", grid);
             grid.on('scrollEnd' as GridEventName, (): void => {
                 if (grid.getFilterState() === null)
                     grid.appendRows(loadRows(grid.getData().length, TableData));

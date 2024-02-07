@@ -297,8 +297,8 @@ window.toastuigrid = {
                 bodyHeight={"fitToParent"}
                 scrollX={parsedOptions.scrollX}
                 scrollY={parsedOptions.scrollY}
-                rowHeight={40}
-                minBodyHeight={120}
+                // minRowHeight={"90%"}
+                // minBodyHeight={120}
                 rowHeaders={parsedOptions.rowHeaders ? this.getRowHeaders(parsedOptions.rowHeaders) : null}
                 treeColumnOptions={parsedOptions.treeColumnOptions ? JSON.parse(parsedOptions.treeColumnOptions) : null}
                 onAfterChange={onAfterChange}
@@ -328,6 +328,15 @@ window.toastuigrid = {
             contextMenu = this.createContextMenu(container, contextMenusAdded);
         });
     },
+
+    // getRowHeight(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): number {
+    //     const rowData = grid.getRowAt(rowIdx);
+    //     const textLines = rowData.map((cellData: Row) => cellData.toString().split('\n').length);
+    //     console.log("textlines: ", textLines);
+    //     const maxLines = Math.max(...textLines);
+    //     return 25 + (maxLines - 1) * 15; // Adjust the row height based on the content
+    // },
+
 //This function is a wrapper around _createGrid that delays the execution using setTimeout.
 // It takes a container element, JSON data for items, and JSON data for options.
     _setColumnContentMatchedName(columnContent: any): void {
@@ -523,8 +532,6 @@ window.toastuigrid = {
         for (const defaultContextMenu1 of defaultContextMenu) {
             contextMenusAdded.push(defaultContextMenu1);
         }
-
-        console.log("contextMenusAdded: ", contextMenusAdded);
 
         contextMenu.register("#target", (e: PointerEvent, cmd: string): void => {
             let rowKey: RowKey = container.grid.table.getFocusedCell()['rowKey'] || 0;
