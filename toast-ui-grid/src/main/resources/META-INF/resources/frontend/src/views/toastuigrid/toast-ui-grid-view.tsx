@@ -88,25 +88,28 @@ window.toastuigrid = {
                 }
                 return value;
             }))
-            container.$server.onCheck(cleanedObject);
+            let checkedRows: number[] = [];
+            for (const row of gridInst.getCheckedRows()) {
+                checkedRows.push(row["id"]);
+            }
+            container.$server.onCheck(checkedRows);
+            // container.$server.onCheck(cleanedObject);
         };
         const onUncheck = (ev: TuiGridEvent): void => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
-                if (value instanceof Node) {
-                    return null; // Remove the DOM node reference
-                }
-                return value;
-            }))
-            container.$server.onUncheck(cleanedObject);
+            let checkedRows: number[] = [];
+            for (const row of gridInst.getCheckedRows()) {
+                checkedRows.push(row["id"]);
+            }
+            container.$server.onCheck(checkedRows);
+            // container.$server.onUncheck(cleanedObject);
         };
         const onCheckAll = (ev: TuiGridEvent): void => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
-                if (value instanceof Node) {
-                    return null; // Remove the DOM node reference
-                }
-                return value;
-            }))
-            container.$server.onCheckAll(cleanedObject);
+            let checkedRows: number[] = [];
+            for (const row of gridInst.getCheckedRows()) {
+                checkedRows.push(row["id"]);
+            }
+            container.$server.onCheck(checkedRows);
+            // container.$server.onCheckAll(cleanedObject);
         };
         const onUncheckAll = (ev: TuiGridEvent): void => {
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
@@ -469,20 +472,18 @@ window.toastuigrid = {
 
             const start_date = new Date(startDate);
             const end_date = new Date(endDate);
-            console.log("startDate: ", start_date);
-            console.log("endDate: ", end_date);
             let filterStates: FilterState[] = [];
 
             let filterState1: FilterState = {
                 code: "afterEq",
-                value: start_date.toString()
+                value: start_date.toDateString()
             };
             if (startDate !== null && startDate !== "")
                 filterStates.push(filterState1);
 
             let filterState2: FilterState = {
                 code: "beforeEq",
-                value: end_date.toString()
+                value: end_date.toDateString()
             };
             if (endDate !== null && endDate !== "")
                 filterStates.push(filterState2);

@@ -41,7 +41,7 @@ public class DatePickerExample extends Div {
         List<Item> TableData = new ArrayList<>();
         List<String> headers = List.of("default", "options", "ranges", "timepicker", "timepickerwithtab", "month", "year");
         TableData.add(new GuiItem(0, List.of("1992/03/25", "12/06/2019",
-                "2014-04-16", "2019-11-19 09:00 AM",
+                "2014-04-16", "19-11-2019 09:00 AM",
                 "2019-11-19 09:00 AM", "2019-01",
                 "2019"), headers));
         return TableData;

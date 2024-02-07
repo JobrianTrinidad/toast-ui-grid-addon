@@ -614,21 +614,37 @@ public class TuiGrid extends Div {
      * Handles the onCheck event in the grid.
      */
     @ClientCallable
-    public void onCheck(JsonObject eventData) {
+    public void onCheck(int[] rows) {
+        checkedItems = new ArrayList<>();
+        for (int num : rows) {
+            checkedItems.add(num);
+        }
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.setTest($0, $1);",
+                        this, checkedItems.toString());
     }
 
     /**
      * Handles the onUncheck event in the grid.
      */
     @ClientCallable
-    public void onUncheck(JsonObject eventData) {
+    public void onUncheck(int[] rows) {
+        checkedItems = new ArrayList<>();
+        for (int num : rows) {
+            checkedItems.add(num);
+        }
     }
 
     /**
      * Handles the onCheckAll event in the grid.
      */
     @ClientCallable
-    public void onCheckAll(JsonObject eventData) {
+    public void onCheckAll(int[] rows) {
+        checkedItems = new ArrayList<>();
+        for (int num : rows) {
+            checkedItems.add(num);
+        }
     }
 
     /**
@@ -637,7 +653,6 @@ public class TuiGrid extends Div {
     @ClientCallable
     public void onUncheckAll(JsonObject eventData) {
     }
-
 
     /**
      * Handles the editing finish event in the grid.
