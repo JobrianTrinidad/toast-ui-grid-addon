@@ -4,27 +4,13 @@ import {Input} from "@chakra-ui/react";
 import {CellEditor, CellEditorProps} from 'tui-grid/types/editor';
 import {HTMLChakraProps} from "@chakra-ui/system";
 import {InputProps} from "@chakra-ui/input/dist/input";
+import TuiGrid, {ColumnInfo} from 'tui-grid';
 
 export interface InputComponentProps extends InputProps, CellEditorProps {
-    container: any;
+    grid: TuiGrid & { usageStatistics: boolean };
     value: string;
     handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
-    columnInfo: {
-        editor: {
-            options: {
-                maxLength?: number
-                backgroundColor: string,
-                opacity: number,
-                width: number | string;
-                height: number | string;
-                border: string;
-                outline: string;
-                butBackground: string;
-                size: any;
-            }
-        }
-    };
-
+    columnInfo: ColumnInfo
 }
 
 class InputComponent implements CellEditor {
@@ -50,23 +36,10 @@ class InputComponent implements CellEditor {
 
     renderInput(): ChildNode {
         const {
+            grid,
             value,
             handleChange,
-            columnInfo: {
-                editor: {
-                    options: {
-                        maxLength,
-                        backgroundColor,
-                        opacity,
-                        border,
-                        width,
-                        height,
-                        size,
-                        outline,
-                        butBackground
-                    }
-                }
-            },
+            columnInfo
         } = this.props;
 
         const inputRef = createRef<HTMLInputElement>();
@@ -75,16 +48,16 @@ class InputComponent implements CellEditor {
                 ref={inputRef}
                 defaultValue={value?.toString()}
                 type="text"
-                maxLength={maxLength}
+                maxLength={columnInfo.editor.options.maxLength}
                 onChange={handleChange}
-                size={size}
+                size={columnInfo.editor.options.size}
                 style={{
-                    backgroundColor: backgroundColor,
-                    opacity: opacity,
-                    width: width,
-                    height: height,
-                    border: border,
-                    outline: outline,
+                    backgroundColor: columnInfo.editor.options.backgroundColor,
+                    opacity: columnInfo.editor.options.opacity,
+                    width: columnInfo.editor.options.width,
+                    height: columnInfo.editor.options.height,
+                    border: columnInfo.editor.options.border,
+                    outline: columnInfo.editor.options.outline,
                 }}
                 _focusVisible={{outline: "none"}}
                 _hover={{outline: "none"}}

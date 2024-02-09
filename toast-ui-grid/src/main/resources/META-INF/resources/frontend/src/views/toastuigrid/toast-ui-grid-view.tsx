@@ -14,10 +14,10 @@ import DropDown from "../components/dropdown/index";
 import FeatureTable from "../components/Table/FeaturesTable";
 import TuiGrid, {ColumnInfo, FilterState, Row, RowKey, ModifiedRows} from 'tui-grid';
 import ContextMenu from 'tui-context-menu';
-import {OptColumn, OptRow, OptAppendRow} from 'tui-grid/types/options';
+import {OptColumn, OptRow} from 'tui-grid/types/options';
 import {TuiGridEvent} from "tui-grid/types/event";
 import {Cell} from "../components/Table/ExcelSheet";
-import CheckboxComponent from "../components/checkbox/ada-checkbox";
+import TextareaComponent from "../components/textarea";
 
 declare global {
     interface Window {
@@ -82,18 +82,17 @@ window.toastuigrid = {
             }
         }
         const onCheck = (ev: TuiGridEvent): void => {
-            let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
-                if (value instanceof Node) {
-                    return null; // Remove the DOM node reference
-                }
-                return value;
-            }))
+            // let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
+            //     if (value instanceof Node) {
+            //         return null; // Remove the DOM node reference
+            //     }
+            //     return value;
+            // }))
             let checkedRows: number[] = [];
             for (const row of gridInst.getCheckedRows()) {
                 checkedRows.push(row["id"]);
             }
             container.$server.onCheck(checkedRows);
-            // container.$server.onCheck(cleanedObject);
         };
         const onUncheck = (ev: TuiGridEvent): void => {
             let checkedRows: number[] = [];
@@ -101,7 +100,6 @@ window.toastuigrid = {
                 checkedRows.push(row["id"]);
             }
             container.$server.onCheck(checkedRows);
-            // container.$server.onUncheck(cleanedObject);
         };
         const onCheckAll = (ev: TuiGridEvent): void => {
             let checkedRows: number[] = [];
@@ -114,7 +112,7 @@ window.toastuigrid = {
         const onUncheckAll = (ev: TuiGridEvent): void => {
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
                 if (value instanceof Node) {
-                    return null; // Remove the DOM node reference
+                    return null;
                 }
                 return value;
             }))
@@ -275,7 +273,6 @@ window.toastuigrid = {
             if (Object.isExtensible(container.grid)) {
                 container.grid.table = gridInstance;
             } else {
-                // If container.grid is not extensible, create a new object with the desired properties
                 container.grid = {
                     ...container.grid,
                     table: gridInstance,
@@ -372,9 +369,6 @@ window.toastuigrid = {
         };
 
         switch (columnContent[Object.keys(columnContent)[0]]) {
-            case "sum" :
-                columnContent[Object.keys(columnContent)[0]] = onSum();
-                break;
             case "avg" :
                 columnContent[Object.keys(columnContent)[0]] = onAvg();
                 break;
@@ -387,6 +381,7 @@ window.toastuigrid = {
             case "rowcount" :
                 columnContent[Object.keys(columnContent)[0]] = onRowCount();
                 break;
+            case "sum" :
             default:
                 columnContent[Object.keys(columnContent)[0]] = onSum();
                 break;
@@ -600,15 +595,12 @@ window.toastuigrid = {
         let gridInst: TuiGrid = container.grid.table;
         let columns: OptColumn[] = gridInst.getColumns();
         for (const column of columns) {
-            let bDisabled: boolean = false;
             for (const filterValue of filterValues) {
                 if (column.name === filterValue.colName && filterValue.filter !== "All") {
                     gridInst.disableColumn(column.name);
-                    bDisabled = true;
                     break;
                 }
             }
-            // if (!bDisabled)
             if (gridInst.getFilterState() === null)
                 gridInst.enableColumn(column.name);
         }
@@ -664,7 +656,10 @@ window.toastuigrid = {
 
         for (let column of columns) {
             if (column.editor && column.editor.type === "input") {
-                column.editor.type = InputComponent;
+                if (column.whiteSpace !== "nowrap")
+                    column.editor.type = TextareaComponent;
+                else
+                    column.editor.type = InputComponent;
             } else if (column.editor && column.editor.type === "check") {
                 column = {
                     header: column.header,
@@ -709,10 +704,9 @@ window.toastuigrid = {
                     align: column.align,
                     formatter: "listItemText",
                     editor: {
-                        type: DropDown,//"select"
+                        type: DropDown,
                         options: {
                             ...column.editor.options,
-                            // listItems: column["depth0"] ? column["depth0"] : []
                             listItems: column["depth0"] ? JSON.parse(column["depth0"]) : []
                         }
                     },
@@ -755,7 +749,7 @@ window.toastuigrid = {
                 // let contextMenu: MenuItem = {
                 //     title: tempColumn.name,
                 //     menu: items
-                // };
+                // }
                 let filterValue: FilterValue = {
                     colName: tempColumn.name,
                     filter: "All"
@@ -999,5 +993,11 @@ window.toastuigrid = {
         } else {
             createRoot(container).render(container.grid);
         }
+    },
+
+    uncheckAll: function (container: HTMLElement & {
+        grid: JSX.Element & { table: TuiGrid }
+    }): void {
+        container.grid.table.uncheckAll();
     }
 }

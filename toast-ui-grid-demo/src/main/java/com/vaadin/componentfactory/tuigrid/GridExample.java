@@ -36,6 +36,7 @@ public class GridExample extends Div {
         grid.setSummaries(this.getSummaries());
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
+
         grid.setHeight("calc(100vh - 106px");
         grid.addItemChangeListener(ev -> {
             sp.add(ev.getColName() + ": " + grid.getData().get(1).toJSON());
@@ -284,9 +285,12 @@ public class GridExample extends Div {
     }
 
     private List<Column> getColumns() {
+        Column nameCol = new Column(new ColumnBaseOption(0, "Name", "name", 250, "center", ""));
+        Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 250, "center", ""), true, "input");
+        artistCol.setMultiline(true);
         List<Column> columns = List.of(
-                new Column(new ColumnBaseOption(0, "Name", "name", 250, "center", "")),
-                new Column(new ColumnBaseOption(1, "Artist", "artist", 250, "center", ""), true, "input"),
+                nameCol,
+                artistCol,
                 new Column(new ColumnBaseOption(2, "Type", "type", 150, "center", ""), true, "input"),
                 new Column(new ColumnBaseOption(3, "Genre", "genre", 150, "center", "tui-grid-cell-required"), true, "input"),
                 new Column(new ColumnBaseOption(4, "Release", "release", 150, "center", "tui-grid-cell-required"), true, "datePicker", new DateOption("yyyy-MM-dd", false)),

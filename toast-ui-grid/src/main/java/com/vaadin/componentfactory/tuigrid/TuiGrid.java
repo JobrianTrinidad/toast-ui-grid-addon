@@ -351,6 +351,13 @@ public class TuiGrid extends Div {
     }
 
     /**
+     * Updates tuigrid options after tuigrid creation.
+     */
+    public void setUnCheckAll() {
+        this.getElement().executeJs("toastuigrid.uncheckAll($0)", this);
+    }
+
+    /**
      * Initializes the TuiGrid component.
      */
     private void initTuiGrid() {
