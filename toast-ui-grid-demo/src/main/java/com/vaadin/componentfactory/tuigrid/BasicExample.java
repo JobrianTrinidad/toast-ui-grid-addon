@@ -92,6 +92,7 @@ public class BasicExample extends Div {
 //            grid.addItem(0, List.of(new GuiItem(0, List.of("", "", "", ""), headers)));
 //            add(layout);
 //            grid.refreshGrid();
+            grid.onDisable();
             grid.setFilter("artist", "Birdy");
         });
 

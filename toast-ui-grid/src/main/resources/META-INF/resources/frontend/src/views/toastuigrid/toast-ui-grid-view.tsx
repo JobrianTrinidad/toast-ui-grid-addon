@@ -588,7 +588,10 @@ window.toastuigrid = {
         grid: JSX.Element & { table: TuiGrid },
     }): void {
         setTimeout((): void => {
-            container.grid.table.disable();
+            // container.grid.table.disable();
+            for (const columnInfo of container.grid.table.getColumns()) {
+                container.grid.table.disableColumn(columnInfo.name);
+            }
         }, 300);
     },
 
