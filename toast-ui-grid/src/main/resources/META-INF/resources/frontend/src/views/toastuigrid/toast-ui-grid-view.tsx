@@ -928,7 +928,7 @@ window.toastuigrid = {
         const rowLength: number = rows.length;
         if (rowLength === 0)
             return;
-        let min: RowKey = 99999999999;
+        let min: RowKey = 99999999999999;
         for (let i: number = 0; i < rowLength; i++) {
             if (Number(min) > Number(rows[i]))
                 min = rows[i];

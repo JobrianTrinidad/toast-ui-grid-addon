@@ -36,6 +36,7 @@ public class GridExample extends Div {
         grid.setSummaries(this.getSummaries());
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
+        grid.onDisable();
 
         grid.setHeight("calc(100vh - 106px");
         grid.addItemChangeListener(ev -> {
@@ -61,7 +62,7 @@ public class GridExample extends Div {
     }
 
     private List<Item> getTableData() {
-        List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen", "check", "check2");
+        List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen", "check");
         List<Item> TableData = List.of(
                 new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050",
                         "true", "true"), headers),
@@ -297,8 +298,7 @@ public class GridExample extends Div {
                 new Column(new ColumnBaseOption(5, "Price", "price", 150, "center", ""), "asc", true),
                 new Column(new ColumnBaseOption(6, "Download", "download", 150, "center", "")),
                 new Column(new ColumnBaseOption(7, "Listen", "listen", 150, "center", "")),
-                new Column(new ColumnBaseOption(8, "Check", "check", 150, "center", ""), true, "check"),
-                new Column(new ColumnBaseOption(9, "Check2", "check2", 150, "center", ""), true, "check"));
+                new Column(new ColumnBaseOption(8, "Check", "check", 150, "center", ""), true, "check"));
 
         return columns;
     }

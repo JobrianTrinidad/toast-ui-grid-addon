@@ -50,6 +50,8 @@ export class CheckboxRenderer {
 
         hiddenInput.type = 'checkbox';
         label.addEventListener('click', (ev: MouseEvent): void => {
+            if (columnInfo.disabled)
+                return;
             ev.preventDefault();
 
             if (ev.shiftKey) {
