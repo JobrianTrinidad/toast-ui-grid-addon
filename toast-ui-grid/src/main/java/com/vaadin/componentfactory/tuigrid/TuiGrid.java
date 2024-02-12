@@ -531,6 +531,19 @@ public class TuiGrid extends Div {
                         "toastuigrid.modifiedData($0);",
                         this);
     }
+    public void resetOriginData() {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.resetOriginData($0);",
+                        this);
+    }
+
+    public void restoreData() {
+        this.getElement()
+                .executeJs(
+                        "toastuigrid.restoreData($0);",
+                        this);
+    }
 
     public void onEnable() {
         this.getElement()

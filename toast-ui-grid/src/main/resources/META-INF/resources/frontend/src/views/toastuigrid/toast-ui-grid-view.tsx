@@ -892,13 +892,15 @@ window.toastuigrid = {
 //This function parses the JSON data for the summary and returns the parsed summary object.
 // It handles column content by calling _setColumnContentMatchedName to modify the column content based on its value.
     refreshLayout(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
-        let gridInst: TuiGrid = container.grid.table;
-        gridInst.refreshLayout();
+        container.grid.table.refreshLayout();
+    },
+
+    restoreData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
+        container.grid.table.restore();
     },
 
     reloadData(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } }): void {
-        let gridInst: TuiGrid = container.grid.table;
-        gridInst.reloadData();
+        container.grid.table.reloadData();
     },
 
     modifiedData(container: HTMLElement &
