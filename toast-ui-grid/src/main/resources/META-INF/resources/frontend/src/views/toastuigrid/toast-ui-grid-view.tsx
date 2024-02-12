@@ -107,7 +107,6 @@ window.toastuigrid = {
                 checkedRows.push(row["id"]);
             }
             container.$server.onCheck(checkedRows);
-            // container.$server.onCheckAll(cleanedObject);
         };
         const onUncheckAll = (ev: TuiGridEvent): void => {
             let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
@@ -128,7 +127,7 @@ window.toastuigrid = {
                 record: Row
             } = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
                 if (value instanceof Node) {
-                    return null; // Remove the DOM node reference
+                    return null;
                 }
                 return value;
             }));
@@ -929,7 +928,7 @@ window.toastuigrid = {
         const rowLength: number = rows.length;
         if (rowLength === 0)
             return;
-        let min: RowKey = 999999999999;
+        let min: RowKey = 99999999999;
         for (let i: number = 0; i < rowLength; i++) {
             if (Number(min) > Number(rows[i]))
                 min = rows[i];

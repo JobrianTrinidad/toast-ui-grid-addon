@@ -164,6 +164,7 @@ public class BasicExample extends Div {
         Column nameCol = new Column(new ColumnBaseOption(0, "Name", "name", 0, "center", ""), true, "input");
         nameCol.setMultiline(true);
         Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 0, "center", ""), true, "input");
+        artistCol.setMultiline(true);
         Column typeCol = new Column(new ColumnBaseOption(2, "Type", "type", 0, "center", ""), true, "input");
         Column genreCol = new Column(new ColumnBaseOption(3, "Genre", "genre", 0, "center", ""), true, "input");
 //        Column releaseCol = new Column(new ColumnBaseOption(4, "Release", "release", 0, "center", ""), false, "datePicker", new DateOption("yyyy-MM-dd", false));

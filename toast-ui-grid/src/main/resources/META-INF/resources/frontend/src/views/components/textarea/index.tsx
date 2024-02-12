@@ -1,81 +1,53 @@
 import React, {ChangeEvent, createRef} from "react";
 import {Textarea, TextareaProps} from "@chakra-ui/react";
-import ReactDOMServer from "react-dom/server";
-import {CellEditor, CellEditorProps} from 'tui-grid/types/editor';
+import {CellEditor, CellEditorProps, PortalEditingKeydown} from 'tui-grid/types/editor';
 import TuiGrid, {ColumnInfo} from 'tui-grid';
 
 interface TextareaComponentProps extends TextareaProps, CellEditorProps {
     grid: TuiGrid & { usageStatistics: boolean };
     value: string;
     handleInputChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
+    PortalEditingKeydown: PortalEditingKeydown;
     columnInfo: ColumnInfo;
 }
 
 class TextareaComponent implements CellEditor {
-    public el: ChildNode;
+    public el: HTMLTextAreaElement;
     private props: TextareaComponentProps;
 
     constructor(props: TextareaComponentProps) {
         this.props = props;
-        this.el = this.renderInput();
+        this.el = document.createElement('textarea');
+        this.el.value = props.value;
+        this.el.style.height = 'auto'; // Set initial height to auto
+        this.el.addEventListener('input', this.autoResize);
+        this.el.addEventListener('blur', this.save);
     }
 
-    getElement(): ChildNode {
+    getElement() {
         return this.el;
     }
 
     getValue(): string {
-        return (this.el as HTMLTextAreaElement).value;
+        console.log("Call getValue()1: ", this.el.value);
+        console.log("Call getValue()2: ", this.el.value.replace(/\/n/g, "\n"));
+        return this.el.value.replace(/\/n/g, "\n");
     }
 
-    mounted(): void {
-        (this.el as HTMLTextAreaElement).select();
+    autoResize = (): void => {
+        const newHeight = this.el.scrollHeight;
+        this.el.style.height = 'auto'; // Reset height to auto
+        this.el.style.height = this.el.scrollHeight + 'px'; // Set height based on content
+        console.log("TextArea props: ", this.props.grid.store["rowCoords"]["heights"][this.props.grid.getFocusedCell()["rowKey"]]);
+        console.log("TextArea columnInfo: ", this.props.grid.getFocusedCell());
+        let row = this.props.grid.getRow(this.props.grid.getFocusedCell()["rowKey"]);
+        // row.setHeight(newHeight); // Update row height
+        row["_attributes"]["height"] = newHeight;
+        // row._attributes.height = newHeight;
     }
 
-    renderInput(): ChildNode {
-        const {
-            value,
-            handleInputChange,
-            columnInfo
-        } = this.props;
-
-        console.log("props: ", this.props);
-
-        const inputRef = createRef<HTMLTextAreaElement>();
-        const inputElement = (
-            <textarea
-                ref={inputRef}
-                defaultValue={value?.toString()}
-                onChange={(): void => {
-                    console.log("inputRef: ", inputRef);
-                    const textarea = inputRef.current;
-                    if (textarea) {
-                        textarea.style.height = "auto"; // Reset the height
-                        textarea.style.height = `${textarea.scrollHeight}px`; // Set the height to the scroll height
-                    }
-                }}
-                style={{
-                    backgroundColor: columnInfo.editor.options.backgroundColor,
-                    opacity: columnInfo.editor.options.opacity,
-                    width: columnInfo.editor.options.width,
-                    border: columnInfo.editor.options.border,
-                    outline: columnInfo.editor.options.outline,
-                }}
-                onKeyUp={(): void => {
-                    console.log("inputRef: ", inputRef);
-                    const textarea = inputRef.current;
-                    if (textarea) {
-                        textarea.style.height = "auto"; // Reset the height
-                        textarea.style.height = `${textarea.scrollHeight}px`; // Set the height to the scroll height
-                    }
-                }}
-            />
-        );
-        console.log("inputElement: ", inputElement);
-        const parser: DOMParser = new DOMParser();
-        const doc: Document = parser.parseFromString(ReactDOMServer.renderToString(inputElement), 'text/html');
-        const parentElement: ParentNode = doc.body.firstChild.parentNode;
-        return doc.body.firstChild;
+    save = (): void => {
+        this.props.grid.finishEditing(this.props.grid.getFocusedCell()["rowKey"], this.props.grid.getFocusedCell()["columnName"], this.el.value);
     }
 }
 
