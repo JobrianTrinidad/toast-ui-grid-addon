@@ -194,7 +194,7 @@ public class TuiGrid extends Div {
     }
 
     public void setbAllowInsert(boolean bAllowInsert) {
-        this.tuiGridOption.bAllowDelete = bAllowInsert;
+        this.tuiGridOption.bAllowInsert = bAllowInsert;
     }
 
     /**
