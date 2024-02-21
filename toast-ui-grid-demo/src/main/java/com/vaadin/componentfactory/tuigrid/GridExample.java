@@ -37,6 +37,7 @@ public class GridExample extends Div {
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
         grid.onDisable();
+        grid.setbAllowDelete(false);
 
         grid.setHeight("calc(100vh - 106px");
         grid.addItemChangeListener(ev -> {

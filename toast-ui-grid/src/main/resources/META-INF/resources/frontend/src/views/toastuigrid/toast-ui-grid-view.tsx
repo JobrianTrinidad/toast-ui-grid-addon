@@ -53,6 +53,8 @@ window.toastuigrid = {
         let parsedItems: OptRow[] = JSON.parse(itemsJson);
         console.log("parsedItems: ", parsedItems);
         let parsedOptions = JSON.parse(optionsJson);
+        let bAllowDelete: boolean = parsedOptions.allowDelete;
+        let bAllowInsert: boolean = parsedOptions.allowInsert;
         let editingRowKey: string | number = -1;
         const {columns, contextMenus, filterValues} = this.getColumns(container, JSON.parse(parsedOptions.columns));
         console.log("Columns: ", columns);
@@ -164,7 +166,7 @@ window.toastuigrid = {
                 rangeSelected = [];
             else if (event.shiftKey === true
                 && event.code === "Delete") {
-                if (gridInst.getCheckedRowKeys().length > 0) {
+                if (gridInst.getCheckedRowKeys().length > 0 && bAllowDelete) {
                     rangeSelected = [];
                     let checkedRows: number[] = [];
                     for (const row of gridInst.getCheckedRows()) {
@@ -196,7 +198,7 @@ window.toastuigrid = {
                     }
                 }
             } else if (event.shiftKey === true
-                && event.code === "Insert") {
+                && event.code === "Insert" && bAllowInsert) {
                 event.preventDefault();
                 this.onAddRecord(container);
             } else if (parsedOptions.autoSave === true

@@ -54,12 +54,17 @@ public class TuiGridOption {
     public TreeOption treeOption;
     public boolean autoSave = false;
     public AATContextMenu contextMenu;
+    public boolean bAllowDelete = true;
+    public boolean bAllowInsert = true;
 
     public String toJSON() {
         JsonObject js = Json.createObject();
         Optional.ofNullable(convertColumnsToJson()).ifPresent(v -> js.put("columns", "[" + v + "]"));
         Optional.ofNullable(convertHeaderToJson()).ifPresent(v -> js.put("header", v));
         js.put("autoSave", autoSave);
+        js.put("allowDelete", bAllowDelete);
+        js.put("allowInsert",
+                bAllowInsert);
         if (tableWidth > 0)
             js.put("width", tableWidth);
         if (tableHeight > 0)

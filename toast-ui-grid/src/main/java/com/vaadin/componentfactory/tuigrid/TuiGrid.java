@@ -70,6 +70,8 @@ public class TuiGrid extends Div {
     List<String> headers = new ArrayList<>();
     Theme inputTheme;
     Theme selectTheme;
+    private boolean bAllowDelete = true;
+    private boolean bAllowInsert = true;
 
     public TuiGrid() {
         setId("visualization" + this.hashCode());
@@ -185,6 +187,14 @@ public class TuiGrid extends Div {
             col.setSelectTheme(selectTheme);
         }
         this.updateTuiGridOptions();
+    }
+
+    public void setbAllowDelete(boolean bAllowDelete) {
+        this.tuiGridOption.bAllowDelete = bAllowDelete;
+    }
+
+    public void setbAllowInsert(boolean bAllowInsert) {
+        this.tuiGridOption.bAllowDelete = bAllowInsert;
     }
 
     /**
