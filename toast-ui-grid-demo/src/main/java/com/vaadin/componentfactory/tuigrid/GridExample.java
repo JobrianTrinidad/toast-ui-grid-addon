@@ -5,7 +5,6 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
@@ -38,15 +37,12 @@ public class GridExample extends Div {
         grid.setSummaryHeight(40);
         grid.onDisable();
         grid.setbAllowDelete(false);
+        grid.setbAllowInsert(false);
 
         grid.setHeight("calc(100vh - 106px");
-        grid.addItemChangeListener(ev -> {
-            sp.add(ev.getColName() + ": " + grid.getData().get(1).toJSON());
-        });
+        grid.addItemChangeListener(ev -> sp.add(ev.getColName() + ": " + grid.getData().get(1).toJSON()));
 
-        grid.addItemSaveListener(ev -> {
-            sp.add("Here is: " + ev.getUpdatedRows().getObject(0) + " " + ev.getUpdatedRows().length());
-        });
+        grid.addItemSaveListener(ev -> sp.add("Here is: " + ev.getUpdatedRows().getObject(0) + " " + ev.getUpdatedRows().length()));
 
         Button btnReload = new Button("Reload");
         // Assuming 'btnReload' is a Button and 'grid' is a Grid component
@@ -64,7 +60,8 @@ public class GridExample extends Div {
 
     private List<Item> getTableData() {
         List<String> headers = List.of("name", "artist", "type", "genre", "release", "price", "download", "listen", "check");
-        List<Item> TableData = List.of(
+
+        return List.of(
                 new GuiItem(0, List.of("Beautiful Lies", "Birdy", "Deluxe;", "Pop", "2016-03-26", "10000", "1000", "10050",
                         "true", "true"), headers),
                 new GuiItem(1, List.of(
@@ -282,15 +279,14 @@ public class GridExample extends Div {
                         "false",
                         "false"
                 ), headers));
-
-        return TableData;
     }
 
     private List<Column> getColumns() {
         Column nameCol = new Column(new ColumnBaseOption(0, "Name", "name", 250, "center", ""));
         Column artistCol = new Column(new ColumnBaseOption(1, "Artist", "artist", 250, "center", ""), true, "input");
         artistCol.setMultiline(true);
-        List<Column> columns = List.of(
+
+        return List.of(
                 nameCol,
                 artistCol,
                 new Column(new ColumnBaseOption(2, "Type", "type", 150, "center", ""), true, "input"),
@@ -300,23 +296,19 @@ public class GridExample extends Div {
                 new Column(new ColumnBaseOption(6, "Download", "download", 150, "center", "")),
                 new Column(new ColumnBaseOption(7, "Listen", "listen", 150, "center", "")),
                 new Column(new ColumnBaseOption(8, "Check", "check", 150, "center", ""), true, "check"));
-
-        return columns;
     }
 
     private List<Summary> getSummaries() {
-        List<Summary> summaries = List.of(
+        return List.of(
                 new Summary("price", Summary.OperationType.sum),
                 new Summary("download", Summary.OperationType.avg),
                 new Summary("listen", Summary.OperationType.rowcount));
-        return summaries;
     }
 
     private List<ComplexColumn> getCustomHeader() {
-        List<ComplexColumn> customHeaders = List.of(
+        return List.of(
                 new ComplexColumn("Details Info", "Details Info", List.of("type", "genre", "release")),
                 new ComplexColumn("Count", "Count", List.of("download", "listen")),
                 new ComplexColumn("Extra Info", "Extra Info", List.of("price", "Count")));
-        return customHeaders;
     }
 }

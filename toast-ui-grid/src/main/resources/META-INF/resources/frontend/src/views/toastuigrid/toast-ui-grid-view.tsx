@@ -133,15 +133,16 @@ window.toastuigrid = {
                 }
                 return value;
             }));
-
-            if (gridInst) {
-                let record: {} = {};
-                for (const column of columns) {
-                    let key: string = column.name;
-                    record = {...record, [key]: gridInst.getValue(ev.changes[0]['rowKey'], column.name)}
+            if (ev.changes.length > 0) {
+                if (gridInst) {
+                    let record: {} = {};
+                    for (const column of columns) {
+                        let key: string = column.name;
+                        record = {...record, [key]: gridInst.getValue(ev.changes[0]['rowKey'], column.name)}
+                    }
+                    cleanedObject = {...cleanedObject, record: record};
+                    this.onUpdateData(container, cleanedObject);
                 }
-                cleanedObject = {...cleanedObject, record: record};
-                this.onUpdateData(container, cleanedObject);
             }
         };
         const onColumnResize = (ev: TuiGridEvent): void => {
@@ -198,9 +199,11 @@ window.toastuigrid = {
                     }
                 }
             } else if (event.shiftKey === true
-                && event.code === "Insert" && bAllowInsert) {
-                event.preventDefault();
-                this.onAddRecord(container);
+                && event.code === "Insert") {
+                if(bAllowInsert){
+                    event.preventDefault();
+                    this.onAddRecord(container);
+                }
             } else if (parsedOptions.autoSave === true
                 && event.code === "Tab"
                 && gridInst.getFocusedCell()['rowKey'] === gridInst.getRowCount() - 1
