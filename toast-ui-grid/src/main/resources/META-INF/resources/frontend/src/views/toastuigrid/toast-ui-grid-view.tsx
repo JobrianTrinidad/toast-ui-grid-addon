@@ -133,6 +133,7 @@ window.toastuigrid = {
                 }
                 return value;
             }));
+
             if (ev.changes.length > 0) {
                 if (gridInst) {
                     let record: {} = {};
