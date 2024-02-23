@@ -55,6 +55,7 @@ window.toastuigrid = {
         let parsedOptions = JSON.parse(optionsJson);
         let bAllowDelete: boolean = parsedOptions.allowDelete;
         let bAllowInsert: boolean = parsedOptions.allowInsert;
+
         let editingRowKey: string | number = -1;
         const {columns, contextMenus, filterValues} = this.getColumns(container, JSON.parse(parsedOptions.columns));
         console.log("Columns: ", columns);
@@ -593,6 +594,17 @@ window.toastuigrid = {
                 container.grid.table.disableColumn(columnInfo.name);
             }
         }, 300);
+    },
+
+    onDisableFieldsAsReadOnly(container: HTMLElement & {
+       $server: any,
+       grid: JSX.Element & { table: TuiGrid },
+    }, fieldsAsReadOnly: string): void {
+       setTimeout((): void => {
+           for (const fieldName of JSON.parse(fieldsAsReadOnly)) {
+               container.grid.table.disableColumn(fieldName.name);
+           }
+       }, 300);
     },
 
     validateColumn(container: HTMLElement & { grid: JSX.Element & { table: TuiGrid } },

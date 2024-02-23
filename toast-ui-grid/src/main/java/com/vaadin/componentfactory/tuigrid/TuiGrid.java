@@ -36,7 +36,9 @@ import elemental.json.JsonValue;
 import elemental.json.impl.JreJsonArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -70,8 +72,6 @@ public class TuiGrid extends Div {
     List<String> headers = new ArrayList<>();
     Theme inputTheme;
     Theme selectTheme;
-    private boolean bAllowDelete = true;
-    private boolean bAllowInsert = true;
 
     public TuiGrid() {
         setId("visualization" + this.hashCode());
@@ -856,5 +856,22 @@ public class TuiGrid extends Div {
      */
     public void addItemDeleteListener(ComponentEventListener<ItemDeleteEvent> listener) {
         addListener(ItemDeleteEvent.class, listener);
+    }
+
+    public void setFieldsAsReadOnly(String[] fieldsAsReadOnly) {
+        String columnsJson = convertColumnsToJson(fieldsAsReadOnly);
+
+        this.getElement().executeJs("toastuigrid.onDisableFieldsAsReadOnly($0, $1);", this, columnsJson);
+
+    }
+    private String convertColumnsToJson(String[] fieldsAsReadOnly) {
+        if (fieldsAsReadOnly != null && fieldsAsReadOnly.length > 0) {
+            // Assuming each field in fieldsAsReadOnly corresponds to a column in your columns list
+            return "[" + Arrays.stream(fieldsAsReadOnly)
+                    .map(field -> "{\"name\": \"" + field + "\", \"readOnly\": true}")
+                    .collect(Collectors.joining(",")) + "]";
+        } else {
+            return "[]"; // Empty array if fieldsAsReadOnly is null or empty
+        }
     }
 }
