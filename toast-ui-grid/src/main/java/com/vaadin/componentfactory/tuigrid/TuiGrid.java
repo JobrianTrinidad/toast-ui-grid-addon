@@ -864,6 +864,10 @@ public class TuiGrid extends Div {
         this.getElement().executeJs("toastuigrid.onDisableFieldsAsReadOnly($0, $1);", this, columnsJson);
 
     }
+
+    public  void setMultiSelect(Boolean multiSelectStatus) {
+        this.tuiGridOption.multiSelectStatus = multiSelectStatus;
+    }
     private String convertColumnsToJson(String[] fieldsAsReadOnly) {
         if (fieldsAsReadOnly != null && fieldsAsReadOnly.length > 0) {
             // Assuming each field in fieldsAsReadOnly corresponds to a column in your columns list

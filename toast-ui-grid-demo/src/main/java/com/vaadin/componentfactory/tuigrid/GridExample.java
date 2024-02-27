@@ -36,9 +36,10 @@ public class GridExample extends Div {
         grid.setHeaderHeight(100);
         grid.setSummaryHeight(40);
 //        grid.onDisable();
-        grid.setbAllowDelete(false);
-        grid.setbAllowInsert(false);
+        grid.setbAllowDelete(true);
+        grid.setbAllowInsert(true);
         grid.setFieldsAsReadOnly(new String[]{ "artist", "type" });
+        grid.setMultiSelect(false);
 
         grid.setHeight("calc(100vh - 106px");
         grid.addItemChangeListener(ev -> sp.add(ev.getColName() + ": " + grid.getData().get(1).toJSON()));

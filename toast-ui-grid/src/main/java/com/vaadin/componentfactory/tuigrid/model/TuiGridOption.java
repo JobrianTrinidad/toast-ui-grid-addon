@@ -57,6 +57,7 @@ public class TuiGridOption {
     public AATContextMenu contextMenu;
     public boolean bAllowDelete = true;
     public boolean bAllowInsert = true;
+    public  boolean multiSelectStatus = true;
 
     public String toJSON() {
         JsonObject js = Json.createObject();
@@ -66,6 +67,8 @@ public class TuiGridOption {
         js.put("allowDelete", bAllowDelete);
         js.put("allowInsert",
                 bAllowInsert);
+        js.put("multiSelectStatus",
+                multiSelectStatus);
         if (tableWidth > 0)
             js.put("width", tableWidth);
         if (tableHeight > 0)

@@ -53,8 +53,11 @@ window.toastuigrid = {
         let parsedItems: OptRow[] = JSON.parse(itemsJson);
         console.log("parsedItems: ", parsedItems);
         let parsedOptions = JSON.parse(optionsJson);
+        console.log(parsedOptions, "parsedOptions")
         let bAllowDelete: boolean = parsedOptions.allowDelete;
         let bAllowInsert: boolean = parsedOptions.allowInsert;
+        let multiSelectStatus: boolean = parsedOptions.multiSelectStatus;
+        console.log(multiSelectStatus, "multiSelectStatus ccccccccccccc")
 
         let editingRowKey: string | number = -1;
         const {columns, contextMenus, filterValues} = this.getColumns(container, JSON.parse(parsedOptions.columns));
@@ -85,15 +88,22 @@ window.toastuigrid = {
             }
         }
         const onCheck = (ev: TuiGridEvent): void => {
-            // let cleanedObject = JSON.parse(JSON.stringify(ev, (key: string, value): null | string => {
-            //     if (value instanceof Node) {
-            //         return null; // Remove the DOM node reference
-            //     }
-            //     return value;
-            // }))
             let checkedRows: number[] = [];
-            for (const row of gridInst.getCheckedRows()) {
-                checkedRows.push(row["id"]);
+
+            if (!multiSelectStatus) {
+                const updatedData = gridInst.getData().map((row, rowIndex) => {
+                    if (ev.rowKey === rowIndex) {
+                        checkedRows.push(ev.rowKey);
+                        return row
+                    }
+                    return { ...row, _attributes: { checked: false } };
+                });
+                gridInst.resetData(updatedData);
+            } else {
+                for (const row of gridInst.getCheckedRows()) {
+                    checkedRows.push(row["id"]);
+                }
+                checkedRows.push(ev["rowKey"]);
             }
             container.$server.onCheck(checkedRows);
         };
@@ -106,9 +116,18 @@ window.toastuigrid = {
         };
         const onCheckAll = (ev: TuiGridEvent): void => {
             let checkedRows: number[] = [];
-            for (const row of gridInst.getCheckedRows()) {
-                checkedRows.push(row["id"]);
+
+            if (!multiSelectStatus) {
+                const updatedData = gridInst.getData().map((row, rowIndex) => {
+                    return { ...row, _attributes: { checked: false } };
+                });
+                gridInst.resetData(updatedData);
+            } else {
+                for (const row of gridInst.getCheckedRows()) {
+                    checkedRows.push(row["id"]);
+                }
             }
+
             container.$server.onCheck(checkedRows);
         };
         const onUncheckAll = (ev: TuiGridEvent): void => {
